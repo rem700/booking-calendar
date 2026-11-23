@@ -1,0 +1,22 @@
+.bkb-admin .bkb-tab{background:#fff;border:1px solid #c3c4c7;border-top:0;padding:8px 20px 20px;max-width:1100px}
+.bkb-admin .nav-tab-wrapper{max-width:1142px}
+.bkb-labels{display:flex;flex-wrap:wrap;gap:8px 14px;margin:4px 0}
+.bkb-labels label{display:flex;align-items:center;gap:6px}
+.bkb-labels span{font-size:11px;font-weight:600;color:#646970;min-width:20px}
+.bkb-labels input{width:230px}
+.bkb-card{border:1px solid #dcdcde;border-radius:4px;padding:12px 16px;margin:14px 0;background:#fcfcfc}
+.bkb-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bkb-card-head b{font-size:14px}
+.bkb-tools{display:inline-flex;gap:10px;align-items:center}
+.bkb-tools .button-link{text-decoration:none}
+.bkb-del{color:#b32d2e!important}
+.bkb-sub{font-weight:600;margin:12px 0 4px}
+.bkb-id{display:inline-flex;align-items:center;gap:8px}
+.bkb-id span{font-weight:600}
+.bkb-id input{width:200px;font-family:monospace}
+.bkb-choice{border-left:3px solid #dcdcde;padding:6px 0 6px 12px;margin:8px 0;display:grid;gap:6px}
+.bkb-inline{display:inline-block;margin:0 16px 6px 0}
+.bkb-days td{padding:3px 12px 3px 0;vertical-align:middle}
+.bkb-texts th{width:260px}
+.bkb-card details{margin-top:12px}
+.bkb-card summary{cursor:pointer;font-weight:600}
