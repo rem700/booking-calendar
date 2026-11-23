@@ -82,9 +82,15 @@ function bkb_site_name() {
 	return '' !== $n ? $n : wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 }
 
+/** All addresses that get new requests (the setting may hold several, separated by commas). */
+function bkb_notify_emails() {
+	$list = array_values( array_filter( array_map( 'trim', preg_split( '/[\s,;]+/', (string) bkb_cfg( 'notify' ) ) ), 'is_email' ) );
+	return $list ? $list : array( get_option( 'admin_email' ) );
+}
+
+/** The main address: the first one, used as Reply-To for clients. */
 function bkb_notify_email() {
-	$e = (string) bkb_cfg( 'notify' );
-	return is_email( $e ) ? $e : get_option( 'admin_email' );
+	return bkb_notify_emails()[0];
 }
 
 /** Languages the form speaks on this site. */
@@ -265,7 +271,7 @@ function bkb_sanitize_config( $c ) {
 	$c   = is_array( $c ) ? $c : array();
 	$out = array(
 		'site_name' => sanitize_text_field( (string) ( $c['site_name'] ?? '' ) ),
-		'notify'    => sanitize_email( (string) ( $c['notify'] ?? '' ) ),
+		'notify'    => implode( ', ', array_values( array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) ( $c['notify'] ?? '' ) ) ) ) ) ),
 		'ics'       => implode( "\n", array_filter( array_map( 'esc_url_raw', array_map( 'trim', explode( "\n", (string) ( $c['ics'] ?? '' ) ) ) ) ) ),
 		'contact'   => sanitize_text_field( (string) ( $c['contact'] ?? '' ) ),
 		'signature' => sanitize_textarea_field( (string) ( $c['signature'] ?? '' ) ),

@@ -389,7 +389,7 @@ function bkb_mail_team( $id ) {
 		. "Время помечено как занятое на сайте, пока заявка не отклонена.\n";
 	$svc  = $b['service'] ? bkb_service_label( $b['service'], 'ru' ) . ', ' : '';
 	return wp_mail(
-		bkb_notify_email(),
+		bkb_notify_emails(),
 		'Новая заявка: ' . $svc . wp_date( 'j.m H:i', (int) $b['start'], $tz ) . ' — ' . $b['name'],
 		$body,
 		array( 'Reply-To: ' . $b['name'] . ' <' . $b['email'] . '>' )

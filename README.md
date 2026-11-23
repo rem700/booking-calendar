@@ -14,7 +14,7 @@ Free times are worked out from your working hours, the time you need to prepare,
 - Texts in English, German, Hungarian, Russian and Ukrainian, each one editable
 - Colours and fonts to match your theme
 - Works with Polylang and WPML: the form and the emails follow the page language
-- Emails: receipt to the client, confirmation, decline, reminder the day before, notice to you
+- Emails: receipt to the client, confirmation, decline, reminder the day before, notice to you (to one or several addresses)
 - "Add to Google Calendar" link for you and for the client
 - Old requests are removed after the number of days you choose
 - Settings export and import as JSON, so the same setup moves to another site in one step
