@@ -159,7 +159,7 @@ add_action(
 		if ( 'bkb_when' === $col ) {
 			echo esc_html( wp_date( 'j.m.Y H:i', (int) $b['start'], wp_timezone() ) . '–' . wp_date( 'H:i', (int) $b['end'], wp_timezone() ) );
 		} elseif ( 'bkb_who' === $col ) {
-			echo esc_html( $b['name'] ) . '<br><a href="mailto:' . esc_attr( $b['email'] ) . '">' . esc_html( $b['email'] ) . '</a>';
+			echo esc_html( $b['name'] ) . '<br>' . ( $b['email'] ? '<a href="mailto:' . esc_attr( $b['email'] ) . '">' . esc_html( $b['email'] ) . '</a>' : esc_html( $b['phone'] ) );
 		} elseif ( 'bkb_state' === $col ) {
 			echo bkb_status_label( $b['status'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
@@ -224,15 +224,20 @@ function bkb_details_box( $post ) {
 	};
 	echo '<p style="margin:16px 0 6px">';
 	if ( 'confirmed' !== $b['status'] ) {
-		echo $act( 'confirmed', 'Подтвердить и написать клиенту', 'button-primary' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $act( 'confirmed', $b['email'] ? 'Подтвердить и написать клиенту' : 'Подтвердить', 'button-primary' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	if ( 'declined' !== $b['status'] ) {
-		echo $act( 'declined', 'Отклонить и написать клиенту', '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $act( 'declined', $b['email'] ? 'Отклонить и написать клиенту' : 'Отклонить', '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( bkb_gcal_link( $b ) ) . '">Добавить в Google Календарь</a></p>';
 	echo '<p class="description">Клиент получит письмо на своём языке. Подтверждённую запись добавьте в Google Календарь, чтобы время было занято и для других.</p>';
 	if ( isset( $_GET['bkb_mail'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		echo '1' === $_GET['bkb_mail'] ? '<div class="notice notice-success inline"><p>Письмо клиенту отправлено.</p></div>' : '<div class="notice notice-error inline"><p>Статус изменён, но письмо отправить не удалось. Напишите клиенту вручную.</p></div>'; // phpcs:ignore
+		$m = (string) $_GET['bkb_mail']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
+		if ( '2' === $m ) {
+			echo '<div class="notice notice-success inline"><p>Статус изменён. E-mail у клиента нет, напишите ему сами.</p></div>';
+		} else {
+			echo '1' === $m ? '<div class="notice notice-success inline"><p>Письмо клиенту отправлено.</p></div>' : '<div class="notice notice-error inline"><p>Статус изменён, но письмо отправить не удалось. Напишите клиенту вручную.</p></div>';
+		}
 	}
 }
 
@@ -246,9 +251,10 @@ add_action(
 		}
 		check_admin_referer( 'bkb_status_' . $id );
 		update_post_meta( $id, '_bkb_status', $s );
-		$ok = bkb_mail_client( $id, $s );
+		$has = is_email( (string) get_post_meta( $id, '_bkb_email', true ) );
+		$ok  = $has ? bkb_mail_client( $id, $s ) : false;
 		do_action( 'bkb_status_changed', $id, $s );
-		wp_safe_redirect( admin_url( 'post.php?post=' . $id . '&action=edit&bkb_mail=' . ( $ok ? '1' : '0' ) ) );
+		wp_safe_redirect( admin_url( 'post.php?post=' . $id . '&action=edit&bkb_mail=' . ( $has ? ( $ok ? '1' : '0' ) : '2' ) ) );
 		exit;
 	}
 );

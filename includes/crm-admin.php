@@ -39,6 +39,10 @@ function bkb_crm_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
+	if ( isset( $_GET['new'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		bkb_crm_new_form( (int) ( $_GET['client'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return;
+	}
 	if ( ! empty( $_GET['client'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		bkb_crm_card( (int) $_GET['client'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return;
@@ -58,8 +62,8 @@ function bkb_crm_page() {
 	}
 	if ( '' !== $search ) {
 		$like   = '%' . $wpdb->esc_like( $search ) . '%';
-		$where .= ' AND (c.name LIKE %s OR c.email LIKE %s OR c.phone LIKE %s OR c.notes LIKE %s)';
-		array_push( $args, $like, $like, $like, $like );
+		$where .= ' AND (c.name LIKE %s OR c.email LIKE %s OR c.instagram LIKE %s OR c.phone LIKE %s OR c.notes LIKE %s)';
+		array_push( $args, $like, $like, $like, $like, $like );
 	}
 	$sql_where = $args ? $wpdb->prepare( $where, $args ) : $where; // phpcs:ignore WordPress.DB
 	$total     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $ct c WHERE $sql_where" ); // phpcs:ignore WordPress.DB
@@ -71,7 +75,7 @@ function bkb_crm_page() {
 	$tasks     = $wpdb->get_results( $wpdb->prepare( "SELECT e.*, c.name FROM $et e LEFT JOIN $ct c ON c.id = e.client_id WHERE e.type = 'task' AND e.done = 0 AND (e.due IS NULL OR e.due < %s) ORDER BY e.due IS NULL, e.due LIMIT 30", $tz_end ), ARRAY_A ); // phpcs:ignore WordPress.DB
 	?>
 	<div class="wrap bkb-crm">
-		<h1>Клиенты</h1>
+		<h1 style="display:flex;gap:12px;align-items:center">Клиенты <a class="page-title-action" href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1' ) ); ?>">Добавить заявку из Instagram или вручную</a></h1>
 		<?php bkb_crm_notice(); ?>
 		<?php if ( $tasks ) : ?>
 			<div class="bkb-crm-box bkb-crm-tasks">
@@ -104,7 +108,7 @@ function bkb_crm_page() {
 			<?php if ( $stage ) : ?>
 				<input type="hidden" name="stage" value="<?php echo esc_attr( $stage ); ?>">
 			<?php endif; ?>
-			<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Имя, e-mail, телефон, заметки">
+			<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Имя, e-mail, Instagram, телефон, заметки">
 			<button class="button">Найти</button>
 		</form>
 		<br class="clear">
@@ -116,8 +120,8 @@ function bkb_crm_page() {
 			<?php endif; ?>
 			<?php foreach ( $rows as $c ) : ?>
 				<tr>
-					<td><strong><a href="<?php echo esc_url( bkb_crm_client_url( $c['id'] ) ); ?>"><?php echo esc_html( $c['name'] ? $c['name'] : $c['email'] ); ?></a></strong></td>
-					<td><a href="mailto:<?php echo esc_attr( $c['email'] ); ?>"><?php echo esc_html( $c['email'] ); ?></a><?php echo $c['phone'] ? '<br>' . esc_html( $c['phone'] ) : ''; ?></td>
+					<td><strong><a href="<?php echo esc_url( bkb_crm_client_url( $c['id'] ) ); ?>"><?php echo esc_html( $c['name'] ? $c['name'] : ( $c['email'] ? $c['email'] : '@' . $c['instagram'] ) ); ?></a></strong></td>
+					<td><?php echo bkb_crm_contacts_html( $c ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
 					<td><?php echo bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
 					<td><?php echo esc_html( $c['source'] ? $c['source'] : '—' ); ?></td>
 					<td><?php echo (int) $c['requests']; ?></td>
@@ -181,7 +185,8 @@ function bkb_crm_card( $id ) {
 	?>
 	<div class="wrap bkb-crm">
 		<p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ); ?>">← Все клиенты</a></p>
-		<h1><?php echo esc_html( $c['name'] ? $c['name'] : $c['email'] ); ?> <?php echo bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h1>
+		<h1 style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><?php echo esc_html( $c['name'] ? $c['name'] : ( $c['email'] ? $c['email'] : '@' . $c['instagram'] ) ); ?> <?php echo bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <a class="page-title-action" href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1&client=' . (int) $id ) ); ?>">Новая заявка этого клиента</a></h1>
+		<p><?php echo bkb_crm_contacts_html( $c ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 		<?php bkb_crm_notice(); ?>
 		<div class="bkb-crm-cols">
 			<div class="bkb-crm-box">
@@ -192,6 +197,7 @@ function bkb_crm_card( $id ) {
 					<?php wp_nonce_field( 'bkb_crm_save' ); ?>
 					<p><label>Имя<br><input type="text" class="widefat" name="name" value="<?php echo esc_attr( $c['name'] ); ?>"></label></p>
 					<p><label>E-mail<br><input type="email" class="widefat" name="email" value="<?php echo esc_attr( $c['email'] ); ?>"></label></p>
+					<p><label>Instagram<br><input type="text" class="widefat" name="instagram" value="<?php echo esc_attr( $c['instagram'] ? '@' . $c['instagram'] : '' ); ?>" placeholder="@name"></label></p>
 					<p><label>Телефон или Instagram<br><input type="text" class="widefat" name="phone" value="<?php echo esc_attr( $c['phone'] ); ?>"></label></p>
 					<p><label>Язык общения<br><input type="text" class="widefat" name="lang" value="<?php echo esc_attr( $c['lang'] ); ?>" placeholder="en, ru, uk…"></label></p>
 					<p><label>Источник<br><input type="text" class="widefat" name="source" value="<?php echo esc_attr( $c['source'] ); ?>"></label></p>
@@ -284,7 +290,8 @@ add_action(
 			$id,
 			array(
 				'name'   => sanitize_text_field( (string) ( $p['name'] ?? '' ) ),
-				'email'  => $email ? strtolower( $email ) : $c['email'],
+				'email'     => $email ? strtolower( $email ) : ( '' === trim( (string) ( $p['email'] ?? '' ) ) ? '' : $c['email'] ),
+				'instagram' => bkb_crm_ig_handle( $p['instagram'] ?? '' ),
 				'phone'  => sanitize_text_field( (string) ( $p['phone'] ?? '' ) ),
 				'lang'   => sanitize_key( (string) ( $p['lang'] ?? '' ) ),
 				'source' => sanitize_text_field( (string) ( $p['source'] ?? '' ) ),
@@ -470,3 +477,278 @@ function bkb_crm_report_page() {
 	</div>
 	<?php
 }
+
+/* ---------- contacts and manual requests (Instagram, phone, in person) ---------- */
+
+function bkb_crm_contacts_html( $c ) {
+	$out = array();
+	if ( $c['instagram'] ) {
+		$out[] = '<a href="' . esc_url( 'https://instagram.com/' . $c['instagram'] ) . '" target="_blank" rel="noopener">@' . esc_html( $c['instagram'] ) . '</a>';
+	}
+	if ( $c['email'] ) {
+		$out[] = '<a href="mailto:' . esc_attr( $c['email'] ) . '">' . esc_html( $c['email'] ) . '</a>';
+	}
+	if ( $c['phone'] ) {
+		$out[] = esc_html( $c['phone'] );
+	}
+	return implode( '<br>', $out );
+}
+
+function bkb_crm_manual_sources() {
+	return array( 'Instagram', 'Facebook', 'WhatsApp', 'Telegram', 'Телефон', 'E-mail', 'Лично', 'Рекомендация', 'IPAR', 'Другое' );
+}
+
+function bkb_crm_new_form( $client_id ) {
+	$c     = $client_id ? bkb_crm_client( $client_id ) : null;
+	$cfg   = bkb_cfg();
+	$hours = bkb_durations();
+	$def   = bkb_valid_duration( $cfg['schedule']['default_duration'] ) ?? $hours[0];
+	$err   = isset( $_GET['bkb_err'] ) ? sanitize_key( $_GET['bkb_err'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$v     = fn( $k ) => $c ? (string) $c[ $k ] : '';
+	?>
+	<div class="wrap bkb-crm">
+		<p><a href="<?php echo esc_url( $c ? bkb_crm_client_url( $client_id ) : admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ); ?>">← <?php echo $c ? 'Карточка клиента' : 'Все клиенты'; ?></a></p>
+		<h1><?php echo $c ? 'Новая заявка: ' . esc_html( $c['name'] ) : 'Новая заявка вручную'; ?></h1>
+		<?php if ( 'contact' === $err ) : ?>
+			<div class="notice notice-error"><p>Укажите имя и хотя бы один контакт: Instagram, e-mail или телефон.</p></div>
+		<?php elseif ( 'date' === $err ) : ?>
+			<div class="notice notice-error"><p>Не получилось прочитать дату или время.</p></div>
+		<?php endif; ?>
+		<p class="description">Для заявок, которые пришли не через сайт: из Instagram, по телефону, лично. Если такой клиент уже есть (тот же Instagram или e-mail), заявка добавится в его карточку. Писем клиенту не отправляется.</p>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="bkb-crm-box bkb-crm-new">
+			<input type="hidden" name="action" value="bkb_crm_new">
+			<input type="hidden" name="client" value="<?php echo (int) $client_id; ?>">
+			<?php wp_nonce_field( 'bkb_crm_new' ); ?>
+			<h2>Клиент</h2>
+			<div class="bkb-grid">
+				<label>Имя *<input type="text" name="name" required value="<?php echo esc_attr( $v( 'name' ) ); ?>"></label>
+				<label>Instagram<input type="text" name="instagram" placeholder="@name или ссылка на профиль" value="<?php echo esc_attr( $c && $c['instagram'] ? '@' . $c['instagram'] : '' ); ?>"></label>
+				<label>E-mail<input type="email" name="email" value="<?php echo esc_attr( $v( 'email' ) ); ?>"></label>
+				<label>Телефон или WhatsApp<input type="text" name="phone" value="<?php echo esc_attr( $v( 'phone' ) ); ?>"></label>
+				<label>Откуда пришёл
+					<select name="source">
+						<?php foreach ( bkb_crm_manual_sources() as $s ) : ?>
+							<option <?php selected( $c ? $c['source'] : 'Instagram', $s ); ?>><?php echo esc_html( $s ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+				<?php $slangs = (array) ( $cfg['fields']['slang']['choices'] ?? array() ); ?>
+				<label>Язык общения
+					<select name="lang">
+						<option value="">—</option>
+						<?php foreach ( $slangs ? $slangs : array_map( fn( $l ) => array( 'id' => $l, 'label' => array() ), bkb_langs() ) as $l ) : ?>
+							<option value="<?php echo esc_attr( $l['id'] ); ?>" <?php selected( $v( 'lang' ), $l['id'] ); ?>><?php echo esc_html( bkb_l( $l['label'], 'ru', $l['id'] ) ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+			</div>
+			<h2>Что хочет</h2>
+			<div class="bkb-grid">
+				<?php if ( $cfg['services'] ) : ?>
+					<label>Услуга
+						<select name="service">
+							<option value="">не решил</option>
+							<?php foreach ( $cfg['services'] as $s ) : ?>
+								<option value="<?php echo esc_attr( $s['id'] ); ?>"><?php echo esc_html( bkb_service_label( $s['id'], 'ru' ) ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+				<?php endif; ?>
+				<?php if ( $cfg['locations'] ) : ?>
+					<label>Место
+						<select name="location">
+							<?php foreach ( $cfg['locations'] as $l ) : ?>
+								<option value="<?php echo esc_attr( $l['id'] ); ?>"><?php echo esc_html( bkb_location_label( $l['id'], 'ru' ) ); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+				<?php endif; ?>
+				<label>Дата<input type="date" name="date"></label>
+				<label>Начало<input type="time" name="time" step="900"></label>
+				<label>Длительность
+					<select name="hours">
+						<?php foreach ( $hours as $h ) : ?>
+							<option value="<?php echo esc_attr( $h ); ?>" <?php selected( (string) $def, (string) $h ); ?>><?php echo esc_html( $h ); ?> ч</option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+				<label>Стоимость<input type="text" name="price" placeholder="например 630 €"></label>
+			</div>
+			<p><label><input type="checkbox" name="block" value="1" checked> Если указаны дата и время — занять это время в календаре на сайте</label></p>
+			<p><label>Что написал клиент или о чём договорились<textarea name="msg" rows="5" class="widefat" placeholder="Можно просто вставить переписку из Instagram"></textarea></label></p>
+			<div class="bkb-grid">
+				<label>Этап
+					<select name="stage">
+						<?php foreach ( bkb_crm_stages() as $k => $label ) : ?>
+							<option value="<?php echo esc_attr( $k ); ?>" <?php selected( 'new', $k ); ?>><?php echo esc_html( $label ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</label>
+				<label>Задача на потом<input type="text" name="task" placeholder="например: ответить, когда скажет дату"></label>
+				<label>Срок задачи<input type="date" name="task_due"></label>
+			</div>
+			<p><button class="button button-primary button-large">Сохранить заявку</button></p>
+		</form>
+	</div>
+	<?php
+}
+
+add_action(
+	'admin_post_bkb_crm_new',
+	function () {
+		global $wpdb;
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Forbidden' );
+		}
+		check_admin_referer( 'bkb_crm_new' );
+		$p     = wp_unslash( $_POST );
+		$cid   = (int) ( $p['client'] ?? 0 );
+		$back  = admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1' . ( $cid ? '&client=' . $cid : '' ) );
+		$name  = sanitize_text_field( (string) ( $p['name'] ?? '' ) );
+		$ig    = bkb_crm_ig_handle( $p['instagram'] ?? '' );
+		$email = strtolower( sanitize_email( (string) ( $p['email'] ?? '' ) ) );
+		$phone = sanitize_text_field( (string) ( $p['phone'] ?? '' ) );
+		$src   = in_array( $p['source'] ?? '', bkb_crm_manual_sources(), true ) ? $p['source'] : 'Другое';
+		$lang  = sanitize_key( (string) ( $p['lang'] ?? '' ) );
+		$stage = isset( bkb_crm_stages()[ $p['stage'] ?? '' ] ) ? $p['stage'] : 'new';
+		if ( '' === $name || ( '' === $ig && '' === $email && '' === $phone ) ) {
+			wp_safe_redirect( add_query_arg( 'bkb_err', 'contact', $back ) );
+			exit;
+		}
+		$svc   = bkb_service( (string) ( $p['service'] ?? '' ) ) ? (string) $p['service'] : '';
+		$loc   = bkb_location( (string) ( $p['location'] ?? '' ) ) ? (string) $p['location'] : '';
+		$hours = bkb_valid_duration( $p['hours'] ?? 0 ) ?? bkb_durations()[0];
+		$date  = (string) ( $p['date'] ?? '' );
+		$time  = (string) ( $p['time'] ?? '' );
+		$start = null;
+		if ( '' !== $date || '' !== $time ) {
+			$start = DateTime::createFromFormat( 'Y-m-d H:i', $date . ' ' . ( '' !== $time ? substr( $time, 0, 5 ) : '10:00' ), wp_timezone() );
+			if ( ! $start || '' === $date ) {
+				wp_safe_redirect( add_query_arg( 'bkb_err', 'date', $back ) );
+				exit;
+			}
+		}
+
+		// The client: the one we came from, or the same Instagram / e-mail, or a new one.
+		$c = $cid ? bkb_crm_client( $cid ) : null;
+		if ( ! $c && $ig ) {
+			$c = bkb_crm_client_by_instagram( $ig );
+		}
+		if ( ! $c && $email ) {
+			$c = bkb_crm_client_by_email( $email );
+		}
+		$now = bkb_crm_now();
+		if ( $c ) {
+			$cid  = (int) $c['id'];
+			$data = array(
+				'name'         => $name,
+				'last_contact' => $now,
+			);
+			foreach ( array( 'instagram' => $ig, 'email' => $email, 'phone' => $phone, 'lang' => $lang ) as $k => $val ) {
+				if ( '' !== $val ) {
+					$data[ $k ] = $val;
+				}
+			}
+			if ( '' === $c['source'] ) {
+				$data['source'] = $src;
+			}
+			bkb_crm_update_client( $cid, $data );
+		} else {
+			$wpdb->insert( // phpcs:ignore WordPress.DB
+				bkb_crm_table( 'clients' ),
+				array(
+					'email'        => $email,
+					'instagram'    => $ig,
+					'name'         => $name,
+					'phone'        => $phone,
+					'lang'         => $lang,
+					'source'       => $src,
+					'stage'        => 'new',
+					'lost_reason'  => '',
+					'notes'        => '',
+					'created'      => $now,
+					'last_contact' => $now,
+				)
+			);
+			$cid = (int) $wpdb->insert_id;
+		}
+
+		// A request with a date also goes to the requests list and can hold the time in the calendar.
+		$bid = 0;
+		$msg = sanitize_textarea_field( (string) ( $p['msg'] ?? '' ) );
+		if ( $start && ! empty( $p['block'] ) ) {
+			$status = in_array( $stage, array( 'confirmed', 'prepaid', 'done', 'photos', 'review' ), true ) ? 'confirmed' : ( 'lost' === $stage ? 'declined' : 'pending' );
+			$bid    = wp_insert_post(
+				array(
+					'post_type'   => 'bk_booking',
+					'post_status' => 'publish',
+					'post_title'  => trim( sprintf( '%s — %s — %s (%s)', $start->format( 'Y-m-d H:i' ), $svc ? bkb_service_label( $svc, 'en' ) : bkb_site_name(), $name, $src ) ),
+				)
+			);
+			if ( $bid && ! is_wp_error( $bid ) ) {
+				$meta = array(
+					'date'     => $start->format( 'Y-m-d' ),
+					'time'     => $start->format( 'H:i' ),
+					'service'  => $svc,
+					'location' => $loc,
+					'hours'    => $hours,
+					'opts'     => array(),
+					'price'    => sanitize_text_field( (string) ( $p['price'] ?? '' ) ),
+					'name'     => $name,
+					'email'    => $email,
+					'phone'    => trim( ( $ig ? '@' . $ig . ' ' : '' ) . $phone ),
+					'details'  => '',
+					'slang'    => $lang,
+					'msg'      => $msg,
+					'ui'       => in_array( $lang, bkb_langs(), true ) ? $lang : bkb_langs()[0],
+					'page'     => '',
+					'start'    => $start->getTimestamp(),
+					'end'      => $start->getTimestamp() + bkb_block_seconds( $hours ),
+					'status'   => $status,
+					'manual'   => $src,
+					'client'   => $cid,
+				);
+				foreach ( $meta as $k => $val ) {
+					update_post_meta( $bid, '_bkb_' . $k, $val );
+				}
+			} else {
+				$bid = 0;
+			}
+		}
+		if ( $bid ) {
+			$body = bkb_summary( bkb_get( $bid ), 'ru', false );
+		} else {
+			$lines = array();
+			if ( $start ) {
+				$lines[] = 'Дата: ' . $start->format( 'd.m.Y H:i' ) . ' (время в календаре не занято)';
+			}
+			if ( $svc ) {
+				$lines[] = 'Услуга: ' . bkb_service_label( $svc, 'ru' );
+			}
+			if ( $loc && ( $start || $svc ) ) {
+				$lines[] = 'Место: ' . bkb_location_label( $loc, 'ru' );
+			}
+			if ( $start || $svc ) {
+				$lines[] = 'Длительность: ' . $hours . ' ч';
+			}
+			if ( '' !== (string) ( $p['price'] ?? '' ) ) {
+				$lines[] = 'Стоимость: ' . sanitize_text_field( (string) $p['price'] );
+			}
+			$body = implode( "\n", $lines );
+		}
+		$body = trim( $body . ( $msg ? "\n\n" . $msg : '' ) );
+		$body = '' === $body ? 'Заявка без подробностей' : $body;
+		bkb_crm_add_event( $cid, 'request', $body, array( 'booking_id' => (int) $bid, 'source' => $src ) );
+		bkb_crm_set_stage( $cid, $stage );
+		$task = sanitize_text_field( (string) ( $p['task'] ?? '' ) );
+		if ( '' !== $task ) {
+			$extra = array();
+			$due   = (string) ( $p['task_due'] ?? '' );
+			if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $due ) ) {
+				$extra['due'] = gmdate( 'Y-m-d H:i:s', DateTime::createFromFormat( '!Y-m-d', $due, wp_timezone() )->setTime( 9, 0 )->getTimestamp() );
+			}
+			bkb_crm_add_event( $cid, 'task', $task, $extra );
+		}
+		bkb_crm_back( $cid, 'added' );
+	}
+);

@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BKB_CRM_DB', '1' );
+define( 'BKB_CRM_DB', '2' );
 
 function bkb_crm_table( $name ) {
 	global $wpdb;
@@ -47,6 +47,7 @@ function bkb_crm_install() {
 		'CREATE TABLE ' . bkb_crm_table( 'clients' ) . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			email varchar(190) NOT NULL DEFAULT '',
+			instagram varchar(100) NOT NULL DEFAULT '',
 			name varchar(190) NOT NULL DEFAULT '',
 			phone varchar(100) NOT NULL DEFAULT '',
 			lang varchar(10) NOT NULL DEFAULT '',
@@ -58,6 +59,7 @@ function bkb_crm_install() {
 			last_contact datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY email (email),
+			KEY instagram (instagram),
 			KEY stage (stage),
 			KEY last_contact (last_contact)
 		) $cs;"
@@ -133,6 +135,21 @@ function bkb_crm_time( $utc, $fmt = 'j.m.Y H:i' ) {
 function bkb_crm_client( $id ) {
 	global $wpdb;
 	return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . bkb_crm_table( 'clients' ) . ' WHERE id = %d', $id ), ARRAY_A ); // phpcs:ignore WordPress.DB
+}
+
+/** "@name", "name" or an instagram.com link: the bare handle in lower case. */
+function bkb_crm_ig_handle( $v ) {
+	$v = strtolower( trim( (string) $v ) );
+	if ( preg_match( '~instagram\.com/([a-z0-9._]+)~', $v, $m ) ) {
+		$v = $m[1];
+	}
+	return preg_replace( '/[^a-z0-9._]/', '', ltrim( $v, '@' ) );
+}
+
+function bkb_crm_client_by_instagram( $handle ) {
+	global $wpdb;
+	$handle = bkb_crm_ig_handle( $handle );
+	return '' === $handle ? null : $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . bkb_crm_table( 'clients' ) . ' WHERE instagram = %s ORDER BY id LIMIT 1', $handle ), ARRAY_A ); // phpcs:ignore WordPress.DB
 }
 
 function bkb_crm_client_by_email( $email ) {
@@ -360,7 +377,8 @@ add_action(
 		if ( ! $cid ) {
 			return;
 		}
-		bkb_crm_add_event( $cid, 'status', 'confirmed' === $s ? 'Заявка подтверждена, клиенту ушло письмо' : 'Заявка отклонена, клиенту ушло письмо', array( 'booking_id' => (int) $id ) );
+		$mail = is_email( (string) get_post_meta( $id, '_bkb_email', true ) ) ? ', клиенту ушло письмо' : '';
+		bkb_crm_add_event( $cid, 'status', ( 'confirmed' === $s ? 'Заявка подтверждена' : 'Заявка отклонена' ) . $mail, array( 'booking_id' => (int) $id ) );
 		bkb_crm_set_stage( $cid, 'confirmed' === $s ? 'confirmed' : 'lost', 'confirmed' === $s ? '' : 'Отклонена', $id );
 		bkb_crm_update_client( $cid, array( 'last_contact' => bkb_crm_now() ) );
 	},

@@ -46,3 +46,8 @@
 .bkb-ev-task{border-color:#d63638}
 .bkb-ev-done{opacity:.6;border-color:#dcdcde}
 .bkb-ev-message{border-color:#00a32a}
+.bkb-crm-new{max-width:900px}
+.bkb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px 16px}
+.bkb-grid label,.bkb-crm-new>p>label{display:flex;flex-direction:column;gap:4px;font-weight:600}
+.bkb-crm-new>p>label:has(input[type=checkbox]){flex-direction:row;align-items:center;font-weight:400}
+.bkb-grid input,.bkb-grid select{width:100%;max-width:none;font-weight:400}
