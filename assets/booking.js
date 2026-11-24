@@ -352,7 +352,8 @@
 			name: f.name.value, email: f.email.value.trim(),
 			phone: f.phone ? f.phone.value : '', details: f.details ? f.details.value : '', msg: f.msg ? f.msg.value : '',
 			slang: st.slang, consent: f.consent.checked ? 1 : 0,
-			website: f.website.value, el: Date.now() - opened, ui: C.lang, page: location.origin + location.pathname
+			website: f.website.value, el: Date.now() - opened, ui: C.lang, page: location.origin + location.pathname,
+			src: (function () { try { return localStorage.getItem('bkb_src') || ''; } catch (e) { return ''; } })()
 		};
 		var btn = form.querySelector('.bkb-submit');
 		btn.disabled = true;

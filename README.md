@@ -20,6 +20,19 @@ Free times are worked out from your working hours, the time you need to prepare,
 - Settings export and import as JSON, so the same setup moves to another site in one step
 - No price logic inside: add your own with a few lines of JavaScript (see below)
 
+## Clients (CRM)
+
+**Заявки → Клиенты** keeps one card per client, made automatically from the requests:
+
+- stages: new request, replied, confirmed, prepaid, done, photos delivered, review asked, lost (with a reason)
+- history: every request, answers, stage changes, your notes, messages and tasks with due dates
+- source: where the visitor first came from (UTM tags or the referring site: Instagram, Google…)
+- **Заявки → Отчёт**: requests and confirmations by source, clients by stage, why requests are lost
+- a morning e-mail summary: new requests, requests waiting for an answer, sessions today and tomorrow, tasks, clients to follow up
+- the same summary as JSON at `GET /wp-json/bk-booking/v1/crm/digest` (admin login or an application password)
+
+The history is kept in its own tables, so it stays after old requests are removed.
+
 ## Installation
 
 1. Download this repository as a ZIP and install it in **Plugins → Add New → Upload Plugin**, or put the folder in `wp-content/plugins/`.

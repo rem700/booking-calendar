@@ -53,6 +53,11 @@ function bkb_default_config() {
 		),
 		'retention_days' => 365,
 		'reminder'       => true,
+		'crm'            => array(
+			'source'      => true,
+			'digest'      => false,
+			'digest_hour' => 8,
+		),
 	);
 }
 
@@ -380,5 +385,11 @@ function bkb_sanitize_config( $c ) {
 	);
 	$out['retention_days'] = max( 30, min( 3650, (int) ( $c['retention_days'] ?? 365 ) ) );
 	$out['reminder']       = ! empty( $c['reminder'] );
+	$crm                   = (array) ( $c['crm'] ?? array() );
+	$out['crm']            = array(
+		'source'      => ! empty( $crm['source'] ),
+		'digest'      => ! empty( $crm['digest'] ),
+		'digest_hour' => max( 0, min( 23, (int) ( $crm['digest_hour'] ?? 8 ) ) ),
+	);
 	return $out;
 }
