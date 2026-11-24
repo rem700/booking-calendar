@@ -152,7 +152,8 @@ function bkb_crm_notice() {
 	$t = array(
 		'saved' => 'Сохранено.',
 		'added' => 'Добавлено в историю.',
-		'done'  => 'Задача отмечена выполненной.',
+		'done'    => 'Задача отмечена выполненной.',
+		'deleted' => 'Клиент удалён из CRM.',
 	);
 	if ( isset( $t[ $m ] ) ) {
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $t[ $m ] ) . '</p></div>';
@@ -211,6 +212,7 @@ function bkb_crm_card( $id ) {
 					<p><label>Заметки<br><textarea class="widefat" rows="6" name="notes"><?php echo esc_textarea( $c['notes'] ); ?></textarea></label></p>
 					<p><button class="button button-primary">Сохранить</button></p>
 				</form>
+				<p><a class="bkb-del" href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_delete', array( 'client' => $id ) ) ); ?>" onclick="return confirm('Удалить клиента и всю его историю из CRM? Это нельзя отменить. Сами заявки в списке заявок останутся.');">Удалить клиента из CRM</a></p>
 				<p class="description">Клиент с нами с <?php echo esc_html( bkb_crm_time( $c['created'], 'j.m.Y' ) ); ?>, последний контакт <?php echo esc_html( bkb_crm_time( $c['last_contact'] ) ); ?>.</p>
 			</div>
 			<div class="bkb-crm-box bkb-crm-history">
@@ -754,5 +756,25 @@ add_action(
 			bkb_crm_add_event( $cid, 'task', $task, $extra );
 		}
 		bkb_crm_back( $cid, 'added' );
+	}
+);
+
+/* Remove a client and the history (for test entries or when a client asks to delete their data). */
+add_action(
+	'admin_post_bkb_crm_delete',
+	function () {
+		global $wpdb;
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Forbidden' );
+		}
+		check_admin_referer( 'bkb_crm_delete' );
+		$id = (int) ( $_GET['client'] ?? 0 );
+		if ( $id ) {
+			$wpdb->delete( bkb_crm_table( 'events' ), array( 'client_id' => $id ) ); // phpcs:ignore WordPress.DB
+			$wpdb->delete( bkb_crm_table( 'clients' ), array( 'id' => $id ) ); // phpcs:ignore WordPress.DB
+			$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => '_bkb_client', 'meta_value' => (string) $id ) ); // phpcs:ignore WordPress.DB
+		}
+		wp_safe_redirect( add_query_arg( 'bkb_msg', 'deleted', admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ) );
+		exit;
 	}
 );
