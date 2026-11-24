@@ -164,7 +164,7 @@ function bkb_crm_notice() {
 
 function bkb_crm_event_label( $type ) {
 	$m = array(
-		'request' => 'Заявка с сайта',
+		'request' => 'Заявка',
 		'status'  => 'Ответ по заявке',
 		'stage'   => 'Этап',
 		'note'    => 'Заметка',
@@ -199,7 +199,7 @@ function bkb_crm_card( $id ) {
 					<p><label>Имя<br><input type="text" class="widefat" name="name" value="<?php echo esc_attr( $c['name'] ); ?>"></label></p>
 					<p><label>E-mail<br><input type="email" class="widefat" name="email" value="<?php echo esc_attr( $c['email'] ); ?>"></label></p>
 					<p><label>Instagram<br><input type="text" class="widefat" name="instagram" value="<?php echo esc_attr( $c['instagram'] ? '@' . $c['instagram'] : '' ); ?>" placeholder="@name"></label></p>
-					<p><label>Телефон или Instagram<br><input type="text" class="widefat" name="phone" value="<?php echo esc_attr( $c['phone'] ); ?>"></label></p>
+					<p><label>Телефон или WhatsApp<br><input type="text" class="widefat" name="phone" value="<?php echo esc_attr( $c['phone'] ); ?>"></label></p>
 					<p><label>Язык общения<br><input type="text" class="widefat" name="lang" value="<?php echo esc_attr( $c['lang'] ); ?>" placeholder="en, ru, uk…"></label></p>
 					<p><label>Источник<br><input type="text" class="widefat" name="source" value="<?php echo esc_attr( $c['source'] ); ?>"></label></p>
 					<p><label>Этап<br><select name="stage" class="widefat">
