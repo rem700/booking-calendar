@@ -192,7 +192,7 @@ function bkb_replies_box( $b, $client ) {
 		return;
 	}
 	$names = bkb_lang_names();
-	echo '<div class="bkb-replies" data-lang="' . esc_attr( $cl ) . '">';
+	echo '<div class="bkb-replies" data-lang="' . esc_attr( $cl ) . '" data-client="' . (int) ( $client['id'] ?? 0 ) . '" data-booking="' . (int) ( $b['id'] ?? 0 ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'bkb_send_reply' ) ) . '" data-ajax="' . esc_url( admin_url( 'admin-ajax.php' ) ) . '">';
 	echo '<p class="bkb-rep-langs">Язык клиента: ';
 	foreach ( $langs as $l ) {
 		echo '<button type="button" class="button button-small' . ( $l === $cl ? ' button-primary' : '' ) . '" data-rl="' . esc_attr( $l ) . '">' . esc_html( $names[ $l ] ?? strtoupper( $l ) ) . '</button> ';
@@ -214,9 +214,10 @@ function bkb_replies_box( $b, $client ) {
 				echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( 'https://ig.me/m/' . $ig ) . '">Открыть чат в Instagram</a> ';
 			}
 			if ( is_email( $email ) ) {
-				echo '<a class="button" data-mail="' . esc_attr( $email ) . '" data-subj="' . esc_attr( bkb_site_name() ) . '" href="#">Открыть письмо</a> ';
+				echo '<button type="button" class="button" data-send="' . esc_attr( $email ) . '" data-title="' . esc_attr( $r['title'] ) . '">Отправить письмо с сайта</button> ';
+				echo '<a class="button-link" data-mail="' . esc_attr( $email ) . '" data-subj="' . esc_attr( bkb_site_name() ) . '" href="#">или открыть в почтовой программе</a> ';
 			}
-			echo '<span class="bkb-rep-ok" hidden>Скопировано</span></p>';
+			echo '<span class="bkb-rep-ok" hidden>Скопировано</span><span class="bkb-rep-sent" hidden></span></p>';
 			if ( $l !== $admin && '' !== $tr ) {
 				echo '<div class="bkb-rep-tr"><b>Перевод:</b><br>' . nl2br( esc_html( $tr ) ) . '</div>';
 			}
@@ -249,6 +250,28 @@ function bkb_replies_box( $b, $client ) {
 					var done = function () { ok.hidden = false; setTimeout(function () { ok.hidden = true; }, 1500); };
 					if (navigator.clipboard) { navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); document.execCommand('copy'); done(); }); }
 					else { ta.select(); document.execCommand('copy'); done(); }
+				}
+				if (t.hasAttribute('data-send')) {
+					var to = t.getAttribute('data-send');
+					if (!window.confirm('Отправить это письмо на ' + to + '?')) { return; }
+					var msg = wrap.querySelector('.bkb-rep-sent');
+					t.disabled = true;
+					msg.hidden = false;
+					msg.textContent = 'Отправляю…';
+					var fd = new FormData();
+					fd.append('action', 'bkb_send_reply');
+					fd.append('_ajax_nonce', box.getAttribute('data-nonce'));
+					fd.append('client', box.getAttribute('data-client'));
+					fd.append('booking', box.getAttribute('data-booking'));
+					fd.append('to', to);
+					fd.append('title', t.getAttribute('data-title'));
+					fd.append('text', ta.value);
+					fetch(box.getAttribute('data-ajax'), { method: 'POST', body: fd, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+						msg.textContent = j.success ? 'Письмо отправлено и сохранено в истории клиента' : ('Не отправлено: ' + (j.data || 'ошибка'));
+						msg.style.color = j.success ? '#1a7f37' : '#b32d2e';
+						t.disabled = !!j.success;
+					}, function () { msg.textContent = 'Не отправлено: нет связи с сайтом'; msg.style.color = '#b32d2e'; t.disabled = false; });
+					return;
 				}
 				if (t.hasAttribute('data-mail')) {
 					e.preventDefault();
@@ -301,5 +324,54 @@ add_action(
 		if ( $s && 'bk_booking' === $s->post_type && 'post' === $s->base ) {
 			wp_enqueue_style( 'bkb-admin', BKB_URL . 'assets/admin.css', array(), BKB_VER );
 		}
+	}
+);
+
+/* ---------- sending a reply by e-mail from the site ---------- */
+
+add_action(
+	'wp_ajax_bkb_send_reply',
+	function () {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'нет прав' );
+		}
+		check_ajax_referer( 'bkb_send_reply' );
+		$p    = wp_unslash( $_POST );
+		$to   = sanitize_email( (string) ( $p['to'] ?? '' ) );
+		$text = sanitize_textarea_field( (string) ( $p['text'] ?? '' ) );
+		$cid  = (int) ( $p['client'] ?? 0 );
+		$bid  = (int) ( $p['booking'] ?? 0 );
+		if ( ! is_email( $to ) || '' === trim( $text ) ) {
+			wp_send_json_error( 'нет адреса или текста' );
+		}
+		// The address must belong to this client or request, so the button cannot be used to write to anyone.
+		$known = array();
+		if ( $bid ) {
+			$known[] = strtolower( (string) get_post_meta( $bid, '_bkb_email', true ) );
+		}
+		if ( $cid && function_exists( 'bkb_crm_client' ) ) {
+			$c       = bkb_crm_client( $cid );
+			$known[] = strtolower( (string) ( $c['email'] ?? '' ) );
+		}
+		if ( ! in_array( strtolower( $to ), $known, true ) ) {
+			wp_send_json_error( 'адрес не совпадает с адресом клиента' );
+		}
+		$ok = wp_mail( $to, bkb_site_name(), $text, array( 'Reply-To: ' . bkb_site_name() . ' <' . bkb_reply_to() . '>' ) );
+		if ( ! $ok ) {
+			wp_send_json_error( 'почтовый сервер не принял письмо' );
+		}
+		if ( ! $cid && $bid ) {
+			$cid = (int) get_post_meta( $bid, '_bkb_client', true );
+		}
+		if ( $cid && function_exists( 'bkb_crm_add_event' ) ) {
+			$title = sanitize_text_field( (string) ( $p['title'] ?? '' ) );
+			bkb_crm_add_event( $cid, 'mail', 'Письмо клиенту' . ( $title ? ' («' . $title . '»)' : '' ) . ' на ' . $to . ":\n\n" . $text, array( 'booking_id' => $bid ) );
+			bkb_crm_update_client( $cid, array( 'last_contact' => bkb_crm_now() ) );
+			$c = bkb_crm_client( $cid );
+			if ( $c && 'new' === $c['stage'] ) {
+				bkb_crm_set_stage( $cid, 'replied', '', $bid );
+			}
+		}
+		wp_send_json_success();
 	}
 );

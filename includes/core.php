@@ -367,7 +367,7 @@ function bkb_gcal_url( $title, $b, $details ) {
 
 function bkb_gcal_client( $b, $lang ) {
 	$svc = $b['service'] ? ' — ' . bkb_service_label( $b['service'], $lang ) : '';
-	$c   = trim( bkb_cfg( 'contact' ) . "\n" . bkb_notify_email() );
+	$c   = trim( bkb_cfg( 'contact' ) . "\n" . bkb_reply_to() );
 	return bkb_gcal_url( bkb_site_name() . $svc, $b, bkb_summary( $b, $lang ) . "\n\n" . $c );
 }
 
@@ -419,8 +419,27 @@ function bkb_mail_client( $id, $type ) {
 	$k    = $map[ $type ] ?? 'm_ack';
 	$subj = bkb_fill( $t[ $k . '_subj' ], $vars );
 	$body = bkb_fill( $t[ $k ], $vars );
-	return wp_mail( $b['email'], $subj, $body, array( 'Reply-To: ' . bkb_site_name() . ' <' . bkb_notify_email() . '>' ) );
+	return wp_mail( $b['email'], $subj, $body, array( 'Reply-To: ' . bkb_site_name() . ' <' . bkb_reply_to() . '>' ) );
 }
+
+/* Site e-mails go out from the sender address in the settings instead of wordpress@… */
+add_filter(
+	'wp_mail_from',
+	function ( $from ) {
+		$f = (string) bkb_cfg( 'from' );
+		return ( is_email( $f ) && 0 === strpos( (string) $from, 'wordpress@' ) ) ? $f : $from;
+	}
+);
+
+add_action(
+	'phpmailer_init',
+	function ( $m ) {
+		$f = (string) bkb_cfg( 'from' );
+		if ( is_email( $f ) && $m->From === $f && '' === (string) $m->Sender ) {
+			$m->Sender = $f; // Bounces and SPF checks use the same domain as the sender.
+		}
+	}
+);
 
 add_filter(
 	'wp_mail_from_name',

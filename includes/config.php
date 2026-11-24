@@ -12,6 +12,7 @@ function bkb_default_config() {
 	return array(
 		'site_name' => '',
 		'notify'    => '',
+		'from'      => '',
 		'ics'       => '',
 		'contact'   => '',
 		'signature' => '',
@@ -96,9 +97,15 @@ function bkb_notify_emails() {
 	return $list ? $list : array( get_option( 'admin_email' ) );
 }
 
-/** The main address: the first one, used as Reply-To for clients. */
+/** The main address: the first one. */
 function bkb_notify_email() {
 	return bkb_notify_emails()[0];
+}
+
+/** Where clients' answers go: the sender address if set, otherwise the first notification address. */
+function bkb_reply_to() {
+	$f = (string) bkb_cfg( 'from' );
+	return is_email( $f ) ? $f : bkb_notify_email();
 }
 
 /** Languages the form speaks on this site. */
@@ -280,6 +287,7 @@ function bkb_sanitize_config( $c ) {
 	$out = array(
 		'site_name' => sanitize_text_field( (string) ( $c['site_name'] ?? '' ) ),
 		'notify'    => implode( ', ', array_values( array_filter( array_map( 'sanitize_email', preg_split( '/[\s,;]+/', (string) ( $c['notify'] ?? '' ) ) ) ) ) ),
+		'from'      => sanitize_email( (string) ( $c['from'] ?? '' ) ),
 		'ics'       => implode( "\n", array_filter( array_map( 'esc_url_raw', array_map( 'trim', explode( "\n", (string) ( $c['ics'] ?? '' ) ) ) ) ) ),
 		'contact'   => sanitize_text_field( (string) ( $c['contact'] ?? '' ) ),
 		'signature' => sanitize_textarea_field( (string) ( $c['signature'] ?? '' ) ),

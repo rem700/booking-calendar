@@ -36,7 +36,7 @@ The history is kept in its own tables, so it stays after old requests are remove
 
 ## Ready-made replies
 
-Under every request and in each client card there are message templates (time is free, booking confirmed, time taken, ask for details, follow-up, thanks and review) already filled with the date, service, place and price. They are shown in the client's language with the admin's language underneath as a translation; one click copies the text, opens the Instagram chat or an e-mail. Edit or add templates in **Настройки → Готовые ответы**. A line whose placeholder has no value is left out.
+Under every request and in each client card there are message templates (time is free, booking confirmed, time taken, ask for details, follow-up, thanks and review) already filled with the date, service, place and price. They are shown in the client's language with the admin's language underneath as a translation; one click copies the text, opens the Instagram chat, or sends it by e-mail from the site (the e-mail is saved in the client's history). The sender address is set in **Настройки → Основное → Адрес отправителя**. Edit or add templates in **Настройки → Готовые ответы**. A line whose placeholder has no value is left out.
 
 ## Installation
 
