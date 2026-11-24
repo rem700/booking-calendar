@@ -12,7 +12,7 @@
 	var DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 	var TABS = [
 		['general', 'Основное'], ['schedule', 'Расписание'], ['services', 'Услуги'], ['locations', 'Места'],
-		['options', 'Опции'], ['fields', 'Поля формы'], ['texts', 'Тексты'], ['style', 'Оформление'], ['io', 'Импорт и экспорт']
+		['options', 'Опции'], ['fields', 'Поля формы'], ['texts', 'Тексты'], ['replies', 'Готовые ответы'], ['style', 'Оформление'], ['io', 'Импорт и экспорт']
 	];
 
 	function esc(s) {
@@ -225,6 +225,27 @@
 			}).join('') + '</table>';
 	};
 
+	R.replies = function () {
+		if (!Array.isArray(S.replies)) { S.replies = JSON.parse(JSON.stringify(A.replies || [])); }
+		var vars = ['name', 'date', 'time', 'end', 'service', 'location', 'address', 'hours', 'prep', 'price', 'book_url', 'review_url', 'site'];
+		var list = S.replies;
+		return '<p class="description">Шаблоны сообщений клиенту. Они показываются под каждой заявкой и в карточке клиента: на языке клиента, с переводом на русский, уже с подставленными датой, ценой и т. п. Кнопка «Копировать» — и вставляете в Instagram или письмо.</p>' +
+			'<p class="description">Подстановки: ' + vars.map(function (v) { return '<code>{' + v + '}</code>'; }).join(' ') + '. Если значения нет (например, у заявки не указана цена), строка с этой подстановкой не попадает в сообщение.</p>' +
+			'<table class="form-table">' +
+			row('Ссылка для отзывов', text('review_url', ' placeholder="https://g.page/r/…/review"'), 'Подставляется вместо <code>{review_url}</code>, например ссылка на отзыв в Google.') +
+			row('Страница записи', text('book_url', ' placeholder="https://…/book/"'), 'Для <code>{book_url}</code>, если клиент пришёл не через форму. Иначе берётся страница, с которой отправлена заявка.') +
+			'</table>' +
+			list.map(function (r, i) {
+				var p = 'replies.' + i;
+				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(r.title || 'Новый ответ') + '</b>' + listTools('replies', i, list.length) + '</div>' +
+					'<p><label>Название <input type="text" class="regular-text" data-p="' + p + '.title" value="' + esc(r.title) + '"></label></p>' +
+					(['ru'].concat(langs().filter(function (l) { return l !== 'ru'; }))).map(function (l) {
+						return '<p><label><b>' + esc(A.langs[l] || l) + '</b><br><textarea class="large-text" rows="11" data-p="' + p + '.text.' + l + '">' + esc(get(p + '.text.' + l)) + '</textarea></label></p>';
+					}).join('') + '</div>';
+			}).join('') + addBtn('replies', 'Добавить ответ') +
+			'<p><button type="button" class="button-link" data-act="replies-reset">Вернуть стандартные ответы</button></p>';
+	};
+
 	R.style = function () {
 		function color(path, label) {
 			return row(label, '<input type="color" data-p="' + path + '" value="' + esc(get(path)) + '"> <code>' + esc(get(path)) + '</code>');
@@ -254,6 +275,7 @@
 		if (path === 'locations') { return { id: '', label: {}, address: '', days: {} }; }
 		if (path === 'options') { return { id: '', type: 'yesno', label: {}, note: {}, default: '0', locations: [], choices: [] }; }
 		if (path === 'fields.slang.choices') { return { id: '', label: {}, hide: [] }; }
+		if (path === 'replies') { return { id: '', title: '', text: {} }; }
 		return { id: '', label: {} };
 	}
 
@@ -269,6 +291,10 @@
 		if (t.getAttribute('data-textlang')) { textLang = t.getAttribute('data-textlang'); render(); return; }
 		var act = t.getAttribute('data-act');
 		if (!act) { return; }
+		if (act === 'replies-reset') {
+			if (window.confirm('Заменить ответы стандартными? Ваши правки в ответах пропадут после сохранения.')) { S.replies = JSON.parse(JSON.stringify(A.replies || [])); render(); }
+			return;
+		}
 		if (act === 'import') {
 			var msg = document.getElementById('bkb-import-msg');
 			try {

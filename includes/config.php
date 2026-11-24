@@ -53,6 +53,9 @@ function bkb_default_config() {
 		),
 		'retention_days' => 365,
 		'reminder'       => true,
+		'replies'        => null,
+		'review_url'     => '',
+		'book_url'       => '',
 		'crm'            => array(
 			'source'      => true,
 			'digest'      => false,
@@ -385,6 +388,28 @@ function bkb_sanitize_config( $c ) {
 	);
 	$out['retention_days'] = max( 30, min( 3650, (int) ( $c['retention_days'] ?? 365 ) ) );
 	$out['reminder']       = ! empty( $c['reminder'] );
+	$out['review_url']     = esc_url_raw( (string) ( $c['review_url'] ?? '' ) );
+	$out['book_url']       = esc_url_raw( (string) ( $c['book_url'] ?? '' ) );
+	$out['replies']        = null;
+	if ( isset( $c['replies'] ) && is_array( $c['replies'] ) ) {
+		$out['replies'] = array();
+		foreach ( $c['replies'] as $r ) {
+			$title = sanitize_text_field( (string) ( $r['title'] ?? '' ) );
+			$text  = array();
+			foreach ( (array) ( $r['text'] ?? array() ) as $l => $v ) {
+				if ( in_array( $l, bkb_known_langs(), true ) && '' !== trim( (string) $v ) ) {
+					$text[ $l ] = mb_substr( sanitize_textarea_field( (string) $v ), 0, 3000 );
+				}
+			}
+			if ( '' !== $title || $text ) {
+				$out['replies'][] = array(
+					'id'    => bkb_clean_id( $r['id'] ?? '' ),
+					'title' => '' !== $title ? $title : 'Ответ',
+					'text'  => $text,
+				);
+			}
+		}
+	}
 	$crm                   = (array) ( $c['crm'] ?? array() );
 	$out['crm']            = array(
 		'source'      => ! empty( $crm['source'] ),

@@ -51,3 +51,12 @@
 .bkb-grid label,.bkb-crm-new>p>label{display:flex;flex-direction:column;gap:4px;font-weight:600}
 .bkb-crm-new>p>label:has(input[type=checkbox]){flex-direction:row;align-items:center;font-weight:400}
 .bkb-grid input,.bkb-grid select{width:100%;max-width:none;font-weight:400}
+.bkb-replies .bkb-rep{border:1px solid #dcdcde;border-radius:4px;margin:8px 0;background:#fff}
+.bkb-replies .bkb-rep>summary{cursor:pointer;padding:9px 12px;font-weight:600}
+.bkb-replies .bkb-rep[open]>summary{border-bottom:1px solid #f0f0f1}
+.bkb-rep-l{padding:10px 12px}
+.bkb-rep-l textarea{font-size:14px;line-height:1.5}
+.bkb-rep-actions{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.bkb-rep-ok{color:#1a7f37;font-weight:600}
+.bkb-rep-tr{margin-top:10px;padding:8px 12px;background:#f6f7f7;border-left:3px solid #c3c4c7;color:#50575e}
+.bkb-rep-langs .button{margin:2px 2px 2px 0}

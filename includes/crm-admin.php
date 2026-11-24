@@ -261,6 +261,10 @@ function bkb_crm_card( $id ) {
 				</ul>
 			</div>
 		</div>
+		<div class="bkb-crm-box">
+			<h2>Готовые ответы</h2>
+			<?php bkb_replies_box( bkb_replies_latest_booking( $id ), $c ); ?>
+		</div>
 	</div>
 	<?php
 }

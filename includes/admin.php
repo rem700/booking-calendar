@@ -54,6 +54,7 @@ add_action(
 					'langs'     => bkb_lang_names(),
 					'texts'     => $texts,
 					'icsStatus' => $status,
+					'replies'   => bkb_default_replies(),
 					'exportUrl' => wp_nonce_url( admin_url( 'admin-post.php?action=bkb_export' ), 'bkb_export' ),
 				)
 			) . ';',
