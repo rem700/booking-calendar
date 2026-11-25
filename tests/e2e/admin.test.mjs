@@ -37,6 +37,22 @@ test('confirming a request e-mails the client and moves the client to "confirmed
   assert.equal(stage, 'confirmed');
 });
 
+test('reply templates under the request: language switch and the e-mail confirmation', async () => {
+  await page.goto(`${WP_URL}/wp-admin/post.php?post=${bookingId}&action=edit`);
+  const box = page.locator('.bkb-replies').first();
+  await box.waitFor();
+  const other = box.locator('[data-rl]:not(.button-primary)').first();
+  const lang = await other.getAttribute('data-rl');
+  await other.click();
+  assert.equal(await box.locator(`.bkb-rep-l[data-l="${lang}"]`).first().isVisible(), true);
+  const send = box.locator(`.bkb-rep-l[data-l="${lang}"] [data-send]`).first();
+  if (await send.count()) {
+    const dialog = new Promise((res) => page.once('dialog', async (d) => { res(d.message()); await d.dismiss(); }));
+    await send.click();
+    assert.equal(await dialog, 'Send this e-mail to eva@example.test?');
+  }
+});
+
 test('clients list and the client card open', async () => {
   await page.goto(WP_URL + '/wp-admin/edit.php?post_type=bk_booking&page=bkb-clients');
   assert.match(await page.textContent('#wpbody-content'), /Eva Admin/);

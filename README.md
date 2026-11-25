@@ -1,4 +1,6 @@
-# Booking Calendar
+# Shootbook
+
+Formerly Booking Calendar.
 
 A WordPress plugin for booking requests with a live calendar. Visitors pick a service, a place and a free start time, leave their contacts and send a request. You confirm or decline it in WP admin, and the client gets an email in their language.
 
@@ -6,7 +8,7 @@ Free times are worked out from your working hours, the time you need to prepare,
 
 ## Features
 
-- Any services, locations and options, all set in **Заявки → Настройки** (Requests → Settings), no code needed
+- Any services, locations and options, all set in **Requests → Settings**, no code needed
 - Working hours per weekday, with separate hours for each location
 - Session lengths, preparation time, start time step, how many days ahead and how soon a booking can start
 - Busy times from one or more iCal feeds (Google Calendar, Outlook, Apple)
@@ -22,13 +24,13 @@ Free times are worked out from your working hours, the time you need to prepare,
 
 ## Clients (CRM)
 
-**Заявки → Клиенты** keeps one card per client, made automatically from the requests:
+**Requests → Clients** keeps one card per client, made automatically from the requests:
 
 - stages: new request, replied, confirmed, prepaid, done, photos delivered, review asked, lost (with a reason)
 - history: every request, answers, stage changes, your notes, messages and tasks with due dates
 - source: where the visitor first came from (UTM tags or the referring site: Instagram, Google…)
-- requests from Instagram, phone or in person: **Клиенты → Добавить заявку** (Instagram handle, contacts, date; can hold the time in the calendar)
-- **Заявки → Отчёт**: requests and confirmations by source, clients by stage, why requests are lost
+- requests from Instagram, phone or in person: **Clients → Add a request from Instagram or by hand** (Instagram handle, contacts, date; can hold the time in the calendar)
+- **Requests → Report**: requests and confirmations by source, clients by stage, why requests are lost
 - a morning e-mail summary: new requests, requests waiting for an answer, sessions today and tomorrow, tasks, clients to follow up
 - the same summary as JSON at `GET /wp-json/bk-booking/v1/crm/digest` (admin login or an application password)
 
@@ -36,13 +38,13 @@ The history is kept in its own tables, so it stays after old requests are remove
 
 ## Ready-made replies
 
-Under every request and in each client card there are message templates (time is free, booking confirmed, time taken, ask for details, follow-up, thanks and review) already filled with the date, service, place and price. They are shown in the client's language with the admin's language underneath as a translation; one click copies the text, opens the Instagram chat, or sends it by e-mail from the site (the e-mail is saved in the client's history). The sender address is set in **Настройки → Основное → Адрес отправителя**. Edit or add templates in **Настройки → Готовые ответы**. A line whose placeholder has no value is left out.
+Under every request and in each client card there are message templates (time is free, booking confirmed, time taken, ask for details, follow-up, thanks and review) already filled with the date, service, place and price. They are shown in the client's language with the admin's language underneath as a translation; one click copies the text, opens the Instagram chat, or sends it by e-mail from the site (the e-mail is saved in the client's history). The sender address is set in **Settings → General → Sender address**. Edit or add templates in **Settings → Reply templates**. A line whose placeholder has no value is left out.
 
 ## Installation
 
 1. Download this repository as a ZIP and install it in **Plugins → Add New → Upload Plugin**, or put the folder in `wp-content/plugins/`.
-2. Activate **Booking Calendar**.
-3. Open **Заявки → Настройки** and fill in the tabs: General, Schedule, Services, Locations, Options, Form fields, Texts, Style.
+2. Activate **Shootbook**.
+3. Open **Requests → Settings** and fill in the tabs: General, Schedule, Services, Locations, Options, Form fields, Texts, Reply templates, Appearance.
 4. Put the shortcode on a page:
 
 ```
@@ -51,7 +53,7 @@ Under every request and in each client card there are message templates (time is
 
 `[bk_booking]` works as well. To show the form in a fixed language: `[booking_calendar lang="de"]`.
 
-The admin screens are in Russian for now.
+The admin follows the language in your WordPress profile. English and Russian are included, the translation files are in `languages/`.
 
 ## Prefilling the form
 
