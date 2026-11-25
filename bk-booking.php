@@ -9,7 +9,8 @@
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * License: GPL-2.0-or-later
- * Text Domain: bk-booking
+ * Text Domain: shootbook
+ * Domain Path: /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,6 +29,15 @@ require_once BKB_DIR . 'includes/admin.php';
 require_once BKB_DIR . 'includes/crm.php';
 require_once BKB_DIR . 'includes/crm-admin.php';
 require_once BKB_DIR . 'includes/replies.php';
+
+/* Bundled translations; a newer file in wp-content/languages/plugins wins. */
+add_action(
+	'init',
+	function () {
+		load_plugin_textdomain( 'shootbook', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	},
+	0
+);
 
 /** Scheduled tasks of the plugin: removing old requests, reminders, the morning summary. */
 function bkb_cron_hooks() {

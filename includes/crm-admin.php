@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action(
 	'admin_menu',
 	function () {
-		add_submenu_page( 'edit.php?post_type=bk_booking', 'Клиенты', 'Клиенты', 'manage_options', 'bkb-clients', 'bkb_crm_page' );
-		add_submenu_page( 'edit.php?post_type=bk_booking', 'Отчёт по заявкам', 'Отчёт', 'manage_options', 'bkb-report', 'bkb_crm_report_page' );
+		add_submenu_page( 'edit.php?post_type=bk_booking', __( 'Clients', 'shootbook' ), __( 'Clients', 'shootbook' ), 'manage_options', 'bkb-clients', 'bkb_crm_page' );
+		add_submenu_page( 'edit.php?post_type=bk_booking', __( 'Requests report', 'shootbook' ), __( 'Report', 'shootbook' ), 'manage_options', 'bkb-report', 'bkb_crm_report_page' );
 	},
 	5
 );
@@ -75,21 +75,21 @@ function bkb_crm_page() {
 	$tasks     = $wpdb->get_results( $wpdb->prepare( "SELECT e.*, c.name FROM $et e LEFT JOIN $ct c ON c.id = e.client_id WHERE e.type = 'task' AND e.done = 0 AND (e.due IS NULL OR e.due < %s) ORDER BY e.due IS NULL, e.due LIMIT 30", $tz_end ), ARRAY_A ); // phpcs:ignore WordPress.DB
 	?>
 	<div class="wrap bkb-crm">
-		<h1 style="display:flex;gap:12px;align-items:center">Клиенты <a class="page-title-action" href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1' ) ); ?>">Добавить заявку из Instagram или вручную</a></h1>
+		<h1 style="display:flex;gap:12px;align-items:center"><?php esc_html_e( 'Clients', 'shootbook' ); ?> <a class="page-title-action" href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1' ) ); ?>"><?php esc_html_e( 'Add a request from Instagram or by hand', 'shootbook' ); ?></a></h1>
 		<?php bkb_crm_notice(); ?>
 		<?php if ( $tasks ) : ?>
 			<div class="bkb-crm-box bkb-crm-tasks">
-				<h2>Задачи на сегодня</h2>
+				<h2><?php esc_html_e( 'Tasks for today', 'shootbook' ); ?></h2>
 				<ul>
 					<?php foreach ( $tasks as $t ) : ?>
 						<?php $late = $t['due'] && strtotime( $t['due'] . ' UTC' ) < ( new DateTime( 'today', wp_timezone() ) )->getTimestamp(); ?>
 						<li>
-							<span class="<?php echo $late ? 'bkb-late' : ''; ?>"><?php echo esc_html( $t['due'] ? bkb_crm_time( $t['due'], 'j.m' ) : 'без срока' ); ?></span>
+							<span class="<?php echo $late ? 'bkb-late' : ''; ?>"><?php echo esc_html( $t['due'] ? bkb_crm_time( $t['due'], 'j.m' ) : __( 'no due date', 'shootbook' ) ); ?></span>
 							<?php echo esc_html( $t['body'] ); ?>
 							<?php if ( $t['client_id'] ) : ?>
 								— <a href="<?php echo esc_url( bkb_crm_client_url( $t['client_id'] ) ); ?>"><?php echo esc_html( $t['name'] ); ?></a>
 							<?php endif; ?>
-							<a class="bkb-done" href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_task_done', array( 'event' => $t['id'], 'back' => 'list' ) ) ); ?>">Готово</a>
+							<a class="bkb-done" href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_task_done', array( 'event' => $t['id'], 'back' => 'list' ) ) ); ?>"><?php esc_html_e( 'Done', 'shootbook' ); ?></a>
 						</li>
 					<?php endforeach; ?>
 				</ul>
@@ -97,7 +97,7 @@ function bkb_crm_page() {
 		<?php endif; ?>
 
 		<ul class="subsubsub">
-			<li><a href="<?php echo esc_url( $base ); ?>" class="<?php echo '' === $stage ? 'current' : ''; ?>">Все <span class="count">(<?php echo (int) $all; ?>)</span></a></li>
+			<li><a href="<?php echo esc_url( $base ); ?>" class="<?php echo '' === $stage ? 'current' : ''; ?>"><?php esc_html_e( 'All', 'shootbook' ); ?> <span class="count">(<?php echo (int) $all; ?>)</span></a></li>
 			<?php foreach ( bkb_crm_stages() as $k => $label ) : ?>
 				<li>| <a href="<?php echo esc_url( add_query_arg( 'stage', $k, $base ) ); ?>" class="<?php echo $stage === $k ? 'current' : ''; ?>"><?php echo esc_html( $label ); ?> <span class="count">(<?php echo (int) ( $counts[ $k ]->n ?? 0 ); ?>)</span></a></li>
 			<?php endforeach; ?>
@@ -108,15 +108,15 @@ function bkb_crm_page() {
 			<?php if ( $stage ) : ?>
 				<input type="hidden" name="stage" value="<?php echo esc_attr( $stage ); ?>">
 			<?php endif; ?>
-			<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Имя, e-mail, Instagram, телефон, заметки">
-			<button class="button">Найти</button>
+			<input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'Name, e-mail, Instagram, phone, notes', 'shootbook' ); ?>">
+			<button class="button"><?php esc_html_e( 'Search', 'shootbook' ); ?></button>
 		</form>
 		<br class="clear">
 		<table class="wp-list-table widefat fixed striped">
-			<thead><tr><th style="width:24%">Клиент</th><th>Контакты</th><th style="width:15%">Этап</th><th style="width:15%">Источник</th><th style="width:8%">Заявок</th><th style="width:13%">Последний контакт</th></tr></thead>
+			<thead><tr><th style="width:24%"><?php esc_html_e( 'Client', 'shootbook' ); ?></th><th><?php esc_html_e( 'Contacts', 'shootbook' ); ?></th><th style="width:15%"><?php esc_html_e( 'Stage', 'shootbook' ); ?></th><th style="width:15%"><?php esc_html_e( 'Source', 'shootbook' ); ?></th><th style="width:8%"><?php echo esc_html_x( 'Requests', 'number of requests', 'shootbook' ); ?></th><th style="width:13%"><?php esc_html_e( 'Last contact', 'shootbook' ); ?></th></tr></thead>
 			<tbody>
 			<?php if ( ! $rows ) : ?>
-				<tr><td colspan="6">Клиентов пока нет. Они появляются сами, когда приходит заявка с сайта.</td></tr>
+				<tr><td colspan="6"><?php esc_html_e( 'No clients yet. They appear by themselves when a request comes from the site.', 'shootbook' ); ?></td></tr>
 			<?php endif; ?>
 			<?php foreach ( $rows as $c ) : ?>
 				<tr>
@@ -150,10 +150,10 @@ function bkb_crm_page() {
 function bkb_crm_notice() {
 	$m = isset( $_GET['bkb_msg'] ) ? sanitize_key( $_GET['bkb_msg'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	$t = array(
-		'saved' => 'Сохранено.',
-		'added' => 'Добавлено в историю.',
-		'done'    => 'Задача отмечена выполненной.',
-		'deleted' => 'Клиент удалён из CRM.',
+		'saved'   => __( 'Saved.', 'shootbook' ),
+		'added'   => __( 'Added to the history.', 'shootbook' ),
+		'done'    => __( 'Task marked as done.', 'shootbook' ),
+		'deleted' => __( 'Client removed from the CRM.', 'shootbook' ),
 	);
 	if ( isset( $t[ $m ] ) ) {
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $t[ $m ] ) . '</p></div>';
@@ -164,13 +164,13 @@ function bkb_crm_notice() {
 
 function bkb_crm_event_label( $type ) {
 	$m = array(
-		'request' => 'Заявка',
-		'status'  => 'Ответ по заявке',
-		'stage'   => 'Этап',
-		'note'    => 'Заметка',
-		'task'    => 'Задача',
-		'mail'    => 'Письмо',
-		'message' => 'Сообщение',
+		'request' => __( 'Request', 'shootbook' ),
+		'status'  => __( 'Answer to the request', 'shootbook' ),
+		'stage'   => __( 'Stage', 'shootbook' ),
+		'note'    => __( 'Note', 'shootbook' ),
+		'task'    => __( 'Task', 'shootbook' ),
+		'mail'    => __( 'E-mail', 'shootbook' ),
+		'message' => __( 'Message', 'shootbook' ),
 	);
 	return $m[ $type ] ?? $type;
 }
@@ -178,63 +178,68 @@ function bkb_crm_event_label( $type ) {
 function bkb_crm_card( $id ) {
 	$c = bkb_crm_client( $id );
 	if ( ! $c ) {
-		echo '<div class="wrap"><h1>Клиент не найден</h1></div>';
+		echo '<div class="wrap"><h1>' . esc_html__( 'Client not found', 'shootbook' ) . '</h1></div>';
 		return;
 	}
 	$events = bkb_crm_events( $id );
 	$tz_today = ( new DateTime( 'today', wp_timezone() ) )->format( 'Y-m-d' );
 	?>
 	<div class="wrap bkb-crm">
-		<p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ); ?>">← Все клиенты</a></p>
-		<h1 style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><?php echo esc_html( $c['name'] ? $c['name'] : ( $c['email'] ? $c['email'] : '@' . $c['instagram'] ) ); ?> <?php echo bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <a class="page-title-action" href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1&client=' . (int) $id ) ); ?>">Новая заявка этого клиента</a></h1>
+		<p><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ); ?>"><?php esc_html_e( '← All clients', 'shootbook' ); ?></a></p>
+		<h1 style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><?php echo esc_html( $c['name'] ? $c['name'] : ( $c['email'] ? $c['email'] : '@' . $c['instagram'] ) ); ?> <?php echo bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> <a class="page-title-action" href="<?php echo esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients&new=1&client=' . (int) $id ) ); ?>"><?php esc_html_e( 'New request from this client', 'shootbook' ); ?></a></h1>
 		<p><?php echo bkb_crm_contacts_html( $c ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 		<?php bkb_crm_notice(); ?>
 		<div class="bkb-crm-cols">
 			<div class="bkb-crm-box">
-				<h2>Карточка</h2>
+				<h2><?php esc_html_e( 'Card', 'shootbook' ); ?></h2>
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="bkb_crm_save">
 					<input type="hidden" name="client" value="<?php echo (int) $id; ?>">
 					<?php wp_nonce_field( 'bkb_crm_save' ); ?>
-					<p><label>Имя<br><input type="text" class="widefat" name="name" value="<?php echo esc_attr( $c['name'] ); ?>"></label></p>
+					<p><label><?php esc_html_e( 'Name', 'shootbook' ); ?><br><input type="text" class="widefat" name="name" value="<?php echo esc_attr( $c['name'] ); ?>"></label></p>
 					<p><label>E-mail<br><input type="email" class="widefat" name="email" value="<?php echo esc_attr( $c['email'] ); ?>"></label></p>
 					<p><label>Instagram<br><input type="text" class="widefat" name="instagram" value="<?php echo esc_attr( $c['instagram'] ? '@' . $c['instagram'] : '' ); ?>" placeholder="@name"></label></p>
-					<p><label>Телефон или WhatsApp<br><input type="text" class="widefat" name="phone" value="<?php echo esc_attr( $c['phone'] ); ?>"></label></p>
-					<p><label>Язык общения<br><input type="text" class="widefat" name="lang" value="<?php echo esc_attr( $c['lang'] ); ?>" placeholder="en, ru, uk…"></label></p>
-					<p><label>Источник<br><input type="text" class="widefat" name="source" value="<?php echo esc_attr( $c['source'] ); ?>"></label></p>
-					<p><label>Этап<br><select name="stage" class="widefat">
+					<p><label><?php esc_html_e( 'Phone or WhatsApp', 'shootbook' ); ?><br><input type="text" class="widefat" name="phone" value="<?php echo esc_attr( $c['phone'] ); ?>"></label></p>
+					<p><label><?php esc_html_e( 'Language to talk in', 'shootbook' ); ?><br><input type="text" class="widefat" name="lang" value="<?php echo esc_attr( $c['lang'] ); ?>" placeholder="en, ru, uk…"></label></p>
+					<p><label><?php esc_html_e( 'Source', 'shootbook' ); ?><br><input type="text" class="widefat" name="source" value="<?php echo esc_attr( $c['source'] ); ?>"></label></p>
+					<p><label><?php esc_html_e( 'Stage', 'shootbook' ); ?><br><select name="stage" class="widefat">
 						<?php foreach ( bkb_crm_stages() as $k => $label ) : ?>
 							<option value="<?php echo esc_attr( $k ); ?>" <?php selected( $c['stage'], $k ); ?>><?php echo esc_html( $label ); ?></option>
 						<?php endforeach; ?>
 					</select></label></p>
-					<p><label>Почему потеряна<br><input type="text" class="widefat" name="lost_reason" value="<?php echo esc_attr( $c['lost_reason'] ); ?>" placeholder="дорого, дата занята, пропал…" list="bkb-reasons"></label></p>
-					<datalist id="bkb-reasons"><option value="Дорого"><option value="Дата занята"><option value="Пропал, не отвечает"><option value="Передумал"><option value="Отклонена"></datalist>
-					<p><label>Заметки<br><textarea class="widefat" rows="6" name="notes"><?php echo esc_textarea( $c['notes'] ); ?></textarea></label></p>
-					<p><button class="button button-primary">Сохранить</button></p>
+					<p><label><?php esc_html_e( 'Why it was lost', 'shootbook' ); ?><br><input type="text" class="widefat" name="lost_reason" value="<?php echo esc_attr( $c['lost_reason'] ); ?>" placeholder="<?php esc_attr_e( 'too expensive, date taken, stopped answering…', 'shootbook' ); ?>" list="bkb-reasons"></label></p>
+					<datalist id="bkb-reasons"><option value="<?php esc_attr_e( 'Too expensive', 'shootbook' ); ?>"><option value="<?php esc_attr_e( 'Date taken', 'shootbook' ); ?>"><option value="<?php esc_attr_e( 'Stopped answering', 'shootbook' ); ?>"><option value="<?php esc_attr_e( 'Changed their mind', 'shootbook' ); ?>"><option value="<?php esc_attr_e( 'Declined', 'shootbook' ); ?>"></datalist>
+					<p><label><?php esc_html_e( 'Notes', 'shootbook' ); ?><br><textarea class="widefat" rows="6" name="notes"><?php echo esc_textarea( $c['notes'] ); ?></textarea></label></p>
+					<p><button class="button button-primary"><?php esc_html_e( 'Save', 'shootbook' ); ?></button></p>
 				</form>
-				<p><a class="bkb-del" href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_delete', array( 'client' => $id ) ) ); ?>" onclick="return confirm('Удалить клиента и всю его историю из CRM? Это нельзя отменить. Сами заявки в списке заявок останутся.');">Удалить клиента из CRM</a></p>
-				<p class="description">Клиент с нами с <?php echo esc_html( bkb_crm_time( $c['created'], 'j.m.Y' ) ); ?>, последний контакт <?php echo esc_html( bkb_crm_time( $c['last_contact'] ) ); ?>.</p>
+				<p><a class="bkb-del" href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_delete', array( 'client' => $id ) ) ); ?>" onclick="return confirm(<?php echo esc_attr( wp_json_encode( __( 'Remove the client and their whole history from the CRM? This cannot be undone. The requests stay in the list of requests.', 'shootbook' ) ) ); ?>);"><?php esc_html_e( 'Remove the client from the CRM', 'shootbook' ); ?></a></p>
+				<p class="description">
+				<?php
+				/* translators: 1: date the client first came, 2: date and time of the last contact */
+				echo esc_html( sprintf( __( 'Client since %1$s, last contact %2$s.', 'shootbook' ), bkb_crm_time( $c['created'], 'j.m.Y' ), bkb_crm_time( $c['last_contact'] ) ) );
+				?>
+				</p>
 			</div>
 			<div class="bkb-crm-box bkb-crm-history">
-				<h2>История</h2>
+				<h2><?php esc_html_e( 'History', 'shootbook' ); ?></h2>
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="bkb-crm-add">
 					<input type="hidden" name="action" value="bkb_crm_add">
 					<input type="hidden" name="client" value="<?php echo (int) $id; ?>">
 					<?php wp_nonce_field( 'bkb_crm_add' ); ?>
-					<textarea name="body" rows="3" class="widefat" placeholder="Что было или что нужно сделать: «Написала в Instagram, ждёт ответа от мужа», «Напомнить в четверг»…" required></textarea>
+					<textarea name="body" rows="3" class="widefat" placeholder="<?php esc_attr_e( 'What happened or what to do: “Wrote on Instagram, waiting for an answer”, “Remind on Thursday”…', 'shootbook' ); ?>" required></textarea>
 					<p>
 						<select name="type">
-							<option value="note">Заметка</option>
-							<option value="message">Сообщение клиенту или от клиента</option>
-							<option value="task">Задача</option>
+							<option value="note"><?php esc_html_e( 'Note', 'shootbook' ); ?></option>
+							<option value="message"><?php esc_html_e( 'Message to or from the client', 'shootbook' ); ?></option>
+							<option value="task"><?php esc_html_e( 'Task', 'shootbook' ); ?></option>
 						</select>
-						<label>срок <input type="date" name="due" min="<?php echo esc_attr( $tz_today ); ?>"></label>
-						<label><input type="checkbox" name="touch" value="1" checked> это контакт с клиентом</label>
-						<button class="button">Добавить</button>
+						<label><?php esc_html_e( 'due', 'shootbook' ); ?> <input type="date" name="due" min="<?php echo esc_attr( $tz_today ); ?>"></label>
+						<label><input type="checkbox" name="touch" value="1" checked> <?php esc_html_e( 'this is a contact with the client', 'shootbook' ); ?></label>
+						<button class="button"><?php esc_html_e( 'Add', 'shootbook' ); ?></button>
 					</p>
 				</form>
 				<?php if ( ! $events ) : ?>
-					<p>Пока пусто.</p>
+					<p><?php esc_html_e( 'Nothing yet.', 'shootbook' ); ?></p>
 				<?php endif; ?>
 				<ul class="bkb-timeline">
 					<?php foreach ( $events as $e ) : ?>
@@ -246,15 +251,15 @@ function bkb_crm_card( $id ) {
 									<span>· <?php echo esc_html( $e['source'] ); ?></span>
 								<?php endif; ?>
 								<?php if ( 'task' === $e['type'] ) : ?>
-									<span>· срок <?php echo esc_html( $e['due'] ? bkb_crm_time( $e['due'], 'j.m.Y' ) : 'не указан' ); ?></span>
+									<span>· <?php esc_html_e( 'due', 'shootbook' ); ?> <?php echo esc_html( $e['due'] ? bkb_crm_time( $e['due'], 'j.m.Y' ) : __( 'not set', 'shootbook' ) ); ?></span>
 									<?php if ( ! $e['done'] ) : ?>
-										<a href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_task_done', array( 'event' => $e['id'] ) ) ); ?>">Готово</a>
+										<a href="<?php echo esc_url( bkb_crm_action_url( 'bkb_crm_task_done', array( 'event' => $e['id'] ) ) ); ?>"><?php esc_html_e( 'Done', 'shootbook' ); ?></a>
 									<?php else : ?>
-										<span>· выполнено</span>
+										<span>· <?php esc_html_e( 'done', 'shootbook' ); ?></span>
 									<?php endif; ?>
 								<?php endif; ?>
 								<?php if ( $e['booking_id'] && get_post( $e['booking_id'] ) ) : ?>
-									<a href="<?php echo esc_url( admin_url( 'post.php?post=' . (int) $e['booking_id'] . '&action=edit' ) ); ?>">открыть заявку</a>
+									<a href="<?php echo esc_url( admin_url( 'post.php?post=' . (int) $e['booking_id'] . '&action=edit' ) ); ?>"><?php esc_html_e( 'open the request', 'shootbook' ); ?></a>
 								<?php endif; ?>
 							</div>
 							<div class="bkb-ev-body"><?php echo nl2br( esc_html( $e['body'] ) ); ?></div>
@@ -264,7 +269,7 @@ function bkb_crm_card( $id ) {
 			</div>
 		</div>
 		<div class="bkb-crm-box">
-			<h2>Готовые ответы</h2>
+			<h2><?php esc_html_e( 'Ready-made replies', 'shootbook' ); ?></h2>
 			<?php bkb_replies_box( bkb_replies_latest_booking( $id ), $c ); ?>
 		</div>
 	</div>
@@ -362,7 +367,7 @@ add_filter(
 		foreach ( $cols as $k => $v ) {
 			$out[ $k ] = $v;
 			if ( 'bkb_who' === $k ) {
-				$out['bkb_client'] = 'Клиент';
+				$out['bkb_client'] = __( 'Client', 'shootbook' );
 			}
 		}
 		return $out;
@@ -379,7 +384,7 @@ add_action(
 		$cid = (int) get_post_meta( $id, '_bkb_client', true );
 		$c   = $cid ? bkb_crm_client( $cid ) : null;
 		if ( $c ) {
-			echo '<a href="' . esc_url( bkb_crm_client_url( $cid ) ) . '">карточка</a><br>' . bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<a href="' . esc_url( bkb_crm_client_url( $cid ) ) . '">' . esc_html__( 'card', 'shootbook' ) . '</a><br>' . bkb_crm_stage_badge( $c['stage'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	},
 	10,
@@ -395,12 +400,12 @@ add_action(
 		}
 		add_meta_box(
 			'bkb_client',
-			'Клиент',
+			__( 'Client', 'shootbook' ),
 			function () use ( $cid ) {
 				$c = bkb_crm_client( $cid );
 				echo '<p><b>' . esc_html( $c['name'] ) . '</b><br>' . bkb_crm_stage_badge( $c['stage'] ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo '<p>Источник: ' . esc_html( $c['source'] ? $c['source'] : '—' ) . '</p>';
-				echo '<p><a class="button" href="' . esc_url( bkb_crm_client_url( $cid ) ) . '">Открыть карточку</a></p>';
+				echo '<p>' . esc_html__( 'Source:', 'shootbook' ) . ' ' . esc_html( $c['source'] ? $c['source'] : '—' ) . '</p>';
+				echo '<p><a class="button" href="' . esc_url( bkb_crm_client_url( $cid ) ) . '">' . esc_html__( 'Open the card', 'shootbook' ) . '</a></p>';
 			},
 			'bk_booking',
 			'side'
@@ -422,33 +427,36 @@ function bkb_crm_report_page() {
 	$since  = $days ? gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS ) : '1970-01-01 00:00:00';
 	$rows   = $wpdb->get_results( // phpcs:ignore WordPress.DB
 		$wpdb->prepare(
-			"SELECT IF(r.source = '', 'Неизвестно', r.source) AS src, COUNT(*) AS requests,
-				SUM(EXISTS(SELECT 1 FROM $et s WHERE s.booking_id = r.booking_id AND s.booking_id > 0 AND s.type = 'status' AND s.body LIKE %s) OR EXISTS(SELECT 1 FROM {$wpdb->postmeta} pm WHERE pm.post_id = r.booking_id AND r.booking_id > 0 AND pm.meta_key = '_bkb_status' AND pm.meta_value = 'confirmed')) AS confirmed,
+			"SELECT IF(r.source = '', %s, r.source) AS src, COUNT(*) AS requests,
+				SUM(EXISTS(SELECT 1 FROM $et s WHERE s.booking_id = r.booking_id AND s.booking_id > 0 AND s.type = 'status' AND (s.body LIKE %s OR s.body LIKE %s OR s.body LIKE %s)) OR EXISTS(SELECT 1 FROM {$wpdb->postmeta} pm WHERE pm.post_id = r.booking_id AND r.booking_id > 0 AND pm.meta_key = '_bkb_status' AND pm.meta_value = 'confirmed')) AS confirmed,
 				COUNT(DISTINCT r.client_id) AS clients
 			FROM $et r WHERE r.type = 'request' AND r.created >= %s GROUP BY src ORDER BY requests DESC", // phpcs:ignore WordPress.DB
-			'%подтвержд%',
+			__( 'Unknown', 'shootbook' ),
+			'%подтвержд%', // Written by versions before the translation.
+			'%Request confirmed%',
+			'%' . $wpdb->esc_like( __( 'Request confirmed', 'shootbook' ) ) . '%',
 			$since
 		),
 		ARRAY_A
 	);
 	$stages = $wpdb->get_results( $wpdb->prepare( "SELECT stage, COUNT(*) n FROM $ct WHERE last_contact >= %s GROUP BY stage", $since ), OBJECT_K ); // phpcs:ignore WordPress.DB
-	$lost   = $wpdb->get_results( $wpdb->prepare( "SELECT IF(lost_reason = '', 'Без причины', lost_reason) r, COUNT(*) n FROM $ct WHERE stage = 'lost' AND last_contact >= %s GROUP BY r ORDER BY n DESC", $since ), ARRAY_A ); // phpcs:ignore WordPress.DB
+	$lost   = $wpdb->get_results( $wpdb->prepare( "SELECT IF(lost_reason = '', %s, lost_reason) r, COUNT(*) n FROM $ct WHERE stage = 'lost' AND last_contact >= %s GROUP BY r ORDER BY n DESC", __( 'No reason', 'shootbook' ), $since ), ARRAY_A ); // phpcs:ignore WordPress.DB
 	$base   = admin_url( 'edit.php?post_type=bk_booking&page=bkb-report' );
 	?>
 	<div class="wrap bkb-crm">
-		<h1>Отчёт по заявкам</h1>
+		<h1><?php esc_html_e( 'Requests report', 'shootbook' ); ?></h1>
 		<ul class="subsubsub">
-			<?php foreach ( array( 30 => '30 дней', 90 => '90 дней', 365 => 'Год', 0 => 'Всё время' ) as $k => $label ) : ?>
+			<?php foreach ( array( 30 => __( '30 days', 'shootbook' ), 90 => __( '90 days', 'shootbook' ), 365 => __( 'Year', 'shootbook' ), 0 => __( 'All time', 'shootbook' ) ) as $k => $label ) : ?>
 				<li><a href="<?php echo esc_url( add_query_arg( 'days', $k, $base ) ); ?>" class="<?php echo $days === $k ? 'current' : ''; ?>"><?php echo esc_html( $label ); ?></a> <?php echo 0 === $k ? '' : '|'; ?></li>
 			<?php endforeach; ?>
 		</ul>
 		<br class="clear">
-		<h2>Откуда приходят заявки</h2>
+		<h2><?php esc_html_e( 'Where requests come from', 'shootbook' ); ?></h2>
 		<table class="wp-list-table widefat striped" style="max-width:760px">
-			<thead><tr><th>Источник</th><th>Заявок</th><th>Клиентов</th><th>Подтверждено</th><th>Доля подтверждённых</th></tr></thead>
+			<thead><tr><th><?php esc_html_e( 'Source', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Requests', 'number of requests', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Clients', 'number of clients', 'shootbook' ); ?></th><th><?php esc_html_e( 'Confirmed', 'shootbook' ); ?></th><th><?php esc_html_e( 'Share confirmed', 'shootbook' ); ?></th></tr></thead>
 			<tbody>
 				<?php if ( ! $rows ) : ?>
-					<tr><td colspan="5">За этот период заявок нет.</td></tr>
+					<tr><td colspan="5"><?php esc_html_e( 'No requests in this period.', 'shootbook' ); ?></td></tr>
 				<?php endif; ?>
 				<?php foreach ( $rows as $r ) : ?>
 					<tr>
@@ -461,8 +469,8 @@ function bkb_crm_report_page() {
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-		<p class="description">Источник — откуда человек впервые пришёл на сайт: метки UTM в ссылке или сайт, с которого он перешёл. «Прямой заход» — открыл сайт сам или источник скрыт браузером. У заявок, пришедших до включения учёта, источник неизвестен.</p>
-		<h2>Клиенты по этапам</h2>
+		<p class="description"><?php esc_html_e( 'Source is where the person first came to the site from: UTM tags in the link or the site they followed a link on. “Direct visit” means they opened the site themselves or the browser hid the source. Requests that came before tracking was on have no source.', 'shootbook' ); ?></p>
+		<h2><?php esc_html_e( 'Clients by stage', 'shootbook' ); ?></h2>
 		<table class="wp-list-table widefat striped" style="max-width:460px">
 			<tbody>
 				<?php foreach ( bkb_crm_stages() as $k => $label ) : ?>
@@ -471,7 +479,7 @@ function bkb_crm_report_page() {
 			</tbody>
 		</table>
 		<?php if ( $lost ) : ?>
-			<h2>Почему теряем</h2>
+			<h2><?php esc_html_e( 'Why requests are lost', 'shootbook' ); ?></h2>
 			<table class="wp-list-table widefat striped" style="max-width:460px">
 				<tbody>
 					<?php foreach ( $lost as $l ) : ?>
@@ -500,8 +508,14 @@ function bkb_crm_contacts_html( $c ) {
 	return implode( '<br>', $out );
 }
 
+/** Sources to pick from when a client is added by hand: the standard ones, then the studio's own from the settings. */
 function bkb_crm_manual_sources() {
-	return array( 'Instagram', 'Facebook', 'WhatsApp', 'Telegram', 'Телефон', 'E-mail', 'Лично', 'Рекомендация', 'IPAR', 'Другое' );
+	$list   = array( 'Instagram', 'Facebook', 'WhatsApp', 'Telegram', __( 'Phone', 'shootbook' ), 'E-mail', __( 'In person', 'shootbook' ), __( 'Recommendation', 'shootbook' ) );
+	$crm    = (array) bkb_cfg( 'crm' );
+	$own    = preg_split( '/\R/', (string) ( $crm['sources'] ?? '' ) );
+	$list   = array_merge( $list, array_filter( array_map( 'trim', $own ), 'strlen' ) );
+	$list[] = __( 'Other', 'shootbook' );
+	return array_values( array_unique( $list ) );
 }
 
 function bkb_crm_new_form( $client_id ) {
@@ -513,25 +527,25 @@ function bkb_crm_new_form( $client_id ) {
 	$v     = fn( $k ) => $c ? (string) $c[ $k ] : '';
 	?>
 	<div class="wrap bkb-crm">
-		<p><a href="<?php echo esc_url( $c ? bkb_crm_client_url( $client_id ) : admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ); ?>">← <?php echo $c ? 'Карточка клиента' : 'Все клиенты'; ?></a></p>
-		<h1><?php echo $c ? 'Новая заявка: ' . esc_html( $c['name'] ) : 'Новая заявка вручную'; ?></h1>
+		<p><a href="<?php echo esc_url( $c ? bkb_crm_client_url( $client_id ) : admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) ); ?>">← <?php echo esc_html( $c ? __( 'Client card', 'shootbook' ) : __( 'All clients', 'shootbook' ) ); ?></a></p>
+		<h1><?php echo esc_html( $c ? __( 'New request:', 'shootbook' ) . ' ' . $c['name'] : __( 'New request by hand', 'shootbook' ) ); ?></h1>
 		<?php if ( 'contact' === $err ) : ?>
-			<div class="notice notice-error"><p>Укажите имя и хотя бы один контакт: Instagram, e-mail или телефон.</p></div>
+			<div class="notice notice-error"><p><?php esc_html_e( 'Enter a name and at least one contact: Instagram, e-mail or phone.', 'shootbook' ); ?></p></div>
 		<?php elseif ( 'date' === $err ) : ?>
-			<div class="notice notice-error"><p>Не получилось прочитать дату или время.</p></div>
+			<div class="notice notice-error"><p><?php esc_html_e( 'Could not read the date or time.', 'shootbook' ); ?></p></div>
 		<?php endif; ?>
-		<p class="description">Для заявок, которые пришли не через сайт: из Instagram, по телефону, лично. Если такой клиент уже есть (тот же Instagram или e-mail), заявка добавится в его карточку. Писем клиенту не отправляется.</p>
+		<p class="description"><?php esc_html_e( 'For requests that did not come through the site: from Instagram, by phone, in person. If the client is already known (same Instagram or e-mail), the request goes to their card. No e-mails are sent to the client.', 'shootbook' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="bkb-crm-box bkb-crm-new">
 			<input type="hidden" name="action" value="bkb_crm_new">
 			<input type="hidden" name="client" value="<?php echo (int) $client_id; ?>">
 			<?php wp_nonce_field( 'bkb_crm_new' ); ?>
-			<h2>Клиент</h2>
+			<h2><?php esc_html_e( 'Client', 'shootbook' ); ?></h2>
 			<div class="bkb-grid">
-				<label>Имя *<input type="text" name="name" required value="<?php echo esc_attr( $v( 'name' ) ); ?>"></label>
-				<label>Instagram<input type="text" name="instagram" placeholder="@name или ссылка на профиль" value="<?php echo esc_attr( $c && $c['instagram'] ? '@' . $c['instagram'] : '' ); ?>"></label>
+				<label><?php esc_html_e( 'Name', 'shootbook' ); ?> *<input type="text" name="name" required value="<?php echo esc_attr( $v( 'name' ) ); ?>"></label>
+				<label>Instagram<input type="text" name="instagram" placeholder="<?php esc_attr_e( '@name or a link to the profile', 'shootbook' ); ?>" value="<?php echo esc_attr( $c && $c['instagram'] ? '@' . $c['instagram'] : '' ); ?>"></label>
 				<label>E-mail<input type="email" name="email" value="<?php echo esc_attr( $v( 'email' ) ); ?>"></label>
-				<label>Телефон или WhatsApp<input type="text" name="phone" value="<?php echo esc_attr( $v( 'phone' ) ); ?>"></label>
-				<label>Откуда пришёл
+				<label><?php esc_html_e( 'Phone or WhatsApp', 'shootbook' ); ?><input type="text" name="phone" value="<?php echo esc_attr( $v( 'phone' ) ); ?>"></label>
+				<label><?php esc_html_e( 'Where they came from', 'shootbook' ); ?>
 					<select name="source">
 						<?php foreach ( bkb_crm_manual_sources() as $s ) : ?>
 							<option <?php selected( $c ? $c['source'] : 'Instagram', $s ); ?>><?php echo esc_html( $s ); ?></option>
@@ -539,61 +553,61 @@ function bkb_crm_new_form( $client_id ) {
 					</select>
 				</label>
 				<?php $slangs = (array) ( $cfg['fields']['slang']['choices'] ?? array() ); ?>
-				<label>Язык общения
+				<label><?php esc_html_e( 'Language to talk in', 'shootbook' ); ?>
 					<select name="lang">
 						<option value="">—</option>
 						<?php foreach ( $slangs ? $slangs : array_map( fn( $l ) => array( 'id' => $l, 'label' => array() ), bkb_langs() ) as $l ) : ?>
-							<option value="<?php echo esc_attr( $l['id'] ); ?>" <?php selected( $v( 'lang' ), $l['id'] ); ?>><?php echo esc_html( bkb_l( $l['label'], 'ru', $l['id'] ) ); ?></option>
+							<option value="<?php echo esc_attr( $l['id'] ); ?>" <?php selected( $v( 'lang' ), $l['id'] ); ?>><?php echo esc_html( bkb_l( $l['label'], bkb_admin_lang(), $l['id'] ) ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</label>
 			</div>
-			<h2>Что хочет</h2>
+			<h2><?php esc_html_e( 'What they want', 'shootbook' ); ?></h2>
 			<div class="bkb-grid">
 				<?php if ( $cfg['services'] ) : ?>
-					<label>Услуга
+					<label><?php esc_html_e( 'Service', 'shootbook' ); ?>
 						<select name="service">
-							<option value="">не решил</option>
+							<option value=""><?php esc_html_e( 'not decided', 'shootbook' ); ?></option>
 							<?php foreach ( $cfg['services'] as $s ) : ?>
-								<option value="<?php echo esc_attr( $s['id'] ); ?>"><?php echo esc_html( bkb_service_label( $s['id'], 'ru' ) ); ?></option>
+								<option value="<?php echo esc_attr( $s['id'] ); ?>"><?php echo esc_html( bkb_service_label( $s['id'], bkb_admin_lang() ) ); ?></option>
 							<?php endforeach; ?>
 						</select>
 					</label>
 				<?php endif; ?>
 				<?php if ( $cfg['locations'] ) : ?>
-					<label>Место
+					<label><?php esc_html_e( 'Location', 'shootbook' ); ?>
 						<select name="location">
 							<?php foreach ( $cfg['locations'] as $l ) : ?>
-								<option value="<?php echo esc_attr( $l['id'] ); ?>"><?php echo esc_html( bkb_location_label( $l['id'], 'ru' ) ); ?></option>
+								<option value="<?php echo esc_attr( $l['id'] ); ?>"><?php echo esc_html( bkb_location_label( $l['id'], bkb_admin_lang() ) ); ?></option>
 							<?php endforeach; ?>
 						</select>
 					</label>
 				<?php endif; ?>
-				<label>Дата<input type="date" name="date"></label>
-				<label>Начало<input type="time" name="time" step="900"></label>
-				<label>Длительность
+				<label><?php esc_html_e( 'Date', 'shootbook' ); ?><input type="date" name="date"></label>
+				<label><?php esc_html_e( 'Start', 'shootbook' ); ?><input type="time" name="time" step="900"></label>
+				<label><?php esc_html_e( 'Duration', 'shootbook' ); ?>
 					<select name="hours">
 						<?php foreach ( $hours as $h ) : ?>
-							<option value="<?php echo esc_attr( $h ); ?>" <?php selected( (string) $def, (string) $h ); ?>><?php echo esc_html( $h ); ?> ч</option>
+							<option value="<?php echo esc_attr( $h ); ?>" <?php selected( (string) $def, (string) $h ); ?>><?php echo esc_html( sprintf( /* translators: %s: number of hours */ __( '%s h', 'shootbook' ), $h ) ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</label>
-				<label>Стоимость<input type="text" name="price" placeholder="например 630 €"></label>
+				<label><?php esc_html_e( 'Price', 'shootbook' ); ?><input type="text" name="price" placeholder="<?php esc_attr_e( 'for example 630 €', 'shootbook' ); ?>"></label>
 			</div>
-			<p><label><input type="checkbox" name="block" value="1" checked> Если указаны дата и время — занять это время в календаре на сайте</label></p>
-			<p><label>Что написал клиент или о чём договорились<textarea name="msg" rows="5" class="widefat" placeholder="Можно просто вставить переписку из Instagram"></textarea></label></p>
+			<p><label><input type="checkbox" name="block" value="1" checked> <?php esc_html_e( 'If a date and time are given, hold this time in the calendar on the site', 'shootbook' ); ?></label></p>
+			<p><label><?php esc_html_e( 'What the client wrote or what you agreed', 'shootbook' ); ?><textarea name="msg" rows="5" class="widefat" placeholder="<?php esc_attr_e( 'You can simply paste the Instagram chat', 'shootbook' ); ?>"></textarea></label></p>
 			<div class="bkb-grid">
-				<label>Этап
+				<label><?php esc_html_e( 'Stage', 'shootbook' ); ?>
 					<select name="stage">
 						<?php foreach ( bkb_crm_stages() as $k => $label ) : ?>
 							<option value="<?php echo esc_attr( $k ); ?>" <?php selected( 'new', $k ); ?>><?php echo esc_html( $label ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				</label>
-				<label>Задача на потом<input type="text" name="task" placeholder="например: ответить, когда скажет дату"></label>
-				<label>Срок задачи<input type="date" name="task_due"></label>
+				<label><?php esc_html_e( 'Task for later', 'shootbook' ); ?><input type="text" name="task" placeholder="<?php esc_attr_e( 'for example: answer when they name the date', 'shootbook' ); ?>"></label>
+				<label><?php esc_html_e( 'Task due', 'shootbook' ); ?><input type="date" name="task_due"></label>
 			</div>
-			<p><button class="button button-primary button-large">Сохранить заявку</button></p>
+			<p><button class="button button-primary button-large"><?php esc_html_e( 'Save the request', 'shootbook' ); ?></button></p>
 		</form>
 	</div>
 	<?php
@@ -614,7 +628,7 @@ add_action(
 		$ig    = bkb_crm_ig_handle( $p['instagram'] ?? '' );
 		$email = strtolower( sanitize_email( (string) ( $p['email'] ?? '' ) ) );
 		$phone = sanitize_text_field( (string) ( $p['phone'] ?? '' ) );
-		$src   = in_array( $p['source'] ?? '', bkb_crm_manual_sources(), true ) ? $p['source'] : 'Другое';
+		$src   = in_array( $p['source'] ?? '', bkb_crm_manual_sources(), true ) ? $p['source'] : __( 'Other', 'shootbook' );
 		$lang  = sanitize_key( (string) ( $p['lang'] ?? '' ) );
 		$stage = isset( bkb_crm_stages()[ $p['stage'] ?? '' ] ) ? $p['stage'] : 'new';
 		if ( '' === $name || ( '' === $ig && '' === $email && '' === $phone ) ) {
@@ -722,28 +736,30 @@ add_action(
 			}
 		}
 		if ( $bid ) {
-			$body = bkb_summary( bkb_get( $bid ), 'ru', false );
+			$body = bkb_summary( bkb_get( $bid ), bkb_admin_lang(), false );
 		} else {
 			$lines = array();
 			if ( $start ) {
-				$lines[] = 'Дата: ' . $start->format( 'd.m.Y H:i' ) . ' (время в календаре не занято)';
+				/* translators: %s: date and time */
+				$lines[] = sprintf( __( 'Date: %s (the time is not held in the calendar)', 'shootbook' ), $start->format( 'd.m.Y H:i' ) );
 			}
 			if ( $svc ) {
-				$lines[] = 'Услуга: ' . bkb_service_label( $svc, 'ru' );
+				$lines[] = __( 'Service:', 'shootbook' ) . ' ' . bkb_service_label( $svc, bkb_admin_lang() );
 			}
 			if ( $loc && ( $start || $svc ) ) {
-				$lines[] = 'Место: ' . bkb_location_label( $loc, 'ru' );
+				$lines[] = __( 'Location:', 'shootbook' ) . ' ' . bkb_location_label( $loc, bkb_admin_lang() );
 			}
 			if ( $start || $svc ) {
-				$lines[] = 'Длительность: ' . $hours . ' ч';
+				/* translators: %s: number of hours */
+				$lines[] = sprintf( __( 'Duration: %s h', 'shootbook' ), $hours );
 			}
 			if ( '' !== (string) ( $p['price'] ?? '' ) ) {
-				$lines[] = 'Стоимость: ' . sanitize_text_field( (string) $p['price'] );
+				$lines[] = __( 'Price:', 'shootbook' ) . ' ' . sanitize_text_field( (string) $p['price'] );
 			}
 			$body = implode( "\n", $lines );
 		}
 		$body = trim( $body . ( $msg ? "\n\n" . $msg : '' ) );
-		$body = '' === $body ? 'Заявка без подробностей' : $body;
+		$body = '' === $body ? __( 'Request without details', 'shootbook' ) : $body;
 		bkb_crm_add_event( $cid, 'request', $body, array( 'booking_id' => (int) $bid, 'source' => $src ) );
 		bkb_crm_set_stage( $cid, $stage );
 		$task = sanitize_text_field( (string) ( $p['task'] ?? '' ) );

@@ -54,6 +54,17 @@ test('settings screen loads with the tabs and saves without changes', async () =
   assert.equal(wpEval("echo wp_json_encode(get_option('bkb_config'));"), before);
 });
 
+test('own sources from the settings appear in the manual source list, none by default', async () => {
+  const list = () => wpEval("echo implode('|', bkb_crm_manual_sources());");
+  assert.doesNotMatch(list(), /IPAR/);
+  wpEval("$c=get_option('bkb_config');$c['crm']['sources']=\"IPAR\\n Fair \\n\";update_option('bkb_config',$c);");
+  assert.match(list(), /\|IPAR\|Fair\|Other$/);
+  await page.goto(WP_URL + '/wp-admin/edit.php?post_type=bk_booking&page=bkb-clients&new=1');
+  const opts = await page.$$eval('select[name="source"] option', (o) => o.map((x) => x.textContent));
+  assert.ok(opts.includes('IPAR'), opts.join(', '));
+  seed();
+});
+
 test('the morning summary is available as JSON for the admin only', async () => {
   const anon = await fetch(WP_URL + '/wp-json/bk-booking/v1/crm/digest');
   assert.equal(anon.status, 401);
@@ -61,6 +72,6 @@ test('the morning summary is available as JSON for the admin only', async () => 
 
 test('no PHP notices or warnings in the debug log', async () => {
   const log = wpEval("echo @file_get_contents(WP_DEBUG_LOG) ?: '';");
-  const own = log.split('\n').filter((l) => /bk-booking/.test(l));
+  const own = log.split('\n').filter((l) => /bk-booking|shootbook/.test(l));
   assert.deepEqual(own, []);
 });

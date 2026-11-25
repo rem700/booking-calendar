@@ -21,14 +21,14 @@ function bkb_crm_table( $name ) {
 /** Pipeline stages, in order. */
 function bkb_crm_stages() {
 	return array(
-		'new'       => 'Новая заявка',
-		'replied'   => 'Ответили',
-		'confirmed' => 'Подтверждена',
-		'prepaid'   => 'Предоплата',
-		'done'      => 'Проведена',
-		'photos'    => 'Фото отданы',
-		'review'    => 'Попросили отзыв',
-		'lost'      => 'Потеряна',
+		'new'       => __( 'New request', 'shootbook' ),
+		'replied'   => __( 'Replied', 'shootbook' ),
+		'confirmed' => __( 'Confirmed', 'shootbook' ),
+		'prepaid'   => __( 'Prepaid', 'shootbook' ),
+		'done'      => __( 'Done', 'shootbook' ),
+		'photos'    => __( 'Photos delivered', 'shootbook' ),
+		'review'    => __( 'Review asked', 'shootbook' ),
+		'lost'      => __( 'Lost', 'shootbook' ),
 	);
 }
 
@@ -257,7 +257,7 @@ function bkb_crm_src_label( $src ) {
 	if ( ! empty( $src['f'] ) ) {
 		return 'Facebook / Instagram';
 	}
-	return 'Прямой заход';
+	return __( 'Direct visit', 'shootbook' );
 }
 
 /* Save the first visit with the request. */
@@ -297,7 +297,7 @@ function bkb_crm_from_booking( $id, $backfill = false ) {
 	$post    = get_post( $id );
 	$when    = $backfill && $post ? $post->post_date_gmt : bkb_crm_now();
 	$src     = bkb_crm_src_clean( get_post_meta( $id, '_bkb_src', true ) );
-	$label   = $src ? bkb_crm_src_label( $src ) : ( ! $backfill && ! empty( bkb_cfg( 'crm' )['source'] ) ? 'Прямой заход' : '' );
+	$label   = $src ? bkb_crm_src_label( $src ) : ( ! $backfill && ! empty( bkb_cfg( 'crm' )['source'] ) ? __( 'Direct visit', 'shootbook' ) : '' );
 	$c       = bkb_crm_client_by_email( $email );
 	$lang    = $b['slang'] ? $b['slang'] : $b['ui'];
 	$stage   = 'new';
@@ -317,7 +317,7 @@ function bkb_crm_from_booking( $id, $backfill = false ) {
 				'lang'         => (string) $lang,
 				'source'       => $label,
 				'stage'        => $stage,
-				'lost_reason'  => 'lost' === $stage ? 'Отклонена' : '',
+				'lost_reason'  => 'lost' === $stage ? __( 'Declined', 'shootbook' ) : '',
 				'notes'        => '',
 				'created'      => $when,
 				'last_contact' => $when,
@@ -330,7 +330,7 @@ function bkb_crm_from_booking( $id, $backfill = false ) {
 			'name'         => (string) $b['name'],
 			'last_contact' => $when,
 			'stage'        => $stage,
-			'lost_reason'  => 'lost' === $stage ? 'Отклонена' : '',
+			'lost_reason'  => 'lost' === $stage ? __( 'Declined', 'shootbook' ) : '',
 		);
 		if ( $b['phone'] ) {
 			$data['phone'] = (string) $b['phone'];
@@ -347,7 +347,7 @@ function bkb_crm_from_booking( $id, $backfill = false ) {
 		return 0;
 	}
 	update_post_meta( $id, '_bkb_client', $cid );
-	$body = bkb_summary( $b, 'ru', true ) . ( $b['msg'] ? "\n\nСообщение:\n" . $b['msg'] : '' );
+	$body = bkb_summary( $b, bkb_admin_lang(), true ) . ( $b['msg'] ? "\n\n" . __( 'Message:', 'shootbook' ) . "\n" . $b['msg'] : '' );
 	bkb_crm_add_event(
 		$cid,
 		'request',
@@ -378,9 +378,9 @@ add_action(
 		if ( ! $cid ) {
 			return;
 		}
-		$mail = is_email( (string) get_post_meta( $id, '_bkb_email', true ) ) ? ', клиенту ушло письмо' : '';
-		bkb_crm_add_event( $cid, 'status', ( 'confirmed' === $s ? 'Заявка подтверждена' : 'Заявка отклонена' ) . $mail, array( 'booking_id' => (int) $id ) );
-		bkb_crm_set_stage( $cid, 'confirmed' === $s ? 'confirmed' : 'lost', 'confirmed' === $s ? '' : 'Отклонена', $id );
+		$mail = is_email( (string) get_post_meta( $id, '_bkb_email', true ) ) ? __( ', the client got an e-mail', 'shootbook' ) : '';
+		bkb_crm_add_event( $cid, 'status', ( 'confirmed' === $s ? __( 'Request confirmed', 'shootbook' ) : __( 'Request declined', 'shootbook' ) ) . $mail, array( 'booking_id' => (int) $id ) );
+		bkb_crm_set_stage( $cid, 'confirmed' === $s ? 'confirmed' : 'lost', 'confirmed' === $s ? '' : __( 'Declined', 'shootbook' ), $id );
 		bkb_crm_update_client( $cid, array( 'last_contact' => bkb_crm_now() ) );
 	},
 	10,
@@ -403,7 +403,7 @@ function bkb_crm_digest_data() {
 			'id'      => (int) $id,
 			'client'  => $cid,
 			'name'    => $b['name'],
-			'service' => $b['service'] ? bkb_service_label( $b['service'], 'ru' ) : '',
+			'service' => $b['service'] ? bkb_service_label( $b['service'], bkb_admin_lang() ) : '',
 			'when'    => wp_date( 'j.m H:i', (int) $b['start'], wp_timezone() ),
 			'url'     => admin_url( 'post.php?post=' . $id . '&action=edit' ),
 		);
@@ -477,24 +477,24 @@ function bkb_crm_digest_text( $d ) {
 	$out  = array();
 	$line = fn( $x ) => '• ' . $x['name'] . ( $x['service'] ? ', ' . $x['service'] : '' ) . ' — ' . $x['when'] . "\n  " . $x['url'];
 	if ( $d['new'] ) {
-		$out[] = "Новые заявки за сутки:\n" . implode( "\n", array_map( $line, $d['new'] ) );
+		$out[] = __( 'New requests in the last 24 hours:', 'shootbook' ) . "\n" . implode( "\n", array_map( $line, $d['new'] ) );
 	}
 	if ( $d['wait'] ) {
-		$out[] = "Ждут ответа больше суток:\n" . implode( "\n", array_map( $line, $d['wait'] ) );
+		$out[] = __( 'Waiting for an answer for more than a day:', 'shootbook' ) . "\n" . implode( "\n", array_map( $line, $d['wait'] ) );
 	}
 	if ( $d['soon'] ) {
-		$out[] = "Записи сегодня и завтра:\n" . implode( "\n", array_map( $line, $d['soon'] ) );
+		$out[] = __( 'Bookings today and tomorrow:', 'shootbook' ) . "\n" . implode( "\n", array_map( $line, $d['soon'] ) );
 	}
 	if ( $d['tasks'] ) {
-		$out[] = "Задачи:\n" . implode(
+		$out[] = __( 'Tasks:', 'shootbook' ) . "\n" . implode(
 			"\n",
-			array_map( fn( $t ) => '• ' . ( $t['late'] ? 'просрочено, ' : '' ) . $t['due'] . ': ' . $t['task'] . ( $t['name'] ? ' (' . $t['name'] . ')' : '' ) . "\n  " . bkb_crm_client_url( $t['client'] ), $d['tasks'] )
+			array_map( fn( $t ) => '• ' . ( $t['late'] ? __( 'overdue', 'shootbook' ) . ', ' : '' ) . $t['due'] . ': ' . $t['task'] . ( $t['name'] ? ' (' . $t['name'] . ')' : '' ) . "\n  " . bkb_crm_client_url( $t['client'] ), $d['tasks'] )
 		);
 	}
 	if ( $d['quiet'] ) {
-		$out[] = "Давно без контакта, можно напомнить о себе:\n" . implode(
+		$out[] = __( 'No contact for a while, a good time to remind them about you:', 'shootbook' ) . "\n" . implode(
 			"\n",
-			array_map( fn( $c ) => '• ' . $c['name'] . ' — ' . $c['stage'] . ', последний контакт ' . $c['since'] . "\n  " . bkb_crm_client_url( $c['client'] ), $d['quiet'] )
+			array_map( fn( $c ) => '• ' . $c['name'] . ' — ' . $c['stage'] . ', ' . __( 'last contact', 'shootbook' ) . ' ' . $c['since'] . "\n  " . bkb_crm_client_url( $c['client'] ), $d['quiet'] )
 		);
 	}
 	return implode( "\n\n", $out );
@@ -517,7 +517,12 @@ add_action(
 		if ( '' === $text ) {
 			return; // Nothing to report: no e-mail.
 		}
-		wp_mail( bkb_notify_emails(), 'Сводка ' . wp_date( 'j.m', null, $tz ) . ': ' . bkb_site_name(), $text . "\n\nВсе клиенты: " . admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) . "\n" );
+		wp_mail(
+			bkb_notify_emails(),
+			/* translators: 1: date, 2: site name */
+			sprintf( __( 'Summary %1$s: %2$s', 'shootbook' ), wp_date( 'j.m', null, $tz ), bkb_site_name() ),
+			$text . "\n\n" . __( 'All clients:', 'shootbook' ) . ' ' . admin_url( 'edit.php?post_type=bk_booking&page=bkb-clients' ) . "\n"
+		);
 	}
 );
 

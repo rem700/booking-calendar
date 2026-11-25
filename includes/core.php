@@ -12,13 +12,13 @@ add_action(
 			'bk_booking',
 			array(
 				'labels'          => array(
-					'name'          => 'Заявки',
-					'singular_name' => 'Заявка',
-					'menu_name'     => 'Заявки',
-					'all_items'     => 'Все заявки',
-					'edit_item'     => 'Заявка',
-					'search_items'  => 'Найти заявку',
-					'not_found'     => 'Заявок пока нет',
+					'name'          => __( 'Requests', 'shootbook' ),
+					'singular_name' => __( 'Request', 'shootbook' ),
+					'menu_name'     => __( 'Requests', 'shootbook' ),
+					'all_items'     => __( 'All requests', 'shootbook' ),
+					'edit_item'     => __( 'Request', 'shootbook' ),
+					'search_items'  => __( 'Find a request', 'shootbook' ),
+					'not_found'     => __( 'No requests yet', 'shootbook' ),
 				),
 				'public'          => false,
 				'show_ui'         => true,
@@ -390,8 +390,8 @@ function bkb_gcal_client( $b, $lang ) {
 }
 
 function bkb_gcal_link( $b ) {
-	$svc = $b['service'] ? bkb_service_label( $b['service'], 'ru' ) . ' — ' : '';
-	return bkb_gcal_url( bkb_site_name() . ': ' . $svc . $b['name'], $b, bkb_summary( $b, 'ru', true ) );
+	$svc = $b['service'] ? bkb_service_label( $b['service'], bkb_admin_lang() ) . ' — ' : '';
+	return bkb_gcal_url( bkb_site_name() . ': ' . $svc . $b['name'], $b, bkb_summary( $b, bkb_admin_lang(), true ) );
 }
 
 /* ---------- emails ---------- */
@@ -399,16 +399,16 @@ function bkb_gcal_link( $b ) {
 function bkb_mail_team( $id ) {
 	$b    = bkb_get( $id );
 	$tz   = wp_timezone();
-	$body = "Новая заявка\n\n"
-		. bkb_summary( $b, 'ru', true ) . "\n\n"
-		. ( $b['msg'] ? "Сообщение:\n" . $b['msg'] . "\n\n" : '' )
-		. 'Подтвердить или отклонить: ' . admin_url( 'post.php?post=' . $id . '&action=edit' ) . "\n"
-		. 'Добавить в Google Календарь: ' . bkb_gcal_link( $b ) . "\n\n"
-		. "Время помечено как занятое на сайте, пока заявка не отклонена.\n";
-	$svc  = $b['service'] ? bkb_service_label( $b['service'], 'ru' ) . ', ' : '';
+	$body = __( 'New request', 'shootbook' ) . "\n\n"
+		. bkb_summary( $b, bkb_admin_lang(), true ) . "\n\n"
+		. ( $b['msg'] ? __( 'Message:', 'shootbook' ) . "\n" . $b['msg'] . "\n\n" : '' )
+		. __( 'Confirm or decline:', 'shootbook' ) . ' ' . admin_url( 'post.php?post=' . $id . '&action=edit' ) . "\n"
+		. __( 'Add to Google Calendar:', 'shootbook' ) . ' ' . bkb_gcal_link( $b ) . "\n\n"
+		. __( 'The time is shown as busy on the site until the request is declined.', 'shootbook' ) . "\n";
+	$svc  = $b['service'] ? bkb_service_label( $b['service'], bkb_admin_lang() ) . ', ' : '';
 	return wp_mail(
 		bkb_notify_emails(),
-		'Новая заявка: ' . $svc . wp_date( 'j.m H:i', (int) $b['start'], $tz ) . ' — ' . $b['name'],
+		__( 'New request:', 'shootbook' ) . ' ' . $svc . wp_date( 'j.m H:i', (int) $b['start'], $tz ) . ' — ' . $b['name'],
 		$body,
 		array( 'Reply-To: ' . $b['name'] . ' <' . $b['email'] . '>' )
 	);

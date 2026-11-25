@@ -61,6 +61,7 @@ function bkb_default_config() {
 			'source'      => true,
 			'digest'      => false,
 			'digest_hour' => 8,
+			'sources'     => '',
 		),
 	);
 }
@@ -130,6 +131,16 @@ function bkb_l( $labels, $lang, $fallback = '' ) {
 		}
 	}
 	return $fallback;
+}
+
+/**
+ * Language for the team: the admin's own language in WP admin, otherwise the site language, if the form
+ * knows it; English otherwise. Request details for the team (screens, e-mails, calendar links) use it.
+ */
+function bkb_admin_lang() {
+	$l = strtolower( substr( is_admin() ? get_user_locale() : get_locale(), 0, 2 ) );
+	$l = 'ua' === $l ? 'uk' : $l;
+	return (string) apply_filters( 'bkb_admin_lang', in_array( $l, bkb_known_langs(), true ) ? $l : 'en' );
 }
 
 /** Language of the current page: shortcode attribute, Polylang, WPML or the site locale. */
@@ -412,7 +423,7 @@ function bkb_sanitize_config( $c ) {
 			if ( '' !== $title || $text ) {
 				$out['replies'][] = array(
 					'id'    => bkb_clean_id( $r['id'] ?? '' ),
-					'title' => '' !== $title ? $title : 'Ответ',
+					'title' => '' !== $title ? $title : __( 'Reply', 'shootbook' ),
 					'text'  => $text,
 				);
 			}
@@ -423,6 +434,7 @@ function bkb_sanitize_config( $c ) {
 		'source'      => ! empty( $crm['source'] ),
 		'digest'      => ! empty( $crm['digest'] ),
 		'digest_hour' => max( 0, min( 23, (int) ( $crm['digest_hour'] ?? 8 ) ) ),
+		'sources'     => sanitize_textarea_field( (string) ( $crm['sources'] ?? '' ) ),
 	);
 	return $out;
 }
