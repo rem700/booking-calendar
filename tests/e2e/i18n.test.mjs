@@ -1,13 +1,16 @@
 // The admin follows the user's profile language: English by default, Russian from the bundled translation.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { chromium, seed, wpEval, login, WP_URL } from './lib.mjs';
+import { chromium, seed, wpEval, login, api, firstSlot, bookableMonth, requestBody, WP_URL } from './lib.mjs';
 
 let browser, page;
 const setLocale = (l) => wpEval(`update_user_meta(get_user_by('login','admin')->ID,'locale','${l}');`);
 
 before(async () => {
   seed();
+  const s = await firstSlot(bookableMonth(), 1, 'hall-a');
+  const r = await api('request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody({ date: s.date, time: s.time, email: 'ira@example.test', name: 'Ira' })) });
+  assert.equal(r.status, 200);
   browser = await chromium.launch();
   page = await browser.newPage();
   await login(page);
@@ -42,4 +45,9 @@ test('Russian admin when the profile language is Russian', async () => {
   assert.doesNotMatch(tabs, /Schedule|Name in e-mails/);
   await page.goto(WP_URL + '/wp-admin/edit.php?post_type=bk_booking&page=bkb-clients');
   assert.match(await page.textContent('#wpbody-content'), /Клиенты/);
+  const id = wpEval("$p=get_posts(['post_type'=>'bk_booking','numberposts'=>1,'fields'=>'ids']);echo $p[0];");
+  await page.goto(`${WP_URL}/wp-admin/post.php?post=${id}&action=edit`);
+  const dialog = new Promise((res) => page.once('dialog', async (d) => { res(d.message()); await d.dismiss(); }));
+  await page.locator('.bkb-rep-l:not([hidden]) [data-send]').first().click();
+  assert.equal(await dialog, 'Отправить это письмо на ira@example.test?');
 });
