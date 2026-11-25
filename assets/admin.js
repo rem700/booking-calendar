@@ -140,6 +140,7 @@
 	R.locations = function () {
 		var list = S.locations || [];
 		return '<p class="description">' + __('Where the booking takes place. If there is only one location, leave the list empty. A location can have its own hours, for example the hours of a partner studio.', 'shootbook') + '</p>' +
+			(list.length > 1 ? '<p><label><input type="checkbox" data-p="schedule.parallel" data-t="bool" data-rerender="1"' + (get('schedule.parallel') ? ' checked' : '') + '> ' + esc(__('Locations are booked separately', 'shootbook')) + '</label></p><p class="description">' + __('On: a request takes up time only in its own location, so two halls can be booked for the same hour. Off: a request takes up the time in all locations, for example when one photographer works everywhere.', 'shootbook') + '</p>' : '') +
 			list.map(function (x, i) {
 				var p = 'locations.' + i;
 				var days = DAYS.map(function (d, j) {
@@ -151,6 +152,7 @@
 				}).join('');
 				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New location', 'shootbook')) + '</b>' + listTools('locations', i, list.length) + '</div>' +
 					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) +
+					(S.schedule && S.schedule.parallel ? '<div class="bkb-sub">' + __('Bookings at the same time', 'shootbook') + '</div>' + '<input type="number" class="small-text" data-p="' + p + '.capacity" data-t="num" min="1" max="50" value="' + esc(get(p + '.capacity') || 1) + '">' + '<p class="description">' + __('For example, 2 if two shoots can run in this location at once.', 'shootbook') + '</p>' : '') +
 					'<div class="bkb-sub">' + __('Address', 'shootbook') + '</div>' + text(p + '.address') + '<p class="description">' + __('Added to the confirmation e-mail and to the calendar event. Empty: no address.', 'shootbook') + '</p>' +
 					'<details><summary>' + __('Opening hours of this location', 'shootbook') + '</summary><table class="bkb-days">' + days + '</table></details></div>';
 			}).join('') + addBtn('locations', __('Add location', 'shootbook'));
