@@ -25,6 +25,11 @@
 		});
 	}
 	function pad(n) { return (n < 10 ? '0' : '') + n; }
+	// With plain permalinks the API address already holds "?rest_route=…", so the query is added with "&".
+	function apiUrl(path, query) {
+		var u = C.api + path;
+		return query ? u + (u.indexOf('?') < 0 ? '?' : '\x26') + query : u;
+	}
 	function fill(tpl, v) { return String(tpl).replace(/\{(\w+)\}/g, function (m, k) { return v[k] != null ? v[k] : m; }); }
 	function fmtMin(m) {
 		var h = Math.floor(m / 60), r = m % 60, s = [];
@@ -206,7 +211,7 @@
 		var k = key();
 		if (loaded[k]) { render(); return; }
 		cal.innerHTML = '<div class="bkb-loading">' + esc(T.loading) + '</div>';
-		fetch(C.api + 'slots?month=' + view.y + '-' + pad(view.m + 1) + '\x26h=' + st.hours + '\x26loc=' + encodeURIComponent(st.location), { credentials: 'omit' })
+		fetch(apiUrl('slots', 'month=' + view.y + '-' + pad(view.m + 1) + '\x26h=' + st.hours + '\x26loc=' + encodeURIComponent(st.location)), { credentials: 'omit' })
 			.then(function (r) { return r.json(); })
 			.then(function (j) {
 				loaded[k] = true;
@@ -358,7 +363,7 @@
 		var btn = form.querySelector('.bkb-submit');
 		btn.disabled = true;
 		btn.textContent = T.sending;
-		fetch(C.api + 'request', { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+		fetch(apiUrl('request'), { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 			.then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
 			.then(function (res) {
 				if (res.s === 200 ? (res.j ? res.j.ok : false) : false) {
