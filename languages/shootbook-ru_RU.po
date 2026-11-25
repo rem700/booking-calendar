@@ -65,7 +65,7 @@ msgstr "Получена"
 msgid "Waiting for an answer"
 msgstr "Ждёт ответа"
 
-#: includes/admin.php:156 includes/crm-admin.php:456 includes/crm.php:26
+#: includes/admin.php:156 includes/crm.php:26
 msgid "Confirmed"
 msgstr "Подтверждена"
 
@@ -228,7 +228,7 @@ msgstr "Источник"
 #: includes/crm-admin.php:116 includes/crm-admin.php:456
 msgctxt "number of requests"
 msgid "Requests"
-msgstr "Заявки"
+msgstr "Заявок"
 
 #: includes/crm-admin.php:116
 msgid "Last contact"
@@ -431,7 +431,12 @@ msgstr "Откуда приходят заявки"
 #: includes/crm-admin.php:456
 msgctxt "number of clients"
 msgid "Clients"
-msgstr "Клиенты"
+msgstr "Клиентов"
+
+#: includes/crm-admin.php:456
+msgctxt "number of confirmed requests"
+msgid "Confirmed"
+msgstr "Подтверждено"
 
 #: includes/crm-admin.php:456
 msgid "Share confirmed"
