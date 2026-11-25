@@ -10,6 +10,7 @@ Free times are worked out from your working hours, the time you need to prepare,
 
 - Any services, locations and options, all set in **Requests → Settings**, no code needed
 - Working hours per weekday, with separate hours for each location
+- Locations booked separately if you like, so two halls can take the same hour; each location can take several bookings at once
 - Session lengths, preparation time, start time step, how many days ahead and how soon a booking can start
 - Busy times from one or more iCal feeds (Google Calendar, Outlook, Apple)
 - Form fields you can switch on or off, a field for extra details, a session language choice

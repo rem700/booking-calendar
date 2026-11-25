@@ -20,6 +20,7 @@ Free times are worked out from your opening hours, the time you need to prepare,
 
 * Any services, locations and options, set in Requests → Settings, no code needed
 * Opening hours per weekday, with separate hours for each location
+* Several halls booked at the same time, each with its own capacity
 * Session lengths, preparation time, start time step, how many days ahead and how soon a booking can start
 * Busy times from one or more iCal feeds (Google Calendar, Outlook, Apple)
 * Form fields you can switch on or off, a field for extra details, a session language choice
@@ -69,7 +70,7 @@ Yes, with a few lines of JavaScript that set the price from the chosen service a
 
 = Can two halls be booked at the same time? =
 
-Not yet. For now a request blocks its time in all locations.
+Yes. Turn on "Locations are booked separately" on the Locations tab. Then a request takes up time only in its own location, and each location can take several bookings at once if you set that.
 
 == External services ==
 
@@ -85,6 +86,7 @@ The plugin connects to outside services only in these cases.
 
 * The admin is in English with a Russian translation and follows the profile language.
 * Own request sources can be added in the settings.
+* Locations can be booked separately, each with its own capacity.
 * Two requests for the same time sent at the same moment can no longer both be saved.
 * The calendar works on sites without pretty permalinks.
 * Deactivating stops the scheduled tasks, and deleting the plugin removes its cached feeds.

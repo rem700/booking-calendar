@@ -51,7 +51,12 @@ function bkb_requests_in( $from, $to ) {
 	);
 	$out = array();
 	foreach ( $q as $id ) {
-		$out[] = array( (int) get_post_meta( $id, '_bkb_start', true ), (int) get_post_meta( $id, '_bkb_end', true ) );
+		$loc = (string) get_post_meta( $id, '_bkb_location', true );
+		if ( '' === $loc ) {
+			$loc = (string) get_post_meta( $id, '_bkb_loc', true ); // Saved by version 1.
+		}
+		/* [start, end] like any busy interval; 'loc' marks it as a request in that location. */
+		$out[] = array( (int) get_post_meta( $id, '_bkb_start', true ), (int) get_post_meta( $id, '_bkb_end', true ), 'loc' => $loc );
 	}
 	return $out;
 }
@@ -70,13 +75,51 @@ function bkb_busy( $from, $to ) {
 	return apply_filters( 'bkb_busy', array_merge( $busy, bkb_requests_in( $from, $to ) ), $from, $to );
 }
 
-function bkb_is_free( $s, $e, $busy ) {
+/**
+ * Whether [$s, $e) can take one more booking.
+ *
+ * Calendar events and intervals added through the bkb_busy filter block every location.
+ * Requests block every location too, unless locations are booked separately: then only
+ * requests in $loc count (and requests without a location), up to the location's capacity.
+ */
+function bkb_is_free( $s, $e, $busy, $loc = '' ) {
+	$own = '' !== $loc && bkb_cfg( 'schedule' )['parallel'] ? bkb_location( $loc ) : null;
+	$cap = $own ? max( 1, (int) ( $own['capacity'] ?? 1 ) ) : 1;
+	$in  = array();
 	foreach ( $busy as $b ) {
-		if ( $s < $b[1] && $e > $b[0] ) {
+		if ( ! ( $s < $b[1] && $e > $b[0] ) ) {
+			continue;
+		}
+		if ( ! $own || ! isset( $b['loc'] ) || '' === $b['loc'] ) {
 			return false;
 		}
+		if ( $b['loc'] === $loc ) {
+			$in[] = array( max( $s, $b[0] ), min( $e, $b[1] ) );
+		}
 	}
-	return true;
+	return bkb_max_overlap( $in ) < $cap;
+}
+
+/** The largest number of intervals that overlap at one moment. */
+function bkb_max_overlap( $list ) {
+	$pts = array();
+	foreach ( $list as $i ) {
+		$pts[] = array( $i[0], 1 );
+		$pts[] = array( $i[1], -1 );
+	}
+	usort(
+		$pts,
+		function ( $a, $b ) {
+			return $a[0] === $b[0] ? $a[1] - $b[1] : $a[0] - $b[0];
+		}
+	);
+	$n   = 0;
+	$max = 0;
+	foreach ( $pts as $p ) {
+		$n  += $p[1];
+		$max = max( $max, $n );
+	}
+	return $max;
 }
 
 function bkb_at( DateTime $d, $hours ) {
@@ -115,7 +158,7 @@ function bkb_month_slots( $ym, $hours, $loc = '' ) {
 		$close = bkb_at( $d, $h[1] );
 		$times = array();
 		for ( $t = $open; $t + $dur <= $close; $t += $step ) {
-			if ( $t > $now && bkb_is_free( $t, $t + $dur, $busy ) ) {
+			if ( $t > $now && bkb_is_free( $t, $t + $dur, $busy, $loc ) ) {
 				$times[] = wp_date( 'H:i', $t, $tz );
 			}
 		}

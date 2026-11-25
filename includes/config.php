@@ -34,6 +34,7 @@ function bkb_default_config() {
 			'prep'             => 0,
 			'durations'        => array( 1 ),
 			'default_duration' => 1,
+			'parallel'         => false,
 		),
 		'services'  => array(),
 		'locations' => array(),
@@ -318,6 +319,7 @@ function bkb_sanitize_config( $c ) {
 		'prep'             => max( 0, min( 480, (int) ( $s['prep'] ?? 0 ) ) ),
 		'durations'        => $durs ? $durs : array( 1 ),
 		'default_duration' => (float) ( $s['default_duration'] ?? 1 ),
+		'parallel'         => ! empty( $s['parallel'] ),
 	);
 	$out['services'] = array();
 	foreach ( (array) ( $c['services'] ?? array() ) as $x ) {
@@ -331,10 +333,11 @@ function bkb_sanitize_config( $c ) {
 		$id = bkb_clean_id( $x['id'] ?? '' );
 		if ( '' !== $id ) {
 			$out['locations'][] = array(
-				'id'      => $id,
-				'label'   => bkb_clean_labels( $x['label'] ?? array() ),
-				'address' => sanitize_text_field( (string) ( $x['address'] ?? '' ) ),
-				'days'    => bkb_clean_days( $x['days'] ?? array() ),
+				'id'       => $id,
+				'label'    => bkb_clean_labels( $x['label'] ?? array() ),
+				'address'  => sanitize_text_field( (string) ( $x['address'] ?? '' ) ),
+				'days'     => bkb_clean_days( $x['days'] ?? array() ),
+				'capacity' => max( 1, min( 50, (int) ( $x['capacity'] ?? 1 ) ) ),
 			);
 		}
 	}
