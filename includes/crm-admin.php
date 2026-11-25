@@ -453,7 +453,7 @@ function bkb_crm_report_page() {
 		<br class="clear">
 		<h2><?php esc_html_e( 'Where requests come from', 'shootbook' ); ?></h2>
 		<table class="wp-list-table widefat striped" style="max-width:760px">
-			<thead><tr><th><?php esc_html_e( 'Source', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Requests', 'number of requests', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Clients', 'number of clients', 'shootbook' ); ?></th><th><?php esc_html_e( 'Confirmed', 'shootbook' ); ?></th><th><?php esc_html_e( 'Share confirmed', 'shootbook' ); ?></th></tr></thead>
+			<thead><tr><th><?php esc_html_e( 'Source', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Requests', 'number of requests', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Clients', 'number of clients', 'shootbook' ); ?></th><th><?php echo esc_html_x( 'Confirmed', 'number of confirmed requests', 'shootbook' ); ?></th><th><?php esc_html_e( 'Share confirmed', 'shootbook' ); ?></th></tr></thead>
 			<tbody>
 				<?php if ( ! $rows ) : ?>
 					<tr><td colspan="5"><?php esc_html_e( 'No requests in this period.', 'shootbook' ); ?></td></tr>
