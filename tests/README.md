@@ -5,7 +5,7 @@ End-to-end tests run against a throwaway local WordPress with this plugin instal
 ## What you need
 
 - WordPress with this folder linked or copied to `wp-content/plugins/bk-booking` and pretty permalinks on
-- A web server for it, for example `php -S 127.0.0.1:8080` in the WordPress folder
+- A web server for it that can answer several requests at once (the calendar feed test loads a file from the same site), for example `PHP_CLI_SERVER_WORKERS=4 php -S 127.0.0.1:8080` in the WordPress folder
 - Node.js 18 or newer and Playwright with Chromium (`npm i -g playwright && npx playwright install chromium`)
 - A must-use plugin that writes e-mails to a file instead of sending them:
 
