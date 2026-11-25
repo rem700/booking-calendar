@@ -61,6 +61,6 @@ test('the morning summary is available as JSON for the admin only', async () => 
 
 test('no PHP notices or warnings in the debug log', async () => {
   const log = wpEval("echo @file_get_contents(WP_DEBUG_LOG) ?: '';");
-  const own = log.split('\n').filter((l) => /bk-booking/.test(l));
+  const own = log.split('\n').filter((l) => /bk-booking|shootbook/.test(l));
   assert.deepEqual(own, []);
 });
