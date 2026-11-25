@@ -1,6 +1,7 @@
 (function () {
 	'use strict';
 	var A = window.BKB_ADMIN;
+	var __ = wp.i18n.__, sprintf = wp.i18n.sprintf;
 	var root = document.getElementById('bkb-editor');
 	var form = document.getElementById('bkb-settings-form');
 	if (!A || !root || !form) { return; }
@@ -9,10 +10,10 @@
 	try { tab = sessionStorage.getItem('bkb_tab') || 'general'; } catch (e) {}
 	var textLang = null;
 
-	var DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+	var DAYS = [__('Mon', 'shootbook'), __('Tue', 'shootbook'), __('Wed', 'shootbook'), __('Thu', 'shootbook'), __('Fri', 'shootbook'), __('Sat', 'shootbook'), __('Sun', 'shootbook')];
 	var TABS = [
-		['general', 'Основное'], ['schedule', 'Расписание'], ['services', 'Услуги'], ['locations', 'Места'],
-		['options', 'Опции'], ['fields', 'Поля формы'], ['texts', 'Тексты'], ['replies', 'Готовые ответы'], ['style', 'Оформление'], ['io', 'Импорт и экспорт']
+		['general', __('General', 'shootbook')], ['schedule', __('Schedule', 'shootbook')], ['services', __('Services', 'shootbook')], ['locations', __('Locations', 'shootbook')],
+		['options', __('Options', 'shootbook')], ['fields', __('Form fields', 'shootbook')], ['texts', __('Texts', 'shootbook')], ['replies', __('Reply templates', 'shootbook')], ['style', __('Appearance', 'shootbook')], ['io', __('Import and export', 'shootbook')]
 	];
 
 	function esc(s) {
@@ -67,15 +68,15 @@
 	}
 	function listTools(path, i, n) {
 		return '<span class="bkb-tools">' +
-			'<button type="button" class="button-link" data-act="up" data-path="' + path + '" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + ' title="Выше">↑</button>' +
-			'<button type="button" class="button-link" data-act="down" data-path="' + path + '" data-i="' + i + '"' + (i === n - 1 ? ' disabled' : '') + ' title="Ниже">↓</button>' +
-			'<button type="button" class="button-link bkb-del" data-act="del" data-path="' + path + '" data-i="' + i + '">Удалить</button></span>';
+			'<button type="button" class="button-link" data-act="up" data-path="' + path + '" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + ' title="' + __('Move up', 'shootbook') + '">↑</button>' +
+			'<button type="button" class="button-link" data-act="down" data-path="' + path + '" data-i="' + i + '"' + (i === n - 1 ? ' disabled' : '') + ' title="' + __('Move down', 'shootbook') + '">↓</button>' +
+			'<button type="button" class="button-link bkb-del" data-act="del" data-path="' + path + '" data-i="' + i + '">' + __('Delete', 'shootbook') + '</button></span>';
 	}
 	function addBtn(path, label) {
 		return '<p><button type="button" class="button" data-act="add" data-path="' + path + '">' + esc(label) + '</button></p>';
 	}
 	function idInput(path) {
-		return '<label class="bkb-id"><span>Код</span><input type="text" data-p="' + path + '" data-t="id" value="' + esc(get(path)) + '" placeholder="латиницей, без пробелов"></label>';
+		return '<label class="bkb-id"><span>' + __('Code', 'shootbook') + '</span><input type="text" data-p="' + path + '" data-t="id" value="' + esc(get(path)) + '" placeholder="' + __('Latin letters, no spaces', 'shootbook') + '"></label>';
 	}
 
 	/* ---------- tabs ---------- */
@@ -83,23 +84,23 @@
 
 	R.general = function () {
 		var st = (A.icsStatus || []).map(function (n, i) {
-			return 'Календарь ' + (i + 1) + ': ' + (n < 0 ? '<b style="color:#b32d2e">не удалось загрузить</b>' : '<b style="color:#1a7f37">подключён, событий: ' + n + '</b>');
+			return sprintf(__('Calendar %d:', 'shootbook'), i + 1) + ' ' + (n < 0 ? '<b style="color:#b32d2e">' + __('could not be loaded', 'shootbook') + '</b>' : '<b style="color:#1a7f37">' + sprintf(__('connected, events: %d', 'shootbook'), n) + '</b>');
 		}).join('<br>');
 		return '<table class="form-table">' +
-			row('Название для писем', text('site_name'), 'Подставляется в темы писем и в календарь. Пусто — название сайта.') +
-			row('Адрес отправителя', text('from', ' placeholder="booking@example.com"'), 'От этого адреса уходят письма сайта клиентам и вам. Ответы клиентов тоже приходят на него. Лучше адрес на домене сайта. Пусто — стандартный адрес WordPress.') +
-			row('Куда присылать заявки', text('notify', ' placeholder="name@example.com, second@example.com"'), 'Можно несколько адресов через запятую. Если адрес отправителя не указан, клиенты отвечают на первый из них.') +
-			row('Календари (iCal)', area('ics', 3, 'https://calendar.google.com/calendar/ical/…/basic.ics'), 'Секретные адреса iCal, по одному в строке. Занятое в них время на сайте недоступно. Адреса не показываются посетителям.' + (st ? '<br>' + st : '')) +
-			row('Контакты для клиента', text('contact'), 'Например «Instagram: @name». Попадает в событие календаря клиента.') +
-			row('Подпись в письмах', area('signature', 3), 'Последние строки писем клиенту. Пусто — название.') +
-			row('Языки формы', Object.keys(A.langs).map(function (l) {
+			row(__('Name in e-mails', 'shootbook'), text('site_name'), __('Used in e-mail subjects and in the calendar. Empty: the site title.', 'shootbook')) +
+			row(__('Sender address', 'shootbook'), text('from', ' placeholder="booking@example.com"'), __('Site e-mails to clients and to you are sent from this address. Client replies also come to it. An address on the site domain works best. Empty: the default WordPress address.', 'shootbook')) +
+			row(__('Send requests to', 'shootbook'), text('notify', ' placeholder="name@example.com, second@example.com"'), __('Several addresses can be separated by commas. If no sender address is set, clients reply to the first one.', 'shootbook')) +
+			row(__('Calendars (iCal)', 'shootbook'), area('ics', 3, 'https://calendar.google.com/calendar/ical/…/basic.ics'), __('Secret iCal addresses, one per line. Time that is busy in them cannot be booked on the site. Visitors never see these addresses.', 'shootbook') + (st ? '<br>' + st : '')) +
+			row(__('Contacts for the client', 'shootbook'), text('contact'), __('For example “Instagram: @name”. Added to the client’s calendar event.', 'shootbook')) +
+			row(__('E-mail signature', 'shootbook'), area('signature', 3), __('The last lines of e-mails to the client. Empty: the name.', 'shootbook')) +
+			row(__('Form languages', 'shootbook'), Object.keys(A.langs).map(function (l) {
 				return '<label class="bkb-inline"><input type="checkbox" data-lang="' + l + '"' + (langs().indexOf(l) >= 0 ? ' checked' : '') + '> ' + esc(A.langs[l]) + '</label>';
-			}).join(''), 'Для этих языков заполняются названия услуг, опций и тексты. Язык формы берётся из языка страницы.') +
-			row('Политика конфиденциальности', labels('privacy', 'ссылка'), 'Ссылка в галочке согласия. Пусто — страница политики из настроек WordPress.') +
-			row('Хранить заявки', num('retention_days', 30, 3650) + ' дней после даты записи') +
-			row('Напоминание клиенту', check('reminder', 'Отправлять письмо накануне подтверждённой записи')) +
-			row('Утренняя сводка', check('crm.digest', 'Присылать на почту для заявок сводку: новые заявки, кто ждёт ответа, записи на сегодня и завтра, задачи') + ' в ' + num('crm.digest_hour', 0, 23) + ':00', 'Если сообщать нечего, письмо не приходит.') +
-			row('Источник заявки', check('crm.source', 'Запоминать, откуда посетитель пришёл на сайт'), 'Метки UTM в ссылке или сайт, с которого он перешёл (Instagram, Google…). Видно в карточке клиента и в отчёте. Личные данные не сохраняются, пока человек не отправит заявку.') +
+			}).join(''), __('Service names, options and texts are filled in for these languages. The form language follows the page language.', 'shootbook')) +
+			row(__('Privacy policy', 'shootbook'), labels('privacy', __('link', 'shootbook')), __('Link in the consent checkbox. Empty: the privacy policy page from the WordPress settings.', 'shootbook')) +
+			row(__('Keep requests', 'shootbook'), sprintf(__('%s days after the booking date', 'shootbook'), num('retention_days', 30, 3650))) +
+			row(__('Client reminder', 'shootbook'), check('reminder', __('Send an e-mail the day before a confirmed booking', 'shootbook'))) +
+			row(__('Morning digest', 'shootbook'), check('crm.digest', __('Send a digest to the request address: new requests, who is waiting for a reply, bookings for today and tomorrow, tasks', 'shootbook')) + ' ' + sprintf(__('at %s:00', 'shootbook'), num('crm.digest_hour', 0, 23)), __('If there is nothing to report, no e-mail is sent.', 'shootbook')) +
+			row(__('Request source', 'shootbook'), check('crm.source', __('Remember where the visitor came to the site from', 'shootbook')), __('UTM tags in the link or the site the visitor came from (Instagram, Google…). Shown in the client card and in the report. No personal data is stored until the person sends a request.', 'shootbook')) +
 			'</table>';
 	};
 
@@ -109,55 +110,55 @@
 			var k = 'schedule.days.' + (i + 1);
 			var v = get(k);
 			var open = Array.isArray(v);
-			return '<tr><td>' + d + '</td><td><label><input type="checkbox" data-day="' + k + '"' + (open ? ' checked' : '') + '> работаем</label></td>' +
+			return '<tr><td>' + d + '</td><td><label><input type="checkbox" data-day="' + k + '"' + (open ? ' checked' : '') + '> ' + __('open', 'shootbook') + '</label></td>' +
 				'<td><input type="time" data-p="' + k + '.0" data-t="time" value="' + (open ? hm(v[0]) : '') + '"' + (open ? '' : ' disabled') + '> — ' +
 				'<input type="time" data-p="' + k + '.1" data-t="time" value="' + (open ? hm(v[1]) : '') + '"' + (open ? '' : ' disabled') + '></td></tr>';
 		}).join('');
 		return '<table class="form-table">' +
-			row('Часы работы', '<table class="bkb-days">' + days + '</table>', 'Запись вместе с подготовкой должна закончиться до конца рабочего времени. Для отдельных мест часы можно поменять во вкладке «Места».') +
-			row('Время начала', '<select data-p="schedule.step" data-t="num">' + [15, 20, 30, 45, 60, 90, 120].map(function (m) {
-				return '<option value="' + m + '"' + (+s.step === m ? ' selected' : '') + '>каждые ' + (m < 60 ? m + ' мин' : (m / 60) + ' ч') + '</option>';
+			row(__('Opening hours', 'shootbook'), '<table class="bkb-days">' + days + '</table>', __('A booking, including preparation, must end before closing time. Hours of a single location can be changed on the Locations tab.', 'shootbook')) +
+			row(__('Start times', 'shootbook'), '<select data-p="schedule.step" data-t="num">' + [15, 20, 30, 45, 60, 90, 120].map(function (m) {
+				return '<option value="' + m + '"' + (+s.step === m ? ' selected' : '') + '>' + (m < 60 ? sprintf(__('every %d min', 'shootbook'), m) : sprintf(__('every %s h', 'shootbook'), m / 60)) + '</option>';
 			}).join('') + '</select>') +
-			row('Длительность на выбор', '<input type="text" class="regular-text" data-p="schedule.durations" data-t="list" value="' + esc((s.durations || []).join(', ')) + '">', 'В часах через запятую, например «1, 2, 3» или «0.5, 1».') +
-			row('Длительность по умолчанию', num('schedule.default_duration', 0.25, 24, 0.25) + ' ч') +
-			row('Подготовка', num('schedule.prep', 0, 480, 5) + ' мин', 'Добавляется к выбранной длительности и тоже занимает время (облачение, настройка света и т. п.). 0 — без подготовки.') +
-			row('Записаться можно', 'не раньше чем через ' + num('schedule.lead_days', 0, 60) + ' дн. и не дальше чем на ' + num('schedule.horizon_days', 7, 730) + ' дн. вперёд') +
+			row(__('Durations to choose from', 'shootbook'), '<input type="text" class="regular-text" data-p="schedule.durations" data-t="list" value="' + esc((s.durations || []).join(', ')) + '">', __('In hours, separated by commas, for example “1, 2, 3” or “0.5, 1”.', 'shootbook')) +
+			row(__('Default duration', 'shootbook'), sprintf(__('%s h', 'shootbook'), num('schedule.default_duration', 0.25, 24, 0.25))) +
+			row(__('Preparation', 'shootbook'), sprintf(__('%s min', 'shootbook'), num('schedule.prep', 0, 480, 5)), __('Added to the chosen duration and also takes up time (changing, setting up the light and so on). 0: no preparation.', 'shootbook')) +
+			row(__('Booking window', 'shootbook'), sprintf(__('no sooner than in %1$s days and no further than %2$s days ahead', 'shootbook'), num('schedule.lead_days', 0, 60), num('schedule.horizon_days', 7, 730))) +
 			'</table>';
 	};
 
 	R.services = function () {
 		var list = S.services || [];
-		return '<p class="description">Что можно забронировать. Если услуга одна или выбор не нужен, список можно оставить пустым.</p>' +
+		return '<p class="description">' + __('What can be booked. If there is only one service or no choice is needed, leave the list empty.', 'shootbook') + '</p>' +
 			list.map(function (x, i) {
 				var p = 'services.' + i;
-				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || 'Новая услуга') + '</b>' + listTools('services', i, list.length) + '</div>' +
-					idInput(p + '.id') + '<div class="bkb-sub">Название</div>' + labels(p + '.label', x.id) + '</div>';
-			}).join('') + addBtn('services', 'Добавить услугу');
+				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New service', 'shootbook')) + '</b>' + listTools('services', i, list.length) + '</div>' +
+					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) + '</div>';
+			}).join('') + addBtn('services', __('Add service', 'shootbook'));
 	};
 
 	R.locations = function () {
 		var list = S.locations || [];
-		return '<p class="description">Где проходит запись. Если место одно, список можно оставить пустым. У места можно задать свои часы, например часы студии-партнёра.</p>' +
+		return '<p class="description">' + __('Where the booking takes place. If there is only one location, leave the list empty. A location can have its own hours, for example the hours of a partner studio.', 'shootbook') + '</p>' +
 			list.map(function (x, i) {
 				var p = 'locations.' + i;
 				var days = DAYS.map(function (d, j) {
 					var k = p + '.days.' + (j + 1);
 					var v = get(k);
 					var mode = v === undefined ? 'gen' : (Array.isArray(v) ? 'own' : 'off');
-					return '<tr><td>' + d + '</td><td><select data-locday="' + k + '"><option value="gen"' + (mode === 'gen' ? ' selected' : '') + '>как в расписании</option><option value="own"' + (mode === 'own' ? ' selected' : '') + '>свои часы</option><option value="off"' + (mode === 'off' ? ' selected' : '') + '>не работаем</option></select></td>' +
+					return '<tr><td>' + d + '</td><td><select data-locday="' + k + '"><option value="gen"' + (mode === 'gen' ? ' selected' : '') + '>' + __('as in the schedule', 'shootbook') + '</option><option value="own"' + (mode === 'own' ? ' selected' : '') + '>' + __('own hours', 'shootbook') + '</option><option value="off"' + (mode === 'off' ? ' selected' : '') + '>' + __('closed', 'shootbook') + '</option></select></td>' +
 						'<td>' + (mode === 'own' ? '<input type="time" data-p="' + k + '.0" data-t="time" value="' + hm(v[0]) + '"> — <input type="time" data-p="' + k + '.1" data-t="time" value="' + hm(v[1]) + '">' : '') + '</td></tr>';
 				}).join('');
-				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || 'Новое место') + '</b>' + listTools('locations', i, list.length) + '</div>' +
-					idInput(p + '.id') + '<div class="bkb-sub">Название</div>' + labels(p + '.label', x.id) +
-					'<div class="bkb-sub">Адрес</div>' + text(p + '.address') + '<p class="description">Попадает в письмо о подтверждении и в событие календаря. Пусто — без адреса.</p>' +
-					'<details><summary>Часы работы этого места</summary><table class="bkb-days">' + days + '</table></details></div>';
-			}).join('') + addBtn('locations', 'Добавить место');
+				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New location', 'shootbook')) + '</b>' + listTools('locations', i, list.length) + '</div>' +
+					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) +
+					'<div class="bkb-sub">' + __('Address', 'shootbook') + '</div>' + text(p + '.address') + '<p class="description">' + __('Added to the confirmation e-mail and to the calendar event. Empty: no address.', 'shootbook') + '</p>' +
+					'<details><summary>' + __('Opening hours of this location', 'shootbook') + '</summary><table class="bkb-days">' + days + '</table></details></div>';
+			}).join('') + addBtn('locations', __('Add location', 'shootbook'));
 	};
 
 	R.options = function () {
 		var list = S.options || [];
 		var locs = (S.locations || []).map(function (l) { return l.id; });
-		return '<p class="description">Дополнительный выбор в форме: «да/нет» (например, видео) или один вариант из нескольких (например, свой или наш фотограф).</p>' +
+		return '<p class="description">' + __('An extra choice in the form: “yes or no” (for example, video) or one of several options (for example, your own photographer or ours).', 'shootbook') + '</p>' +
 			list.map(function (x, i) {
 				var p = 'options.' + i;
 				var only = x.locations || [];
@@ -165,40 +166,40 @@
 					var cp = p + '.choices.' + j;
 					return '<div class="bkb-choice">' + idInput(cp + '.id') + labels(cp + '.label', c.id) + listTools(p + '.choices', j, x.choices.length) + '</div>';
 				}).join('');
-				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || 'Новая опция') + '</b>' + listTools('options', i, list.length) + '</div>' +
+				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New option', 'shootbook')) + '</b>' + listTools('options', i, list.length) + '</div>' +
 					idInput(p + '.id') +
-					'<div class="bkb-sub">Вид</div><select data-p="' + p + '.type" data-rerender="1"><option value="yesno"' + (x.type !== 'choice' ? ' selected' : '') + '>да / нет</option><option value="choice"' + (x.type === 'choice' ? ' selected' : '') + '>один из вариантов</option></select>' +
-					'<div class="bkb-sub">Название</div>' + labels(p + '.label', x.id) +
-					'<div class="bkb-sub">Пояснение (необязательно)</div>' + labels(p + '.note') +
-					(x.type === 'choice' ? '<div class="bkb-sub">Варианты</div>' + ch + addBtn(p + '.choices', 'Добавить вариант') +
-						'<div class="bkb-sub">По умолчанию</div><select data-p="' + p + '.default">' + (x.choices || []).map(function (c) {
+					'<div class="bkb-sub">' + __('Type', 'shootbook') + '</div><select data-p="' + p + '.type" data-rerender="1"><option value="yesno"' + (x.type !== 'choice' ? ' selected' : '') + '>' + __('yes / no', 'shootbook') + '</option><option value="choice"' + (x.type === 'choice' ? ' selected' : '') + '>' + __('one of several', 'shootbook') + '</option></select>' +
+					'<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) +
+					'<div class="bkb-sub">' + __('Note (optional)', 'shootbook') + '</div>' + labels(p + '.note') +
+					(x.type === 'choice' ? '<div class="bkb-sub">' + __('Choices', 'shootbook') + '</div>' + ch + addBtn(p + '.choices', __('Add choice', 'shootbook')) +
+						'<div class="bkb-sub">' + __('Default', 'shootbook') + '</div><select data-p="' + p + '.default">' + (x.choices || []).map(function (c) {
 							return '<option value="' + esc(c.id) + '"' + (c.id === x.default ? ' selected' : '') + '>' + esc(c.id) + '</option>';
 						}).join('') + '</select>'
-						: '<div class="bkb-sub">По умолчанию</div><select data-p="' + p + '.default"><option value="0"' + (x.default !== '1' ? ' selected' : '') + '>нет</option><option value="1"' + (x.default === '1' ? ' selected' : '') + '>да</option></select>') +
-					(locs.length ? '<div class="bkb-sub">Где доступна</div>' + locs.map(function (l) {
+						: '<div class="bkb-sub">' + __('Default', 'shootbook') + '</div><select data-p="' + p + '.default"><option value="0"' + (x.default !== '1' ? ' selected' : '') + '>' + __('no', 'shootbook') + '</option><option value="1"' + (x.default === '1' ? ' selected' : '') + '>' + __('yes', 'shootbook') + '</option></select>') +
+					(locs.length ? '<div class="bkb-sub">' + __('Available at', 'shootbook') + '</div>' + locs.map(function (l) {
 						return '<label class="bkb-inline"><input type="checkbox" data-optloc="' + p + '" value="' + esc(l) + '"' + (only.indexOf(l) >= 0 ? ' checked' : '') + '> ' + esc(l) + '</label>';
-					}).join('') + '<p class="description">Ничего не отмечено — везде.</p>' : '') +
+					}).join('') + '<p class="description">' + __('Nothing checked: everywhere.', 'shootbook') + '</p>' : '') +
 					'</div>';
-			}).join('') + addBtn('options', 'Добавить опцию');
+			}).join('') + addBtn('options', __('Add option', 'shootbook'));
 	};
 
 	R.fields = function () {
 		var sl = (S.fields.slang && S.fields.slang.choices) || [];
 		return '<table class="form-table">' +
-			row('Имя и e-mail', 'всегда, обязательные') +
-			row('Телефон', check('fields.phone.on', 'Показывать (необязательное поле)')) +
-			row('Поле «Подробности»', check('fields.details.on', 'Показывать') + '<br>' + check('fields.details.required', 'Обязательное') +
-				'<div class="bkb-sub">Подпись</div>' + labels('fields.details.label') + '<div class="bkb-sub">Подсказка в поле</div>' + labels('fields.details.placeholder'),
-				'Например «Гости: рост и комплекция каждого» или «Что нужно сделать».') +
-			row('Сообщение', check('fields.message.on', 'Показывать поле «Что-то ещё»')) +
-			row('Язык записи', check('fields.slang.on', 'Спрашивать, на каком языке проводить') +
+			row(__('Name and e-mail', 'shootbook'), __('always, required', 'shootbook')) +
+			row(__('Phone', 'shootbook'), check('fields.phone.on', __('Show (optional field)', 'shootbook'))) +
+			row(__('Details field', 'shootbook'), check('fields.details.on', __('Show', 'shootbook')) + '<br>' + check('fields.details.required', __('Required', 'shootbook')) +
+				'<div class="bkb-sub">' + __('Label', 'shootbook') + '</div>' + labels('fields.details.label') + '<div class="bkb-sub">' + __('Placeholder', 'shootbook') + '</div>' + labels('fields.details.placeholder'),
+				__('For example “Guests: height and build of each” or “What needs to be done”.', 'shootbook')) +
+			row(__('Message', 'shootbook'), check('fields.message.on', __('Show the “Anything else” field', 'shootbook'))) +
+			row(__('Session language', 'shootbook'), check('fields.slang.on', __('Ask which language the session should be in', 'shootbook')) +
 				sl.map(function (c, j) {
 					var cp = 'fields.slang.choices.' + j;
 					return '<div class="bkb-choice">' + idInput(cp + '.id') + labels(cp + '.label', c.id) +
-						'<div class="bkb-sub">Не показывать на страницах на языке</div>' + langs().map(function (l) {
+						'<div class="bkb-sub">' + __('Hide on pages in', 'shootbook') + '</div>' + langs().map(function (l) {
 							return '<label class="bkb-inline"><input type="checkbox" data-hide="' + cp + '" value="' + l + '"' + ((c.hide || []).indexOf(l) >= 0 ? ' checked' : '') + '> ' + l.toUpperCase() + '</label>';
 						}).join('') + listTools('fields.slang.choices', j, sl.length) + '</div>';
-				}).join('') + addBtn('fields.slang.choices', 'Добавить язык')) +
+				}).join('') + addBtn('fields.slang.choices', __('Add language', 'shootbook'))) +
 			'</table>';
 	};
 
@@ -208,15 +209,15 @@
 		var def = A.texts[textLang] || A.texts.en;
 		var own = (S.texts && S.texts[textLang]) || {};
 		var names = {
-			h_service: 'Заголовок шага 1', h_date: 'Заголовок шага 2', h_details: 'Заголовок шага 3', service: 'Подпись «Услуга»', location: 'Подпись «Место»',
-			duration: 'Подпись «Длительность»', dur_note: 'Пояснение про подготовку ({prep}, {total})', prep_short: 'Подготовка в сводке ({prep})', tz: 'Про часовой пояс',
-			note: 'Под кнопкой', submit: 'Кнопка', consent: 'Согласие (%s — ссылка)', ok_mail: 'После отправки (%s — e-mail)', ok_next: 'После отправки, вторая строка',
-			m_ack_subj: 'Письмо «получили»: тема', m_ack: 'Письмо «получили»', m_conf_subj: 'Письмо «подтверждено»: тема', m_conf: 'Письмо «подтверждено»',
-			m_decl_subj: 'Письмо «отклонено»: тема', m_decl: 'Письмо «отклонено»', m_rem_subj: 'Напоминание: тема', m_rem: 'Напоминание', m_where: 'Строка с адресом ({address})', m_gcal: 'Строка с календарём ({url})'
+			h_service: __('Step 1 heading', 'shootbook'), h_date: __('Step 2 heading', 'shootbook'), h_details: __('Step 3 heading', 'shootbook'), service: __('“Service” label', 'shootbook'), location: __('“Location” label', 'shootbook'),
+			duration: __('“Duration” label', 'shootbook'), dur_note: __('Preparation note ({prep}, {total})', 'shootbook'), prep_short: __('Preparation in the summary ({prep})', 'shootbook'), tz: __('Time zone note', 'shootbook'),
+			note: __('Below the button', 'shootbook'), submit: __('Button', 'shootbook'), consent: __('Consent (%s is the link)', 'shootbook'), ok_mail: __('After sending (%s is the e-mail)', 'shootbook'), ok_next: __('After sending, second line', 'shootbook'),
+			m_ack_subj: __('“Received” e-mail: subject', 'shootbook'), m_ack: __('“Received” e-mail', 'shootbook'), m_conf_subj: __('“Confirmed” e-mail: subject', 'shootbook'), m_conf: __('“Confirmed” e-mail', 'shootbook'),
+			m_decl_subj: __('“Declined” e-mail: subject', 'shootbook'), m_decl: __('“Declined” e-mail', 'shootbook'), m_rem_subj: __('Reminder: subject', 'shootbook'), m_rem: __('Reminder', 'shootbook'), m_where: __('Address line ({address})', 'shootbook'), m_gcal: __('Calendar line ({url})', 'shootbook')
 		};
-		return '<p>Язык: ' + ls.map(function (l) {
+		return '<p>' + __('Language:', 'shootbook') + ' ' + ls.map(function (l) {
 			return '<button type="button" class="button' + (l === textLang ? ' button-primary' : '') + '" data-textlang="' + l + '">' + esc(A.langs[l]) + '</button>';
-		}).join(' ') + '</p><p class="description">Пустое поле — используется стандартный текст (он виден серым). В письмах можно использовать {name}, {summary}, {where}, {calendar}, {book_url}, {site}, {signature}.</p>' +
+		}).join(' ') + '</p><p class="description">' + __('An empty field uses the default text, shown in grey. E-mails can use {name}, {summary}, {where}, {calendar}, {book_url}, {site}, {signature}.', 'shootbook') + '</p>' +
 			'<table class="form-table bkb-texts">' + Object.keys(def).map(function (k) {
 				var long = /^m_(ack|conf|decl|rem)$/.test(k) || k === 'consent';
 				var p = 'texts.' + textLang + '.' + k;
@@ -230,21 +231,21 @@
 		if (!Array.isArray(S.replies)) { S.replies = JSON.parse(JSON.stringify(A.replies || [])); }
 		var vars = ['name', 'date', 'time', 'end', 'service', 'location', 'address', 'hours', 'prep', 'price', 'book_url', 'review_url', 'site'];
 		var list = S.replies;
-		return '<p class="description">Шаблоны сообщений клиенту. Они показываются под каждой заявкой и в карточке клиента: на языке клиента, с переводом на русский, уже с подставленными датой, ценой и т. п. Кнопка «Копировать» — и вставляете в Instagram или письмо.</p>' +
-			'<p class="description">Подстановки: ' + vars.map(function (v) { return '<code>{' + v + '}</code>'; }).join(' ') + '. Если значения нет (например, у заявки не указана цена), строка с этой подстановкой не попадает в сообщение.</p>' +
+		return '<p class="description">' + __('Message templates for the client. They are shown under each request and in the client card: in the client’s language, with a translation into your language, with the date, price and so on already filled in. Press “Copy” and paste into Instagram or an e-mail.', 'shootbook') + '</p>' +
+			'<p class="description">' + __('Placeholders:', 'shootbook') + ' ' + vars.map(function (v) { return '<code>{' + v + '}</code>'; }).join(' ') + '. ' + __('If a value is missing (for example, the request has no price), the line with that placeholder is left out of the message.', 'shootbook') + '</p>' +
 			'<table class="form-table">' +
-			row('Ссылка для отзывов', text('review_url', ' placeholder="https://g.page/r/…/review"'), 'Подставляется вместо <code>{review_url}</code>, например ссылка на отзыв в Google.') +
-			row('Страница записи', text('book_url', ' placeholder="https://…/book/"'), 'Для <code>{book_url}</code>, если клиент пришёл не через форму. Иначе берётся страница, с которой отправлена заявка.') +
+			row(__('Review link', 'shootbook'), text('review_url', ' placeholder="https://g.page/r/…/review"'), __('Used for <code>{review_url}</code>, for example a link to a Google review.', 'shootbook')) +
+			row(__('Booking page', 'shootbook'), text('book_url', ' placeholder="https://…/book/"'), __('For <code>{book_url}</code> when the client did not come through the form. Otherwise the page the request was sent from is used.', 'shootbook')) +
 			'</table>' +
 			list.map(function (r, i) {
 				var p = 'replies.' + i;
-				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(r.title || 'Новый ответ') + '</b>' + listTools('replies', i, list.length) + '</div>' +
-					'<p><label>Название <input type="text" class="regular-text" data-p="' + p + '.title" value="' + esc(r.title) + '"></label></p>' +
+				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(r.title || __('New reply', 'shootbook')) + '</b>' + listTools('replies', i, list.length) + '</div>' +
+					'<p><label>' + __('Title', 'shootbook') + ' <input type="text" class="regular-text" data-p="' + p + '.title" value="' + esc(r.title) + '"></label></p>' +
 					(['ru'].concat(langs().filter(function (l) { return l !== 'ru'; }))).map(function (l) {
 						return '<p><label><b>' + esc(A.langs[l] || l) + '</b><br><textarea class="large-text" rows="11" data-p="' + p + '.text.' + l + '">' + esc(get(p + '.text.' + l)) + '</textarea></label></p>';
 					}).join('') + '</div>';
-			}).join('') + addBtn('replies', 'Добавить ответ') +
-			'<p><button type="button" class="button-link" data-act="replies-reset">Вернуть стандартные ответы</button></p>';
+			}).join('') + addBtn('replies', __('Add reply', 'shootbook')) +
+			'<p><button type="button" class="button-link" data-act="replies-reset">' + __('Restore default replies', 'shootbook') + '</button></p>';
 	};
 
 	R.style = function () {
@@ -252,16 +253,16 @@
 			return row(label, '<input type="color" data-p="' + path + '" value="' + esc(get(path)) + '"> <code>' + esc(get(path)) + '</code>');
 		}
 		return '<table class="form-table">' +
-			color('style.paper', 'Фон формы') + color('style.ink', 'Текст и выбранные кнопки') + color('style.accent', 'Акцент (кнопка «Отправить»)') +
-			row('Шрифт заголовков', text('style.heading_font'), 'Шрифт, уже подключённый на сайте, например «Unbounded, sans-serif». Пусто — как на сайте.') +
-			row('Шрифт текста', text('style.body_font'), 'Пусто — как на сайте.') +
+			color('style.paper', __('Form background', 'shootbook')) + color('style.ink', __('Text and selected buttons', 'shootbook')) + color('style.accent', __('Accent (the “Send” button)', 'shootbook')) +
+			row(__('Heading font', 'shootbook'), text('style.heading_font'), __('A font already loaded on the site, for example “Unbounded, sans-serif”. Empty: same as the site.', 'shootbook')) +
+			row(__('Text font', 'shootbook'), text('style.body_font'), __('Empty: same as the site.', 'shootbook')) +
 			'</table>';
 	};
 
 	R.io = function () {
-		return '<h2>Экспорт</h2><p>Файл со всеми настройками, кроме адресов календарей. Его можно загрузить на другом сайте.</p><p><a class="button" href="' + esc(A.exportUrl) + '">Скачать настройки (JSON)</a></p>' +
-			'<h2>Импорт</h2><p>Вставьте содержимое файла и нажмите «Загрузить», затем «Сохранить настройки». Адреса календарей останутся прежними.</p>' +
-			'<textarea id="bkb-import" class="large-text code" rows="10"></textarea><p><button type="button" class="button" data-act="import">Загрузить</button> <span id="bkb-import-msg"></span></p>';
+		return '<h2>' + __('Export', 'shootbook') + '</h2><p>' + __('A file with all settings except the calendar addresses. It can be loaded on another site.', 'shootbook') + '</p><p><a class="button" href="' + esc(A.exportUrl) + '">' + __('Download settings (JSON)', 'shootbook') + '</a></p>' +
+			'<h2>' + __('Import', 'shootbook') + '</h2><p>' + __('Paste the file contents and press “Load”, then “Save settings”. The calendar addresses stay unchanged.', 'shootbook') + '</p>' +
+			'<textarea id="bkb-import" class="large-text code" rows="10"></textarea><p><button type="button" class="button" data-act="import">' + __('Load', 'shootbook') + '</button> <span id="bkb-import-msg"></span></p>';
 	};
 
 	/* ---------- render and events ---------- */
@@ -293,7 +294,7 @@
 		var act = t.getAttribute('data-act');
 		if (!act) { return; }
 		if (act === 'replies-reset') {
-			if (window.confirm('Заменить ответы стандартными? Ваши правки в ответах пропадут после сохранения.')) { S.replies = JSON.parse(JSON.stringify(A.replies || [])); render(); }
+			if (window.confirm(__('Replace the replies with the default ones? Your edits to the replies will be lost after saving.', 'shootbook'))) { S.replies = JSON.parse(JSON.stringify(A.replies || [])); render(); }
 			return;
 		}
 		if (act === 'import') {
@@ -303,8 +304,8 @@
 				var ics = S.ics;
 				S = c;
 				S.ics = ics;
-				msg.textContent = 'Загружено. Проверьте вкладки и нажмите «Сохранить настройки».';
-			} catch (x) { msg.textContent = 'Это не JSON.'; }
+				msg.textContent = __('Loaded. Check the tabs and press “Save settings”.', 'shootbook');
+			} catch (x) { msg.textContent = __('This is not JSON.', 'shootbook'); }
 			return;
 		}
 		var path = t.getAttribute('data-path');
@@ -313,7 +314,7 @@
 		var i = parseInt(t.getAttribute('data-i'), 10);
 		if (act === 'add') { list.push(blank(path)); }
 		if (act === 'del') {
-			if (!window.confirm('Удалить?')) { return; }
+			if (!window.confirm(__('Delete?', 'shootbook'))) { return; }
 			list.splice(i, 1);
 		}
 		if (act === 'up' && i > 0) { list.splice(i - 1, 0, list.splice(i, 1)[0]); }

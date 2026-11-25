@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action(
 	'admin_menu',
 	function () {
-		add_submenu_page( 'edit.php?post_type=bk_booking', 'Настройки записи', 'Настройки', 'manage_options', 'bkb-settings', 'bkb_settings_page' );
+		add_submenu_page( 'edit.php?post_type=bk_booking', __( 'Booking settings', 'shootbook' ), __( 'Settings', 'shootbook' ), 'manage_options', 'bkb-settings', 'bkb_settings_page' );
 	}
 );
 
@@ -36,7 +36,8 @@ add_action(
 			return;
 		}
 		wp_enqueue_style( 'bkb-admin', BKB_URL . 'assets/admin.css', array(), BKB_VER );
-		wp_enqueue_script( 'bkb-admin', BKB_URL . 'assets/admin.js', array(), BKB_VER, true );
+		wp_enqueue_script( 'bkb-admin', BKB_URL . 'assets/admin.js', array( 'wp-i18n' ), BKB_VER, true );
+		wp_set_script_translations( 'bkb-admin', 'shootbook', BKB_DIR . 'languages' );
 		$texts = array();
 		foreach ( bkb_known_langs() as $l ) {
 			$texts[ $l ] = bkb_default_texts( $l );
@@ -67,19 +68,24 @@ function bkb_settings_page() {
 	$saved = isset( $_GET['bkb_saved'] ) ? sanitize_key( $_GET['bkb_saved'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	?>
 	<div class="wrap bkb-admin">
-		<h1>Настройки записи</h1>
+		<h1><?php esc_html_e( 'Booking settings', 'shootbook' ); ?></h1>
 		<?php if ( 'ok' === $saved ) : ?>
-			<div class="notice notice-success is-dismissible"><p>Сохранено.</p></div>
+			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Saved.', 'shootbook' ); ?></p></div>
 		<?php elseif ( 'bad' === $saved ) : ?>
-			<div class="notice notice-error"><p>Не удалось прочитать настройки. Проверьте JSON.</p></div>
+			<div class="notice notice-error"><p><?php esc_html_e( 'Could not read the settings. Check the JSON.', 'shootbook' ); ?></p></div>
 		<?php endif; ?>
-		<p class="description">Форму записи на страницу добавляет шорткод <code>[booking_calendar]</code> (или <code>[bk_booking]</code>). Язык формы берётся из языка страницы (Polylang, WPML или язык сайта).</p>
+		<p class="description">
+		<?php
+		/* translators: 1: [booking_calendar] shortcode, 2: [bk_booking] shortcode */
+		printf( esc_html__( 'Add the booking form to a page with the shortcode %1$s (or %2$s). The form follows the page language (Polylang, WPML or the site language).', 'shootbook' ), '<code>[booking_calendar]</code>', '<code>[bk_booking]</code>' );
+		?>
+		</p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="bkb-settings-form">
 			<input type="hidden" name="action" value="bkb_save_config">
 			<?php wp_nonce_field( 'bkb_save_config' ); ?>
 			<input type="hidden" name="bkb_config_json" id="bkb-config-json" value="">
-			<div id="bkb-editor"><p>Загрузка…</p></div>
-			<p class="submit"><button type="submit" class="button button-primary button-hero">Сохранить настройки</button></p>
+			<div id="bkb-editor"><p><?php esc_html_e( 'Loading…', 'shootbook' ); ?></p></div>
+			<p class="submit"><button type="submit" class="button button-primary button-hero"><?php esc_html_e( 'Save settings', 'shootbook' ); ?></button></p>
 		</form>
 	</div>
 	<?php
@@ -123,7 +129,7 @@ add_action(
 add_filter(
 	'plugin_action_links_' . plugin_basename( BKB_DIR . 'bk-booking.php' ),
 	function ( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-settings' ) ) . '">Настройки</a>' );
+		array_unshift( $links, '<a href="' . esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-settings' ) ) . '">' . esc_html__( 'Settings', 'shootbook' ) . '</a>' );
 		return $links;
 	}
 );
@@ -135,20 +141,20 @@ add_filter(
 	function () {
 		return array(
 			'cb'        => '<input type="checkbox">',
-			'title'     => 'Заявка',
-			'bkb_when'  => 'Когда',
-			'bkb_who'   => 'Контакт',
-			'bkb_state' => 'Статус',
-			'date'      => 'Получена',
+			'title'     => __( 'Request', 'shootbook' ),
+			'bkb_when'  => __( 'When', 'shootbook' ),
+			'bkb_who'   => __( 'Contact', 'shootbook' ),
+			'bkb_state' => __( 'Status', 'shootbook' ),
+			'date'      => __( 'Received', 'shootbook' ),
 		);
 	}
 );
 
 function bkb_status_label( $s ) {
 	$m = array(
-		'pending'   => '<span style="color:#b26200;font-weight:600">Ждёт ответа</span>',
-		'confirmed' => '<span style="color:#1a7f37;font-weight:600">Подтверждена</span>',
-		'declined'  => '<span style="color:#8c8f94">Отклонена</span>',
+		'pending'   => '<span style="color:#b26200;font-weight:600">' . esc_html__( 'Waiting for an answer', 'shootbook' ) . '</span>',
+		'confirmed' => '<span style="color:#1a7f37;font-weight:600">' . esc_html__( 'Confirmed', 'shootbook' ) . '</span>',
+		'declined'  => '<span style="color:#8c8f94">' . esc_html__( 'Declined', 'shootbook' ) . '</span>',
 	);
 	return $m[ $s ] ?? esc_html( $s );
 }
@@ -202,7 +208,7 @@ add_action(
 add_action(
 	'add_meta_boxes_bk_booking',
 	function () {
-		add_meta_box( 'bkb_details', 'Детали заявки', 'bkb_details_box', 'bk_booking', 'normal', 'high' );
+		add_meta_box( 'bkb_details', __( 'Request details', 'shootbook' ), 'bkb_details_box', 'bk_booking', 'normal', 'high' );
 		remove_meta_box( 'submitdiv', 'bk_booking', 'side' );
 	}
 );
@@ -212,12 +218,12 @@ function bkb_details_box( $post ) {
 	$tz   = wp_timezone();
 	$prep = (int) bkb_cfg( 'schedule' )['prep'];
 	echo '<table class="form-table" style="margin-top:0">';
-	echo '<tr><th style="width:170px;padding:8px 10px">Статус</th><td style="padding:8px 10px">' . bkb_status_label( $b['status'] ) . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo '<tr><th style="padding:8px 10px">Когда</th><td style="padding:8px 10px">' . esc_html( wp_date( 'l, j F Y', (int) $b['start'], $tz ) . ', ' . wp_date( 'H:i', (int) $b['start'], $tz ) . '–' . wp_date( 'H:i', (int) $b['end'], $tz ) ) . ( $prep ? ' <span class="description">(с подготовкой)</span>' : '' ) . '</td></tr>';
-	foreach ( array_slice( bkb_summary_lines( $b, 'ru', true ), 1 ) as $l ) {
+	echo '<tr><th style="width:170px;padding:8px 10px">' . esc_html__( 'Status', 'shootbook' ) . '</th><td style="padding:8px 10px">' . bkb_status_label( $b['status'] ) . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<tr><th style="padding:8px 10px">' . esc_html__( 'When', 'shootbook' ) . '</th><td style="padding:8px 10px">' . esc_html( wp_date( 'l, j F Y', (int) $b['start'], $tz ) . ', ' . wp_date( 'H:i', (int) $b['start'], $tz ) . '–' . wp_date( 'H:i', (int) $b['end'], $tz ) ) . ( $prep ? ' <span class="description">' . esc_html__( '(with preparation)', 'shootbook' ) . '</span>' : '' ) . '</td></tr>';
+	foreach ( array_slice( bkb_summary_lines( $b, bkb_admin_lang(), true ), 1 ) as $l ) {
 		echo '<tr><th style="padding:8px 10px">' . esc_html( $l[0] ) . '</th><td style="padding:8px 10px">' . nl2br( esc_html( $l[1] ) ) . '</td></tr>';
 	}
-	echo '<tr><th style="padding:8px 10px">Сообщение</th><td style="padding:8px 10px">' . nl2br( esc_html( $b['msg'] ? $b['msg'] : '—' ) ) . '</td></tr>';
+	echo '<tr><th style="padding:8px 10px">' . esc_html__( 'Message', 'shootbook' ) . '</th><td style="padding:8px 10px">' . nl2br( esc_html( $b['msg'] ? $b['msg'] : '—' ) ) . '</td></tr>';
 	echo '</table>';
 	$act = function ( $s, $label, $class ) use ( $post ) {
 		$url = wp_nonce_url( admin_url( 'admin-post.php?action=bkb_status&id=' . $post->ID . '&s=' . $s ), 'bkb_status_' . $post->ID );
@@ -225,19 +231,19 @@ function bkb_details_box( $post ) {
 	};
 	echo '<p style="margin:16px 0 6px">';
 	if ( 'confirmed' !== $b['status'] ) {
-		echo $act( 'confirmed', $b['email'] ? 'Подтвердить и написать клиенту' : 'Подтвердить', 'button-primary' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $act( 'confirmed', $b['email'] ? __( 'Confirm and e-mail the client', 'shootbook' ) : __( 'Confirm', 'shootbook' ), 'button-primary' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	if ( 'declined' !== $b['status'] ) {
-		echo $act( 'declined', $b['email'] ? 'Отклонить и написать клиенту' : 'Отклонить', '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $act( 'declined', $b['email'] ? __( 'Decline and e-mail the client', 'shootbook' ) : __( 'Decline', 'shootbook' ), '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-	echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( bkb_gcal_link( $b ) ) . '">Добавить в Google Календарь</a></p>';
-	echo '<p class="description">Клиент получит письмо на своём языке. Подтверждённую запись добавьте в Google Календарь, чтобы время было занято и для других.</p>';
+	echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( bkb_gcal_link( $b ) ) . '">' . esc_html__( 'Add to Google Calendar', 'shootbook' ) . '</a></p>';
+	echo '<p class="description">' . esc_html__( 'The client gets the e-mail in their language. Add a confirmed booking to Google Calendar so the time is busy for others too.', 'shootbook' ) . '</p>';
 	if ( isset( $_GET['bkb_mail'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$m = (string) $_GET['bkb_mail']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
 		if ( '2' === $m ) {
-			echo '<div class="notice notice-success inline"><p>Статус изменён. E-mail у клиента нет, напишите ему сами.</p></div>';
+			echo '<div class="notice notice-success inline"><p>' . esc_html__( 'Status changed. The client has no e-mail, please contact them yourself.', 'shootbook' ) . '</p></div>';
 		} else {
-			echo '1' === $m ? '<div class="notice notice-success inline"><p>Письмо клиенту отправлено.</p></div>' : '<div class="notice notice-error inline"><p>Статус изменён, но письмо отправить не удалось. Напишите клиенту вручную.</p></div>';
+			echo '1' === $m ? '<div class="notice notice-success inline"><p>' . esc_html__( 'The e-mail to the client has been sent.', 'shootbook' ) . '</p></div>' : '<div class="notice notice-error inline"><p>' . esc_html__( 'Status changed, but the e-mail could not be sent. Please write to the client yourself.', 'shootbook' ) . '</p></div>';
 		}
 	}
 }
