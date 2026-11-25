@@ -55,6 +55,7 @@ function bkb_default_config() {
 		),
 		'retention_days' => 365,
 		'reminder'       => true,
+		'admin_lang'     => '',
 		'replies'        => null,
 		'review_url'     => '',
 		'book_url'       => '',
@@ -68,13 +69,18 @@ function bkb_default_config() {
 }
 
 /** The saved settings merged over the defaults. */
-function bkb_cfg( $key = null ) {
+function bkb_cfg( $key = null, $reset = false ) {
 	static $cfg = null;
-	if ( null === $cfg ) {
+	if ( null === $cfg || $reset ) {
 		$saved = get_option( 'bkb_config', array() );
 		$cfg   = bkb_merge( bkb_default_config(), is_array( $saved ) ? $saved : array() );
 	}
 	return null === $key ? $cfg : ( $cfg[ $key ] ?? null );
+}
+
+/** Read the settings again after they were changed in this request. */
+function bkb_cfg_reset() {
+	bkb_cfg( null, true );
 }
 
 function bkb_merge( $def, $val ) {
@@ -139,6 +145,10 @@ function bkb_l( $labels, $lang, $fallback = '' ) {
  * knows it; English otherwise. Request details for the team (screens, e-mails, calendar links) use it.
  */
 function bkb_admin_lang() {
+	$l = (string) bkb_cfg( 'admin_lang' );
+	if ( '' !== $l ) {
+		return (string) apply_filters( 'bkb_admin_lang', $l );
+	}
 	$l = strtolower( substr( is_admin() ? get_user_locale() : get_locale(), 0, 2 ) );
 	$l = 'ua' === $l ? 'uk' : $l;
 	return (string) apply_filters( 'bkb_admin_lang', in_array( $l, bkb_known_langs(), true ) ? $l : 'en' );
@@ -410,6 +420,7 @@ function bkb_sanitize_config( $c ) {
 	);
 	$out['retention_days'] = max( 30, min( 3650, (int) ( $c['retention_days'] ?? 365 ) ) );
 	$out['reminder']       = ! empty( $c['reminder'] );
+	$out['admin_lang']     = in_array( $c['admin_lang'] ?? '', array( 'en', 'ru' ), true ) ? $c['admin_lang'] : '';
 	$out['review_url']     = esc_url_raw( (string) ( $c['review_url'] ?? '' ) );
 	$out['book_url']       = esc_url_raw( (string) ( $c['book_url'] ?? '' ) );
 	$out['replies']        = null;
