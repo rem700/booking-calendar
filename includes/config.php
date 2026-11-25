@@ -37,6 +37,10 @@ function bkb_default_config() {
 			'parallel'         => false,
 		),
 		'services'  => array(),
+		'price'     => array(
+			'currency' => '',
+			'before'   => false,
+		),
 		'locations' => array(),
 		'options'   => array(),
 		'fields'    => array(
@@ -293,6 +297,12 @@ function bkb_clean_days( $v ) {
 	return $out;
 }
 
+/** A price from the settings: a number from 0 up, with at most two decimals. */
+function bkb_clean_amount( $v ) {
+	$v = is_string( $v ) ? str_replace( ',', '.', $v ) : $v;
+	return is_numeric( $v ) ? round( max( 0, min( 1000000, (float) $v ) ), 2 ) : 0;
+}
+
 function bkb_sanitize_config( $c ) {
 	$d   = bkb_default_config();
 	$c   = is_array( $c ) ? $c : array();
@@ -325,9 +335,18 @@ function bkb_sanitize_config( $c ) {
 	foreach ( (array) ( $c['services'] ?? array() ) as $x ) {
 		$id = bkb_clean_id( $x['id'] ?? '' );
 		if ( '' !== $id ) {
-			$out['services'][] = array( 'id' => $id, 'label' => bkb_clean_labels( $x['label'] ?? array() ) );
+			$out['services'][] = array(
+				'id'    => $id,
+				'label' => bkb_clean_labels( $x['label'] ?? array() ),
+				'price' => bkb_clean_amount( $x['price'] ?? 0 ),
+			);
 		}
 	}
+	$pr           = (array) ( $c['price'] ?? array() );
+	$out['price'] = array(
+		'currency' => mb_substr( sanitize_text_field( (string) ( $pr['currency'] ?? '' ) ), 0, 10 ),
+		'before'   => ! empty( $pr['before'] ),
+	);
 	$out['locations'] = array();
 	foreach ( (array) ( $c['locations'] ?? array() ) as $x ) {
 		$id = bkb_clean_id( $x['id'] ?? '' );
@@ -354,12 +373,18 @@ function bkb_sanitize_config( $c ) {
 			'note'      => bkb_clean_labels( $x['note'] ?? array() ),
 			'default'   => bkb_clean_id( $x['default'] ?? '' ),
 			'locations' => array_values( array_filter( array_map( 'bkb_clean_id', (array) ( $x['locations'] ?? array() ) ) ) ),
+			'price'     => bkb_clean_amount( $x['price'] ?? 0 ),
+			'per_hour'  => ! empty( $x['per_hour'] ),
 			'choices'   => array(),
 		);
 		foreach ( (array) ( $x['choices'] ?? array() ) as $ch ) {
 			$cid = bkb_clean_id( $ch['id'] ?? '' );
 			if ( '' !== $cid ) {
-				$o['choices'][] = array( 'id' => $cid, 'label' => bkb_clean_labels( $ch['label'] ?? array() ) );
+				$o['choices'][] = array(
+					'id'    => $cid,
+					'label' => bkb_clean_labels( $ch['label'] ?? array() ),
+					'price' => bkb_clean_amount( $ch['price'] ?? 0 ),
+				);
 			}
 		}
 		$out['options'][] = $o;
