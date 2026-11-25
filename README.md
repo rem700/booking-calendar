@@ -21,7 +21,7 @@ Free times are worked out from your working hours, the time you need to prepare,
 - "Add to Google Calendar" link for you and for the client
 - Old requests are removed after the number of days you choose
 - Settings export and import as JSON, so the same setup moves to another site in one step
-- No price logic inside: add your own with a few lines of JavaScript (see below)
+- Prices: a price per hour for each service and extra prices for options, shown in the form and saved with the request. A site script can still set its own price (see below)
 
 ## Clients (CRM)
 
@@ -74,6 +74,7 @@ The form reads its starting choice from the page address:
 |---|---|---|
 | `bkb_front_config` | filter | Change the settings sent to the form. Args: `$config, $lang` |
 | `bkb_busy` | filter | Add or remove busy intervals. Args: `$busy, $from, $to` |
+| `bkb_price` | filter | Change the price worked out from the settings, or return `null` for no price. Args: `$amount, $service, $hours, $opts` |
 | `bkb_request_data` | filter | Change a request before it is saved. Args: `$data, $params` |
 | `bkb_summary_lines` | filter | Change the summary lines used in emails and admin. Args: `$lines, $booking, $lang, $with_contact` |
 | `bkb_request_saved` | action | Runs after a request is saved. Args: `$id, $booking` |

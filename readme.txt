@@ -25,6 +25,7 @@ Free times are worked out from your opening hours, the time you need to prepare,
 * Busy times from one or more iCal feeds (Google Calendar, Outlook, Apple)
 * Form fields you can switch on or off, a field for extra details, a session language choice
 * Form texts in English, German, Hungarian, Russian and Ukrainian, each one editable
+* Prices per hour for services and extra prices for options
 * Colours and fonts to match your theme
 * Works with Polylang and WPML: the form and the e-mails follow the page language
 * E-mails: receipt to the client, confirmation, decline, reminder the day before, notice to you
@@ -66,7 +67,7 @@ The admin follows the language in your WordPress profile. English and Russian ar
 
 = Can it show a price? =
 
-Yes, with a few lines of JavaScript that set the price from the chosen service and length. The README on GitHub has an example.
+Yes. Set a price per hour for a service and extra prices for options in the settings. The form shows the price, and the same price is worked out again on the server and saved with the request. For other rules, a few lines of JavaScript can set the price instead. The README on GitHub has an example.
 
 = Can two halls be booked at the same time? =
 
@@ -87,6 +88,7 @@ The plugin connects to outside services only in these cases.
 * The admin is in English with a Russian translation and follows the profile language.
 * Own request sources can be added in the settings.
 * Locations can be booked separately, each with its own capacity.
+* Prices per hour for services and extra prices for options.
 * Two requests for the same time sent at the same moment can no longer both be saved.
 * The calendar works on sites without pretty permalinks.
 * Deactivating stops the scheduled tasks, and deleting the plugin removes its cached feeds.

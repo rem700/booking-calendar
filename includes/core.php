@@ -169,6 +169,46 @@ function bkb_month_slots( $ym, $hours, $loc = '' ) {
 	return $out;
 }
 
+/* ---------- price ---------- */
+
+/**
+ * The price of a booking from the prices in the settings, or null when the chosen service has none.
+ * Then the price shown in the form, if any, comes from a script on the site (bkb.setPrice).
+ */
+function bkb_price_amount( $service, $hours, $opts ) {
+	$svc    = bkb_service( (string) $service );
+	$amount = null;
+	if ( $svc && (float) ( $svc['price'] ?? 0 ) > 0 ) {
+		$amount = (float) $svc['price'] * (float) $hours;
+		foreach ( (array) bkb_cfg( 'options' ) as $o ) {
+			if ( ! isset( $opts[ $o['id'] ] ) ) {
+				continue;
+			}
+			$add = 0.0;
+			if ( 'choice' === $o['type'] ) {
+				$ch  = bkb_find( (array) $o['choices'], (string) $opts[ $o['id'] ] );
+				$add = $ch ? (float) ( $ch['price'] ?? 0 ) : 0.0;
+			} elseif ( '1' === (string) $opts[ $o['id'] ] ) {
+				$add = (float) ( $o['price'] ?? 0 );
+			}
+			$amount += ! empty( $o['per_hour'] ) ? $add * (float) $hours : $add;
+		}
+		$amount = round( $amount, 2 );
+	}
+	return apply_filters( 'bkb_price', $amount, $service, $hours, $opts );
+}
+
+/** 1 234 €, € 1 234 or 1 234.50 €, with the site's number format. */
+function bkb_format_price( $amount ) {
+	$p   = (array) bkb_cfg( 'price' );
+	$num = number_format_i18n( $amount, floor( $amount ) == $amount ? 0 : 2 ); // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
+	$cur = (string) ( $p['currency'] ?? '' );
+	if ( '' === $cur ) {
+		return $num;
+	}
+	return ! empty( $p['before'] ) ? $cur . "\u{00A0}" . $num : $num . "\u{00A0}" . $cur;
+}
+
 /* ---------- REST ---------- */
 
 add_action(
@@ -298,6 +338,11 @@ function bkb_handle_request( WP_REST_Request $r ) {
 	if ( empty( $month[ $d['date'] ] ) || ! in_array( $d['time'], $month[ $d['date'] ], true ) ) {
 		bkb_unlock();
 		return new WP_Error( 'taken', 'taken', array( 'status' => 409 ) );
+	}
+	// A price from the settings is worked out here, not taken from the browser.
+	$amount = bkb_price_amount( $d['service'], $d['hours'], $d['opts'] );
+	if ( null !== $amount ) {
+		$d['price'] = bkb_format_price( (float) $amount );
 	}
 	$d = apply_filters( 'bkb_request_data', $d, $p );
 
@@ -544,7 +589,12 @@ function bkb_front_config( $lang ) {
 				'note'      => bkb_l( $o['note'] ?? array(), $lang ),
 				'default'   => (string) $o['default'],
 				'locations' => array_values( (array) $o['locations'] ),
-				'choices'   => array_map( $lab, (array) $o['choices'] ),
+				'choices'   => array_map(
+					fn( $ch ) => $lab( $ch ) + array( 'price' => (float) ( $ch['price'] ?? 0 ) ),
+					(array) $o['choices']
+				),
+				'price'     => (float) ( $o['price'] ?? 0 ),
+				'per_hour'  => ! empty( $o['per_hour'] ),
 			)
 		);
 	}
@@ -561,7 +611,13 @@ function bkb_front_config( $lang ) {
 		'api'       => esc_url_raw( rest_url( 'bk-booking/v1/' ) ),
 		't'         => $t,
 		'privacy'   => bkb_privacy_url( $lang ),
-		'services'  => array_map( $lab, (array) $c['services'] ),
+		'services'  => array_map( fn( $s ) => $lab( $s ) + array( 'price' => (float) ( $s['price'] ?? 0 ) ), (array) $c['services'] ),
+		'money'     => array(
+			'currency' => (string) ( $c['price']['currency'] ?? '' ),
+			'before'   => ! empty( $c['price']['before'] ),
+			'dec'      => $GLOBALS['wp_locale']->number_format['decimal_point'] ?? '.',
+			'thou'     => $GLOBALS['wp_locale']->number_format['thousands_sep'] ?? ' ',
+		),
 		'locations' => array_map( $lab, (array) $c['locations'] ),
 		'options'   => $opts,
 		'durations' => bkb_durations(),

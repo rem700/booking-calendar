@@ -163,8 +163,34 @@
 			if (row) { row.classList.toggle('is-off', !optOn(o)); }
 		});
 	}
+	// The same sum the server saves with the request (bkb_price_amount), unless a site script sets its own price.
+	function priceAmount() {
+		var svc = byId(C.services, st.service);
+		if (!svc || !(svc.price > 0)) { return null; }
+		var sum = svc.price * st.hours;
+		C.options.forEach(function (o) {
+			if (!optOn(o)) { return; }
+			var add = 0;
+			if (o.type === 'choice') {
+				var c = byId(o.choices, st.opts[o.id]);
+				add = c ? (c.price || 0) : 0;
+			} else if (st.opts[o.id] === '1') { add = o.price || 0; }
+			sum += o.per_hour ? add * st.hours : add;
+		});
+		return Math.round(sum * 100) / 100;
+	}
+	function money(a) {
+		var M = C.money || {};
+		var parts = (a % 1 === 0 ? a.toFixed(0) : a.toFixed(2)).split('.');
+		var num = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, M.thou || ' ') + (parts[1] ? (M.dec || '.') + parts[1] : '');
+		if (!M.currency) { return num; }
+		return M.before ? M.currency + '\u00a0' + num : num + '\u00a0' + M.currency;
+	}
 	function priceText() {
-		if (!priceFn) { return ''; }
+		if (!priceFn) {
+			var a = priceAmount();
+			return a === null ? '' : money(a);
+		}
 		try { return String(priceFn(st) || ''); } catch (e) { return ''; }
 	}
 	function recapParts() {
