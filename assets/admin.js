@@ -58,6 +58,9 @@
 	function num(path, min, max, step) {
 		return '<input type="number" class="small-text" data-p="' + path + '" data-t="num" min="' + min + '" max="' + max + '" step="' + (step || 1) + '" value="' + esc(get(path)) + '">';
 	}
+	function money(path) {
+		return '<input type="number" class="small-text" data-p="' + path + '" data-t="num" min="0" step="0.01" value="' + esc(get(path) || '') + '" placeholder="0">' + (S.price && S.price.currency ? ' ' + esc(S.price.currency) : '');
+	}
 	function check(path, label) {
 		return '<label><input type="checkbox" data-p="' + path + '" data-t="bool"' + (get(path) ? ' checked' : '') + '> ' + esc(label) + '</label>';
 	}
@@ -130,10 +133,12 @@
 	R.services = function () {
 		var list = S.services || [];
 		return '<p class="description">' + __('What can be booked. If there is only one service or no choice is needed, leave the list empty.', 'shootbook') + '</p>' +
+			'<table class="form-table">' + row(__('Currency', 'shootbook'), text('price.currency', ' placeholder="€" style="width:6em"') + ' ' + check('price.before', __('before the amount', 'shootbook')), __('With a price per hour, the form shows the price and it is saved with the request. Without one, the form shows no price, or the price from a script on your site.', 'shootbook'))+ '</table>' +
 			list.map(function (x, i) {
 				var p = 'services.' + i;
 				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New service', 'shootbook')) + '</b>' + listTools('services', i, list.length) + '</div>' +
-					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) + '</div>';
+					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) +
+					'<div class="bkb-sub">' + __('Price per hour', 'shootbook') + '</div>' + money(p + '.price') + '</div>';
 			}).join('') + addBtn('services', __('Add service', 'shootbook'));
 	};
 
@@ -167,7 +172,7 @@
 				var only = x.locations || [];
 				var ch = (x.choices || []).map(function (c, j) {
 					var cp = p + '.choices.' + j;
-					return '<div class="bkb-choice">' + idInput(cp + '.id') + labels(cp + '.label', c.id) + listTools(p + '.choices', j, x.choices.length) + '</div>';
+					return '<div class="bkb-choice">' + idInput(cp + '.id') + labels(cp + '.label', c.id) + '<label class="bkb-inline">' + __('Extra price', 'shootbook') + ' ' + money(cp + '.price') + '</label>' + listTools(p + '.choices', j, x.choices.length) + '</div>';
 				}).join('');
 				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New option', 'shootbook')) + '</b>' + listTools('options', i, list.length) + '</div>' +
 					idInput(p + '.id') +
@@ -178,7 +183,9 @@
 						'<div class="bkb-sub">' + __('Default', 'shootbook') + '</div><select data-p="' + p + '.default">' + (x.choices || []).map(function (c) {
 							return '<option value="' + esc(c.id) + '"' + (c.id === x.default ? ' selected' : '') + '>' + esc(c.id) + '</option>';
 						}).join('') + '</select>'
-						: '<div class="bkb-sub">' + __('Default', 'shootbook') + '</div><select data-p="' + p + '.default"><option value="0"' + (x.default !== '1' ? ' selected' : '') + '>' + __('no', 'shootbook') + '</option><option value="1"' + (x.default === '1' ? ' selected' : '') + '>' + __('yes', 'shootbook') + '</option></select>') +
+						: '<div class="bkb-sub">' + __('Default', 'shootbook') + '</div><select data-p="' + p + '.default"><option value="0"' + (x.default !== '1' ? ' selected' : '') + '>' + __('no', 'shootbook') + '</option><option value="1"' + (x.default === '1' ? ' selected' : '') + '>' + __('yes', 'shootbook') + '</option></select>' +
+							'<div class="bkb-sub">' + __('Extra price', 'shootbook') + '</div>' + money(p + '.price')) +
+					'<p>' + check(p + '.per_hour', __('Extra price is per hour', 'shootbook')) + '</p>' +
 					(locs.length ? '<div class="bkb-sub">' + __('Available at', 'shootbook') + '</div>' + locs.map(function (l) {
 						return '<label class="bkb-inline"><input type="checkbox" data-optloc="' + p + '" value="' + esc(l) + '"' + (only.indexOf(l) >= 0 ? ' checked' : '') + '> ' + esc(l) + '</label>';
 					}).join('') + '<p class="description">' + __('Nothing checked: everywhere.', 'shootbook') + '</p>' : '') +
