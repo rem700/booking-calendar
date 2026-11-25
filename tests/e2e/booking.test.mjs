@@ -101,3 +101,11 @@ test('client: a request makes a client card in the CRM at stage "new"', async ()
   const out = wpEval("global $wpdb;echo $wpdb->get_var(\"SELECT stage FROM {$wpdb->prefix}bkb_clients WHERE email='client@example.test'\");");
   assert.equal(out, 'new');
 });
+
+test('source: a visit with utm_source is remembered in the browser', async () => {
+  const page = await browser.newPage();
+  await page.goto(WP_URL + '/?utm_source=instagram&utm_medium=bio');
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('bkb_src') || 'null'));
+  assert.equal(saved?.s, 'instagram');
+  await page.close();
+});

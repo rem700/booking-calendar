@@ -273,14 +273,15 @@ add_filter(
 
 /* A tiny script on public pages: remembers the first visit that came from somewhere. */
 add_action(
-	'wp_footer',
+	'wp_enqueue_scripts',
 	function () {
-		if ( is_admin() || empty( bkb_cfg( 'crm' )['source'] ) ) {
+		if ( empty( bkb_cfg( 'crm' )['source'] ) ) {
 			return;
 		}
-		echo "<script>(function(){try{var k='bkb_src',o=JSON.parse(localStorage.getItem(k)||'null');if(o&&Date.now()-o.t<7776e6)return;var q=new URLSearchParams(location.search),r='';try{r=document.referrer?new URL(document.referrer).hostname:''}catch(e){}if(r===location.hostname)r='';var v={s:q.get('utm_source')||'',m:q.get('utm_medium')||'',c:q.get('utm_campaign')||'',r:r,g:q.get('gclid')?1:'',f:q.get('fbclid')?1:'',l:location.pathname,t:Date.now()};if(v.s||v.r||v.g||v.f)localStorage.setItem(k,JSON.stringify(v))}catch(e){}})();</script>\n";
-	},
-	5
+		wp_register_script( 'bkb-source', false, array(), BKB_VER, true );
+		wp_enqueue_script( 'bkb-source' );
+		wp_add_inline_script( 'bkb-source', "(function(){try{var k='bkb_src',o=JSON.parse(localStorage.getItem(k)||'null');if(o&&Date.now()-o.t<7776e6)return;var q=new URLSearchParams(location.search),r='';try{r=document.referrer?new URL(document.referrer).hostname:''}catch(e){}if(r===location.hostname)r='';var v={s:q.get('utm_source')||'',m:q.get('utm_medium')||'',c:q.get('utm_campaign')||'',r:r,g:q.get('gclid')?1:'',f:q.get('fbclid')?1:'',l:location.pathname,t:Date.now()};if(v.s||v.r||v.g||v.f)localStorage.setItem(k,JSON.stringify(v))}catch(e){}})();" );
+	}
 );
 
 /* ---------- requests become clients ---------- */
