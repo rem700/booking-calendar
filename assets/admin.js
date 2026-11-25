@@ -103,6 +103,9 @@
 			row(__('Keep requests', 'shootbook'), sprintf(__('%s days after the booking date', 'shootbook'), num('retention_days', 30, 3650))) +
 			row(__('Client reminder', 'shootbook'), check('reminder', __('Send an e-mail the day before a confirmed booking', 'shootbook'))) +
 			row(__('Morning digest', 'shootbook'), check('crm.digest', __('Send a digest to the request address: new requests, who is waiting for a reply, bookings for today and tomorrow, tasks', 'shootbook')) + ' ' + sprintf(__('at %s:00', 'shootbook'), num('crm.digest_hour', 0, 23)), __('If there is nothing to report, no e-mail is sent.', 'shootbook')) +
+			row(__('Admin language', 'shootbook'), '<select data-p="admin_lang">' + [['', __('From the user profile', 'shootbook')], ['en', 'English'], ['ru', 'Русский']].map(function (o) {
+				return '<option value="' + o[0] + '"' + ((S.admin_lang || '') === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+			}).join('') + '</select>', __('Language of these screens, summaries and e-mails to you. Applies after saving.', 'shootbook')) +
 			row(__('Request source', 'shootbook'), check('crm.source', __('Remember where the visitor came to the site from', 'shootbook')), __('UTM tags in the link or the site the visitor came from (Instagram, Google…). Shown in the client card and in the report. No personal data is stored until the person sends a request.', 'shootbook')) +
 			row(__('Own sources', 'shootbook'), area('crm.sources', 3), __('One per line. Added to the list of sources when you add a client by hand, next to Instagram, Facebook, phone and the others.', 'shootbook')) +
 			'</table>';
