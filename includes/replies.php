@@ -11,14 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** The language the admin reads the translation in. */
 function bkb_replies_admin_lang() {
-	return (string) apply_filters( 'bkb_replies_admin_lang', 'ru' );
+	return (string) apply_filters( 'bkb_replies_admin_lang', bkb_admin_lang() );
 }
 
 function bkb_default_replies() {
 	return array(
 		array(
 			'id'    => 'free',
-			'title' => 'Время свободно',
+			'title' => __( 'The time is free', 'shootbook' ),
 			'text'  => array(
 				'ru' => "Здравствуйте, {name}!\nСпасибо за заявку. Это время свободно, держим его за вами:\n\n{service}\n{date}, {time}–{end}\n{location}\n{address}\nСтоимость: {price}\n\nЕсли всё верно, напишите «да», и мы подтвердим запись.",
 				'en' => "Hello {name}!\nThank you for your request. This time is free and we are holding it for you:\n\n{service}\n{date}, {time}–{end}\n{location}\n{address}\nPrice: {price}\n\nIf everything is correct, just reply \"yes\" and we will confirm the booking.",
@@ -29,7 +29,7 @@ function bkb_default_replies() {
 		),
 		array(
 			'id'    => 'confirmed',
-			'title' => 'Запись подтверждена',
+			'title' => __( 'Booking confirmed', 'shootbook' ),
 			'text'  => array(
 				'ru' => "Здравствуйте, {name}!\nВаша запись подтверждена:\n\n{service}\n{date}, {time}–{end}\n{location}\n{address}\nВремя включает подготовку: {prep}.\n\nПожалуйста, приходите вовремя. Если планы изменятся, напишите нам заранее, и мы перенесём запись.\nДо встречи!",
 				'en' => "Hello {name}!\nYour booking is confirmed:\n\n{service}\n{date}, {time}–{end}\n{location}\n{address}\nThe time includes {prep} of preparation.\n\nPlease arrive on time. If your plans change, let us know in advance and we will reschedule.\nSee you soon!",
@@ -40,7 +40,7 @@ function bkb_default_replies() {
 		),
 		array(
 			'id'    => 'busy',
-			'title' => 'Время уже занято',
+			'title' => __( 'The time is taken', 'shootbook' ),
 			'text'  => array(
 				'ru' => "Здравствуйте, {name}!\nСпасибо за заявку. К сожалению, {date} в {time} у нас уже занято.\nСвободное время можно выбрать здесь: {book_url}\nИли напишите, какие дни вам удобны, и мы подберём вариант.",
 				'en' => "Hello {name}!\nThank you for your request. Unfortunately, {date} at {time} is already taken.\nYou can pick a free time here: {book_url}\nOr tell us which days suit you and we will find an option.",
@@ -51,7 +51,7 @@ function bkb_default_replies() {
 		),
 		array(
 			'id'    => 'details',
-			'title' => 'Уточнить детали',
+			'title' => __( 'Ask for details', 'shootbook' ),
 			'text'  => array(
 				'ru' => "Здравствуйте, {name}!\nСпасибо за интерес к нам. Чтобы всё подготовить, подскажите, пожалуйста:\n— какая дата и время вам удобны;\n— сколько человек будет участвовать;\n— есть ли у вас пожелания к сессии.",
 				'en' => "Hello {name}!\nThank you for your interest. To prepare everything, could you please tell us:\n— which date and time suit you;\n— how many people will take part;\n— any wishes for the session.",
@@ -62,7 +62,7 @@ function bkb_default_replies() {
 		),
 		array(
 			'id'    => 'followup',
-			'title' => 'Напомнить о себе',
+			'title' => __( 'Follow up', 'shootbook' ),
 			'text'  => array(
 				'ru' => "Здравствуйте, {name}!\nХотим уточнить, актуальна ли ещё ваша заявка.\nМожем держать для вас {date} в {time}.\nЕсли планы изменились, просто дайте знать.",
 				'en' => "Hello {name}!\nWe wanted to check whether your request is still on.\nWe can hold {date} at {time} for you.\nIf your plans have changed, just let us know.",
@@ -73,7 +73,7 @@ function bkb_default_replies() {
 		),
 		array(
 			'id'    => 'thanks',
-			'title' => 'После сессии: спасибо и отзыв',
+			'title' => __( 'After the session: thanks and a review', 'shootbook' ),
 			'text'  => array(
 				'ru' => "Здравствуйте, {name}!\nСпасибо, что были у нас! Надеемся, вам понравилось.\nБудем очень благодарны за короткий отзыв: {review_url} Это очень нам помогает.",
 				'en' => "Hello {name}!\nThank you for visiting us! We hope you enjoyed it.\nWe would be very grateful for a short review: {review_url} It really helps us.",
@@ -188,12 +188,16 @@ function bkb_replies_box( $b, $client ) {
 	$email = $b ? $b['email'] : ( $client['email'] ?? '' );
 	$items = bkb_replies();
 	if ( ! $items ) {
-		echo '<p>Готовых ответов нет. Их можно добавить в <a href="' . esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-settings' ) ) . '">настройках</a>, вкладка «Готовые ответы».</p>';
+		echo '<p>' . sprintf(
+			/* translators: %s: link to the settings */
+			esc_html__( 'There are no ready-made replies. Add them in the %s, tab “Ready-made replies”.', 'shootbook' ),
+			'<a href="' . esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-settings' ) ) . '">' . esc_html__( 'settings', 'shootbook' ) . '</a>'
+		) . '</p>';
 		return;
 	}
 	$names = bkb_lang_names();
 	echo '<div class="bkb-replies" data-lang="' . esc_attr( $cl ) . '" data-client="' . (int) ( $client['id'] ?? 0 ) . '" data-booking="' . (int) ( $b['id'] ?? 0 ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'bkb_send_reply' ) ) . '" data-ajax="' . esc_url( admin_url( 'admin-ajax.php' ) ) . '">';
-	echo '<p class="bkb-rep-langs">Язык клиента: ';
+	echo '<p class="bkb-rep-langs">' . esc_html__( 'Client language:', 'shootbook' ) . ' ';
 	foreach ( $langs as $l ) {
 		echo '<button type="button" class="button button-small' . ( $l === $cl ? ' button-primary' : '' ) . '" data-rl="' . esc_attr( $l ) . '">' . esc_html( $names[ $l ] ?? strtoupper( $l ) ) . '</button> ';
 	}
@@ -205,21 +209,21 @@ function bkb_replies_box( $b, $client ) {
 			$txt = bkb_reply_fill( $r['text'][ $l ] ?? '', bkb_reply_vars( $b, $client, $l ) );
 			echo '<div class="bkb-rep-l" data-l="' . esc_attr( $l ) . '"' . ( $l === $cl ? '' : ' hidden' ) . '>';
 			if ( '' === $txt ) {
-				echo '<p class="description">Для этого языка текста нет.</p></div>';
+				echo '<p class="description">' . esc_html__( 'There is no text for this language.', 'shootbook' ) . '</p></div>';
 				continue;
 			}
 			echo '<textarea class="widefat" rows="' . (int) min( 14, substr_count( $txt, "\n" ) + 2 ) . '">' . esc_textarea( $txt ) . '</textarea>';
-			echo '<p class="bkb-rep-actions"><button type="button" class="button button-primary" data-copy>Копировать</button> ';
+			echo '<p class="bkb-rep-actions"><button type="button" class="button button-primary" data-copy>' . esc_html__( 'Copy', 'shootbook' ) . '</button> ';
 			if ( $ig ) {
-				echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( 'https://ig.me/m/' . $ig ) . '">Открыть чат в Instagram</a> ';
+				echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( 'https://ig.me/m/' . $ig ) . '">' . esc_html__( 'Open the Instagram chat', 'shootbook' ) . '</a> ';
 			}
 			if ( is_email( $email ) ) {
-				echo '<button type="button" class="button" data-send="' . esc_attr( $email ) . '" data-title="' . esc_attr( $r['title'] ) . '">Отправить письмо с сайта</button> ';
-				echo '<a class="button-link" data-mail="' . esc_attr( $email ) . '" data-subj="' . esc_attr( bkb_site_name() ) . '" href="#">или открыть в почтовой программе</a> ';
+				echo '<button type="button" class="button" data-send="' . esc_attr( $email ) . '" data-title="' . esc_attr( $r['title'] ) . '">' . esc_html__( 'Send an e-mail from the site', 'shootbook' ) . '</button> ';
+				echo '<a class="button-link" data-mail="' . esc_attr( $email ) . '" data-subj="' . esc_attr( bkb_site_name() ) . '" href="#">' . esc_html__( 'or open in the mail app', 'shootbook' ) . '</a> ';
 			}
-			echo '<span class="bkb-rep-ok" hidden>Скопировано</span><span class="bkb-rep-sent" hidden></span></p>';
+			echo '<span class="bkb-rep-ok" hidden>' . esc_html__( 'Copied', 'shootbook' ) . '</span><span class="bkb-rep-sent" hidden></span></p>';
 			if ( $l !== $admin && '' !== $tr ) {
-				echo '<div class="bkb-rep-tr"><b>Перевод:</b><br>' . nl2br( esc_html( $tr ) ) . '</div>';
+				echo '<div class="bkb-rep-tr"><b>' . esc_html__( 'Translation:', 'shootbook' ) . '</b><br>' . nl2br( esc_html( $tr ) ) . '</div>';
 			}
 			echo '</div>';
 		}
@@ -232,6 +236,20 @@ function bkb_replies_box( $b, $client ) {
 		?>
 		<script>
 		(function () {
+			var T = <?php
+			echo wp_json_encode(
+				array(
+					/* translators: %s: e-mail address */
+					'confirm'  => __( 'Send this e-mail to %s?', 'shootbook' ),
+					'sending'  => __( 'Sending…', 'shootbook' ),
+					'sent'     => __( 'E-mail sent and saved in the client history', 'shootbook' ),
+					/* translators: %s: reason */
+					'failed'   => __( 'Not sent: %s', 'shootbook' ),
+					'error'    => __( 'error', 'shootbook' ),
+					'offline'  => __( 'no connection to the site', 'shootbook' ),
+				)
+			);
+			?>;
 			document.addEventListener('click', function (e) {
 				var t = e.target;
 				var box = t.closest ? t.closest('.bkb-replies') : null;
@@ -253,11 +271,11 @@ function bkb_replies_box( $b, $client ) {
 				}
 				if (t.hasAttribute('data-send')) {
 					var to = t.getAttribute('data-send');
-					if (!window.confirm('Отправить это письмо на ' + to + '?')) { return; }
+					if (!window.confirm(T.confirm.replace('%s', to))) { return; }
 					var msg = wrap.querySelector('.bkb-rep-sent');
 					t.disabled = true;
 					msg.hidden = false;
-					msg.textContent = 'Отправляю…';
+					msg.textContent = T.sending;
 					var fd = new FormData();
 					fd.append('action', 'bkb_send_reply');
 					fd.append('_ajax_nonce', box.getAttribute('data-nonce'));
@@ -267,10 +285,10 @@ function bkb_replies_box( $b, $client ) {
 					fd.append('title', t.getAttribute('data-title'));
 					fd.append('text', ta.value);
 					fetch(box.getAttribute('data-ajax'), { method: 'POST', body: fd, credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
-						msg.textContent = j.success ? 'Письмо отправлено и сохранено в истории клиента' : ('Не отправлено: ' + (j.data || 'ошибка'));
+						msg.textContent = j.success ? T.sent : T.failed.replace('%s', j.data || T.error);
 						msg.style.color = j.success ? '#1a7f37' : '#b32d2e';
 						t.disabled = !!j.success;
-					}, function () { msg.textContent = 'Не отправлено: нет связи с сайтом'; msg.style.color = '#b32d2e'; t.disabled = false; });
+					}, function () { msg.textContent = T.failed.replace('%s', T.offline); msg.style.color = '#b32d2e'; t.disabled = false; });
 					return;
 				}
 				if (t.hasAttribute('data-mail')) {
@@ -291,7 +309,7 @@ add_action(
 	function ( $post ) {
 		add_meta_box(
 			'bkb_replies',
-			'Готовые ответы',
+			__( 'Ready-made replies', 'shootbook' ),
 			function ( $post ) {
 				$b      = bkb_get( $post->ID );
 				$cid    = (int) get_post_meta( $post->ID, '_bkb_client', true );
@@ -333,7 +351,7 @@ add_action(
 	'wp_ajax_bkb_send_reply',
 	function () {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'нет прав' );
+			wp_send_json_error( __( 'not allowed', 'shootbook' ) );
 		}
 		check_ajax_referer( 'bkb_send_reply' );
 		$p    = wp_unslash( $_POST );
@@ -342,7 +360,7 @@ add_action(
 		$cid  = (int) ( $p['client'] ?? 0 );
 		$bid  = (int) ( $p['booking'] ?? 0 );
 		if ( ! is_email( $to ) || '' === trim( $text ) ) {
-			wp_send_json_error( 'нет адреса или текста' );
+			wp_send_json_error( __( 'no address or text', 'shootbook' ) );
 		}
 		// The address must belong to this client or request, so the button cannot be used to write to anyone.
 		$known = array();
@@ -354,18 +372,24 @@ add_action(
 			$known[] = strtolower( (string) ( $c['email'] ?? '' ) );
 		}
 		if ( ! in_array( strtolower( $to ), $known, true ) ) {
-			wp_send_json_error( 'адрес не совпадает с адресом клиента' );
+			wp_send_json_error( __( 'the address is not the client’s address', 'shootbook' ) );
 		}
 		$ok = wp_mail( $to, bkb_site_name(), $text, array( 'Reply-To: ' . bkb_site_name() . ' <' . bkb_reply_to() . '>' ) );
 		if ( ! $ok ) {
-			wp_send_json_error( 'почтовый сервер не принял письмо' );
+			wp_send_json_error( __( 'the mail server did not accept the e-mail', 'shootbook' ) );
 		}
 		if ( ! $cid && $bid ) {
 			$cid = (int) get_post_meta( $bid, '_bkb_client', true );
 		}
 		if ( $cid && function_exists( 'bkb_crm_add_event' ) ) {
 			$title = sanitize_text_field( (string) ( $p['title'] ?? '' ) );
-			bkb_crm_add_event( $cid, 'mail', 'Письмо клиенту' . ( $title ? ' («' . $title . '»)' : '' ) . ' на ' . $to . ":\n\n" . $text, array( 'booking_id' => $bid ) );
+			bkb_crm_add_event(
+				$cid,
+				'mail',
+				/* translators: 1: reply title, 2: e-mail address */
+				( $title ? sprintf( __( 'E-mail to the client (“%1$s”) to %2$s', 'shootbook' ), $title, $to ) : sprintf( /* translators: %s: e-mail address */ __( 'E-mail to the client to %s', 'shootbook' ), $to ) ) . ":\n\n" . $text,
+				array( 'booking_id' => $bid )
+			);
 			bkb_crm_update_client( $cid, array( 'last_contact' => bkb_crm_now() ) );
 			$c = bkb_crm_client( $cid );
 			if ( $c && 'new' === $c['stage'] ) {
