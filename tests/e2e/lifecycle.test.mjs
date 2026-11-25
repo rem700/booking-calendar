@@ -16,10 +16,10 @@ test('deactivating stops all scheduled tasks', () => {
 });
 
 test('activating creates the client tables', () => {
-  wpEval("global $wpdb;$wpdb->query(\"DROP TABLE IF EXISTS {$wpdb->prefix}bkb_events, {$wpdb->prefix}bkb_clients\");delete_option('bkb_crm_db');");
+  wpEval("global $wpdb;$wpdb->query(\"DROP TABLE IF EXISTS {$wpdb->prefix}bkb_events, {$wpdb->prefix}bkb_clients, {$wpdb->prefix}bkb_ig_people, {$wpdb->prefix}bkb_ig_messages\");delete_option('bkb_crm_db');delete_option('bkb_ig_db');");
   wpEval(`require_once ABSPATH.'wp-admin/includes/plugin.php';activate_plugin(${plugin});`);
   const n = wpEval("global $wpdb;echo count($wpdb->get_col(\"SHOW TABLES LIKE '{$wpdb->prefix}bkb_%'\"));");
-  assert.equal(n, '2');
+  assert.equal(n, '4');
 });
 
 test('uninstall removes cached feeds and tasks but keeps settings', () => {
