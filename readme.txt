@@ -92,3 +92,4 @@ The plugin connects to outside services only in these cases.
 * Two requests for the same time sent at the same moment can no longer both be saved.
 * The calendar works on sites without pretty permalinks.
 * Deactivating stops the scheduled tasks, and deleting the plugin removes its cached feeds.
+* Add-ons can add their own buttons under ready-made replies and their own entries to the client history.
