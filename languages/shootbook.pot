@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 19:40+0000\n"
+"POT-Creation-Date: 2026-11-25 20:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,6 +63,7 @@ msgid "Contact"
 msgstr ""
 
 #: includes/admin.php:147 includes/admin.php:221
+#: includes/instagram-admin.php:63
 msgid "Status"
 msgstr ""
 
@@ -78,7 +79,7 @@ msgstr ""
 msgid "Confirmed"
 msgstr ""
 
-#: includes/admin.php:157 includes/crm-admin.php:211 includes/crm.php:320
+#: includes/admin.php:157 includes/crm-admin.php:212 includes/crm.php:320
 #: includes/crm.php:333 includes/crm.php:383
 msgid "Declined"
 msgstr ""
@@ -175,7 +176,7 @@ msgstr ""
 msgid "The time is shown as busy on the site until the request is declined."
 msgstr ""
 
-#: includes/core.php:499 includes/crm-admin.php:531
+#: includes/core.php:499 includes/crm-admin.php:536
 msgid "New request:"
 msgstr ""
 
@@ -183,7 +184,7 @@ msgstr ""
 msgid "Clients"
 msgstr ""
 
-#: includes/crm-admin.php:14 includes/crm-admin.php:447
+#: includes/crm-admin.php:14 includes/crm-admin.php:452
 msgid "Requests report"
 msgstr ""
 
@@ -203,7 +204,7 @@ msgstr ""
 msgid "no due date"
 msgstr ""
 
-#: includes/crm-admin.php:92 includes/crm-admin.php:256 includes/crm.php:28
+#: includes/crm-admin.php:92 includes/crm-admin.php:261 includes/crm.php:28
 msgid "Done"
 msgstr ""
 
@@ -219,8 +220,8 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: includes/crm-admin.php:116 includes/crm-admin.php:370
-#: includes/crm-admin.php:403 includes/crm-admin.php:542
+#: includes/crm-admin.php:116 includes/crm-admin.php:375
+#: includes/crm-admin.php:408 includes/crm-admin.php:547
 msgid "Client"
 msgstr ""
 
@@ -229,16 +230,16 @@ msgid "Contacts"
 msgstr ""
 
 #: includes/crm-admin.php:116 includes/crm-admin.php:169
-#: includes/crm-admin.php:205 includes/crm-admin.php:600
+#: includes/crm-admin.php:206 includes/crm-admin.php:605
 msgid "Stage"
 msgstr ""
 
-#: includes/crm-admin.php:116 includes/crm-admin.php:204
-#: includes/crm-admin.php:456
+#: includes/crm-admin.php:116 includes/crm-admin.php:205
+#: includes/crm-admin.php:461
 msgid "Source"
 msgstr ""
 
-#: includes/crm-admin.php:116 includes/crm-admin.php:456
+#: includes/crm-admin.php:116 includes/crm-admin.php:461
 msgctxt "number of requests"
 msgid "Requests"
 msgstr ""
@@ -268,11 +269,11 @@ msgstr ""
 msgid "Answer to the request"
 msgstr ""
 
-#: includes/crm-admin.php:170 includes/crm-admin.php:232
+#: includes/crm-admin.php:170 includes/crm-admin.php:233
 msgid "Note"
 msgstr ""
 
-#: includes/crm-admin.php:171 includes/crm-admin.php:234
+#: includes/crm-admin.php:171 includes/crm-admin.php:235
 msgid "Task"
 msgstr ""
 
@@ -280,191 +281,191 @@ msgstr ""
 msgid "E-mail"
 msgstr ""
 
-#: includes/crm-admin.php:181
+#: includes/crm-admin.php:182
 msgid "Client not found"
 msgstr ""
 
-#: includes/crm-admin.php:188
+#: includes/crm-admin.php:189
 msgid "← All clients"
 msgstr ""
 
-#: includes/crm-admin.php:189
+#: includes/crm-admin.php:190
 msgid "New request from this client"
 msgstr ""
 
-#: includes/crm-admin.php:194
+#: includes/crm-admin.php:195
 msgid "Card"
 msgstr ""
 
-#: includes/crm-admin.php:199 includes/crm-admin.php:544
+#: includes/crm-admin.php:200 includes/crm-admin.php:549
 msgid "Name"
 msgstr ""
 
-#: includes/crm-admin.php:202 includes/crm-admin.php:547
+#: includes/crm-admin.php:203 includes/crm-admin.php:552
 msgid "Phone or WhatsApp"
 msgstr ""
 
-#: includes/crm-admin.php:203 includes/crm-admin.php:556
+#: includes/crm-admin.php:204 includes/crm-admin.php:561
 msgid "Language to talk in"
 msgstr ""
 
-#: includes/crm-admin.php:210
+#: includes/crm-admin.php:211
 msgid "Why it was lost"
 msgstr ""
 
-#: includes/crm-admin.php:210
+#: includes/crm-admin.php:211
 msgid "too expensive, date taken, stopped answering…"
 msgstr ""
 
-#: includes/crm-admin.php:211
+#: includes/crm-admin.php:212
 msgid "Too expensive"
 msgstr ""
 
-#: includes/crm-admin.php:211
+#: includes/crm-admin.php:212
 msgid "Date taken"
 msgstr ""
 
-#: includes/crm-admin.php:211
+#: includes/crm-admin.php:212
 msgid "Stopped answering"
 msgstr ""
 
-#: includes/crm-admin.php:211
+#: includes/crm-admin.php:212
 msgid "Changed their mind"
 msgstr ""
 
-#: includes/crm-admin.php:212
+#: includes/crm-admin.php:213
 msgid "Notes"
 msgstr ""
 
-#: includes/crm-admin.php:213
+#: includes/crm-admin.php:214
 msgid "Save"
 msgstr ""
 
-#: includes/crm-admin.php:215
+#: includes/crm-admin.php:216
 msgid ""
 "Remove the client and their whole history from the CRM? This cannot be "
 "undone. The requests stay in the list of requests."
 msgstr ""
 
-#: includes/crm-admin.php:215
+#: includes/crm-admin.php:216
 msgid "Remove the client from the CRM"
 msgstr ""
 
 #. translators: 1: date the client first came, 2: date and time of the last contact
-#: includes/crm-admin.php:219
+#: includes/crm-admin.php:220
 #, php-format
 msgid "Client since %1$s, last contact %2$s."
 msgstr ""
 
-#: includes/crm-admin.php:224
+#: includes/crm-admin.php:225
 msgid "History"
 msgstr ""
 
-#: includes/crm-admin.php:229
+#: includes/crm-admin.php:230
 msgid ""
 "What happened or what to do: “Wrote on Instagram, waiting for an answer”, "
 "“Remind on Thursday”…"
 msgstr ""
 
-#: includes/crm-admin.php:233
+#: includes/crm-admin.php:234
 msgid "Message to or from the client"
 msgstr ""
 
-#: includes/crm-admin.php:236 includes/crm-admin.php:254
+#: includes/crm-admin.php:237 includes/crm-admin.php:259
 msgid "due"
 msgstr ""
 
-#: includes/crm-admin.php:237
+#: includes/crm-admin.php:238
 msgid "this is a contact with the client"
 msgstr ""
 
-#: includes/crm-admin.php:238
+#: includes/crm-admin.php:239
 msgid "Add"
 msgstr ""
 
-#: includes/crm-admin.php:242
+#: includes/crm-admin.php:247
 msgid "Nothing yet."
 msgstr ""
 
-#: includes/crm-admin.php:254
+#: includes/crm-admin.php:259
 msgid "not set"
 msgstr ""
 
-#: includes/crm-admin.php:258
+#: includes/crm-admin.php:263
 msgid "done"
 msgstr ""
 
-#: includes/crm-admin.php:262
+#: includes/crm-admin.php:267
 msgid "open the request"
 msgstr ""
 
-#: includes/crm-admin.php:272 includes/replies.php:243
+#: includes/crm-admin.php:277 includes/replies.php:245
 msgid "Ready-made replies"
 msgstr ""
 
-#: includes/crm-admin.php:387
+#: includes/crm-admin.php:392
 msgid "card"
 msgstr ""
 
-#: includes/crm-admin.php:407
+#: includes/crm-admin.php:412
 msgid "Source:"
 msgstr ""
 
-#: includes/crm-admin.php:408
+#: includes/crm-admin.php:413
 msgid "Open the card"
 msgstr ""
 
-#: includes/crm-admin.php:434
+#: includes/crm-admin.php:439
 msgid "Unknown"
 msgstr ""
 
-#: includes/crm-admin.php:437 includes/crm.php:382
+#: includes/crm-admin.php:442 includes/crm.php:382
 msgid "Request confirmed"
 msgstr ""
 
-#: includes/crm-admin.php:443
+#: includes/crm-admin.php:448
 msgid "No reason"
 msgstr ""
 
-#: includes/crm-admin.php:449
+#: includes/crm-admin.php:454
 msgid "30 days"
 msgstr ""
 
-#: includes/crm-admin.php:449
+#: includes/crm-admin.php:454
 msgid "90 days"
 msgstr ""
 
-#: includes/crm-admin.php:449
+#: includes/crm-admin.php:454
 msgid "Year"
 msgstr ""
 
-#: includes/crm-admin.php:449
+#: includes/crm-admin.php:454
 msgid "All time"
 msgstr ""
 
-#: includes/crm-admin.php:454
+#: includes/crm-admin.php:459
 msgid "Where requests come from"
 msgstr ""
 
-#: includes/crm-admin.php:456
+#: includes/crm-admin.php:461
 msgctxt "number of clients"
 msgid "Clients"
 msgstr ""
 
-#: includes/crm-admin.php:456
+#: includes/crm-admin.php:461
 msgctxt "number of confirmed requests"
 msgid "Confirmed"
 msgstr ""
 
-#: includes/crm-admin.php:456
+#: includes/crm-admin.php:461
 msgid "Share confirmed"
 msgstr ""
 
-#: includes/crm-admin.php:459
+#: includes/crm-admin.php:464
 msgid "No requests in this period."
 msgstr ""
 
-#: includes/crm-admin.php:472
+#: includes/crm-admin.php:477
 msgid ""
 "Source is where the person first came to the site from: UTM tags in the link "
 "or the site they followed a link on. “Direct visit” means they opened the "
@@ -472,161 +473,161 @@ msgid ""
 "tracking was on have no source."
 msgstr ""
 
-#: includes/crm-admin.php:473
+#: includes/crm-admin.php:478
 msgid "Clients by stage"
 msgstr ""
 
-#: includes/crm-admin.php:482
+#: includes/crm-admin.php:487
 msgid "Why requests are lost"
 msgstr ""
 
-#: includes/crm-admin.php:513
+#: includes/crm-admin.php:518
 msgid "Phone"
 msgstr ""
 
-#: includes/crm-admin.php:513
+#: includes/crm-admin.php:518
 msgid "In person"
 msgstr ""
 
-#: includes/crm-admin.php:513
+#: includes/crm-admin.php:518
 msgid "Recommendation"
 msgstr ""
 
-#: includes/crm-admin.php:517 includes/crm-admin.php:631
+#: includes/crm-admin.php:522 includes/crm-admin.php:636
 msgid "Other"
 msgstr ""
 
-#: includes/crm-admin.php:530
+#: includes/crm-admin.php:535
 msgid "Client card"
 msgstr ""
 
-#: includes/crm-admin.php:530
+#: includes/crm-admin.php:535
 msgid "All clients"
 msgstr ""
 
-#: includes/crm-admin.php:531
+#: includes/crm-admin.php:536
 msgid "New request by hand"
 msgstr ""
 
-#: includes/crm-admin.php:533
+#: includes/crm-admin.php:538
 msgid "Enter a name and at least one contact: Instagram, e-mail or phone."
 msgstr ""
 
-#: includes/crm-admin.php:535
+#: includes/crm-admin.php:540
 msgid "Could not read the date or time."
 msgstr ""
 
-#: includes/crm-admin.php:537
+#: includes/crm-admin.php:542
 msgid ""
 "For requests that did not come through the site: from Instagram, by phone, "
 "in person. If the client is already known (same Instagram or e-mail), the "
 "request goes to their card. No e-mails are sent to the client."
 msgstr ""
 
-#: includes/crm-admin.php:545
+#: includes/crm-admin.php:550
 msgid "@name or a link to the profile"
 msgstr ""
 
-#: includes/crm-admin.php:548
+#: includes/crm-admin.php:553
 msgid "Where they came from"
 msgstr ""
 
-#: includes/crm-admin.php:565
+#: includes/crm-admin.php:570
 msgid "What they want"
 msgstr ""
 
-#: includes/crm-admin.php:568
+#: includes/crm-admin.php:573
 msgid "Service"
 msgstr ""
 
-#: includes/crm-admin.php:570
+#: includes/crm-admin.php:575
 msgid "not decided"
 msgstr ""
 
-#: includes/crm-admin.php:578
+#: includes/crm-admin.php:583
 msgid "Location"
 msgstr ""
 
-#: includes/crm-admin.php:586
+#: includes/crm-admin.php:591
 msgid "Date"
 msgstr ""
 
-#: includes/crm-admin.php:587
+#: includes/crm-admin.php:592
 msgid "Start"
 msgstr ""
 
-#: includes/crm-admin.php:588
+#: includes/crm-admin.php:593
 msgid "Duration"
 msgstr ""
 
 #. translators: %s: number of hours
-#: includes/crm-admin.php:591
+#: includes/crm-admin.php:596
 #, php-format
 msgid "%s h"
 msgstr ""
 
-#: includes/crm-admin.php:595
+#: includes/crm-admin.php:600
 msgid "Price"
 msgstr ""
 
-#: includes/crm-admin.php:595
+#: includes/crm-admin.php:600
 msgid "for example 630 €"
 msgstr ""
 
-#: includes/crm-admin.php:597
+#: includes/crm-admin.php:602
 msgid ""
 "If a date and time are given, hold this time in the calendar on the site"
 msgstr ""
 
-#: includes/crm-admin.php:598
+#: includes/crm-admin.php:603
 msgid "What the client wrote or what you agreed"
 msgstr ""
 
-#: includes/crm-admin.php:598
+#: includes/crm-admin.php:603
 msgid "You can simply paste the Instagram chat"
 msgstr ""
 
-#: includes/crm-admin.php:607
+#: includes/crm-admin.php:612
 msgid "Task for later"
 msgstr ""
 
-#: includes/crm-admin.php:607
+#: includes/crm-admin.php:612
 msgid "for example: answer when they name the date"
 msgstr ""
 
-#: includes/crm-admin.php:608
+#: includes/crm-admin.php:613
 msgid "Task due"
 msgstr ""
 
-#: includes/crm-admin.php:610
+#: includes/crm-admin.php:615
 msgid "Save the request"
 msgstr ""
 
 #. translators: %s: date and time
-#: includes/crm-admin.php:744
+#: includes/crm-admin.php:749
 #, php-format
 msgid "Date: %s (the time is not held in the calendar)"
 msgstr ""
 
-#: includes/crm-admin.php:747
+#: includes/crm-admin.php:752
 msgid "Service:"
 msgstr ""
 
-#: includes/crm-admin.php:750
+#: includes/crm-admin.php:755
 msgid "Location:"
 msgstr ""
 
 #. translators: %s: number of hours
-#: includes/crm-admin.php:754
+#: includes/crm-admin.php:759
 #, php-format
 msgid "Duration: %s h"
 msgstr ""
 
-#: includes/crm-admin.php:757
+#: includes/crm-admin.php:762
 msgid "Price:"
 msgstr ""
 
-#: includes/crm-admin.php:762
+#: includes/crm-admin.php:767
 msgid "Request without details"
 msgstr ""
 
@@ -700,6 +701,211 @@ msgstr ""
 msgid "All clients:"
 msgstr ""
 
+#: includes/instagram-admin.php:17
+msgid "Instagram, from the client"
+msgstr ""
+
+#: includes/instagram-admin.php:20
+msgid "Instagram, to the client"
+msgstr ""
+
+#: includes/instagram-admin.php:45
+msgid "Instagram Direct"
+msgstr ""
+
+#: includes/instagram-admin.php:46
+msgid ""
+"Messages to your Instagram account come into Requests → Clients. A person "
+"who writes for the first time becomes a new client with the source "
+"Instagram, and every message goes to the client’s history. You can answer "
+"from the client card within 24 hours after the client’s last message."
+msgstr ""
+
+#: includes/instagram-admin.php:48
+msgid "Connected."
+msgstr ""
+
+#: includes/instagram-admin.php:50
+msgid "Disconnected. The messages already saved stay in the client cards."
+msgstr ""
+
+#. translators: %d: number of messages
+#: includes/instagram-admin.php:55
+#, php-format
+msgid "Checked. New messages saved: %d."
+msgstr ""
+
+#: includes/instagram-admin.php:60
+msgid "Instagram answered:"
+msgstr ""
+
+#. translators: 1: @name of the account, 2: date
+#: includes/instagram-admin.php:68
+#, php-format
+msgid ""
+"Connected to @%1$s. The access key is renewed automatically, the current one "
+"is valid until %2$s."
+msgstr ""
+
+#: includes/instagram-admin.php:73
+msgid "Last message from Instagram:"
+msgstr ""
+
+#: includes/instagram-admin.php:73 includes/instagram-admin.php:75
+msgid "none yet"
+msgstr ""
+
+#: includes/instagram-admin.php:75
+msgid "Last hourly check:"
+msgstr ""
+
+#: includes/instagram-admin.php:79
+msgid "Last error:"
+msgstr ""
+
+#: includes/instagram-admin.php:82
+msgid "Check for new messages now"
+msgstr ""
+
+#: includes/instagram-admin.php:83
+msgid "Disconnect"
+msgstr ""
+
+#: includes/instagram-admin.php:86
+msgid "Not connected."
+msgstr ""
+
+#: includes/instagram-admin.php:89
+msgid "How to connect"
+msgstr ""
+
+#: includes/instagram-admin.php:91
+msgid "Your Instagram account must be a professional one: Business or Creator."
+msgstr ""
+
+#: includes/instagram-admin.php:92
+msgid ""
+"In the Instagram app, open Settings → Messages and story replies → Message "
+"controls → Connected tools, and turn on “Allow access to messages”."
+msgstr ""
+
+#: includes/instagram-admin.php:93
+msgid ""
+"On developers.facebook.com create an app of the Business type and add the "
+"Instagram product. Choose “API setup with Instagram login”."
+msgstr ""
+
+#: includes/instagram-admin.php:94
+msgid ""
+"In step “Generate access tokens”, add your Instagram account and generate a "
+"token. Paste it below together with the Instagram app secret from the same "
+"page."
+msgstr ""
+
+#: includes/instagram-admin.php:95
+msgid ""
+"In step “Configure webhooks”, paste the address and the verify token below, "
+"press “Verify and save”, then turn on the “messages” field."
+msgstr ""
+
+#: includes/instagram-admin.php:98
+msgid "Callback URL"
+msgstr ""
+
+#: includes/instagram-admin.php:99
+msgid "Verify token"
+msgstr ""
+
+#: includes/instagram-admin.php:105
+msgid "Instagram app secret"
+msgstr ""
+
+#: includes/instagram-admin.php:105 includes/instagram-admin.php:106
+msgid "saved, leave empty to keep it"
+msgstr ""
+
+#: includes/instagram-admin.php:106
+msgid "Access token"
+msgstr ""
+
+#: includes/instagram-admin.php:108
+msgid "Connect"
+msgstr ""
+
+#: includes/instagram-admin.php:132
+msgid "Fill in both the app secret and the access token."
+msgstr ""
+
+#: includes/instagram-admin.php:201
+msgid "Answer in Instagram Direct"
+msgstr ""
+
+#. translators: %s: date and time
+#: includes/instagram-admin.php:204
+#, php-format
+msgid "You can write until %s, 24 hours after the client’s last message."
+msgstr ""
+
+#: includes/instagram-admin.php:206 includes/instagram.php:483
+msgid ""
+"More than 24 hours have passed since the client’s last message. Instagram "
+"lets you write only after the client writes again."
+msgstr ""
+
+#: includes/instagram-admin.php:211 includes/instagram-admin.php:230
+msgid "Send to Direct"
+msgstr ""
+
+#: includes/instagram-admin.php:252 includes/replies.php:290
+msgid "not allowed"
+msgstr ""
+
+#: includes/instagram-admin.php:258
+msgid "no text"
+msgstr ""
+
+#: includes/instagram.php:271
+msgid "photo"
+msgstr ""
+
+#: includes/instagram.php:272
+msgid "video"
+msgstr ""
+
+#: includes/instagram.php:273
+msgid "voice message"
+msgstr ""
+
+#: includes/instagram.php:274
+msgid "shared post"
+msgstr ""
+
+#: includes/instagram.php:275
+msgid "mention in a story"
+msgstr ""
+
+#: includes/instagram.php:276
+msgid "reel"
+msgstr ""
+
+#: includes/instagram.php:281
+msgid "reply to a story"
+msgstr ""
+
+#: includes/instagram.php:283
+msgid "message"
+msgstr ""
+
+#. translators: %s: client's name or @name
+#: includes/instagram.php:342
+#, php-format
+msgid "New message on Instagram from %s"
+msgstr ""
+
+#: includes/instagram.php:480
+msgid "This client has not written on Instagram yet."
+msgstr ""
+
 #: includes/replies.php:21
 msgid "The time is free"
 msgstr ""
@@ -752,46 +958,42 @@ msgstr ""
 msgid "Open the Instagram chat"
 msgstr ""
 
-#: includes/replies.php:221
+#: includes/replies.php:223
 msgid "Send an e-mail from the site"
 msgstr ""
 
-#: includes/replies.php:222
+#: includes/replies.php:224
 msgid "or open in the mail app"
 msgstr ""
 
-#: includes/replies.php:224
+#: includes/replies.php:226
 msgid "Copied"
 msgstr ""
 
-#: includes/replies.php:226
+#: includes/replies.php:228
 msgid "Translation:"
 msgstr ""
 
-#: includes/replies.php:288
-msgid "not allowed"
-msgstr ""
-
-#: includes/replies.php:297
+#: includes/replies.php:299
 msgid "no address or text"
 msgstr ""
 
-#: includes/replies.php:309
+#: includes/replies.php:311
 msgid "the address is not the client’s address"
 msgstr ""
 
-#: includes/replies.php:313
+#: includes/replies.php:315
 msgid "the mail server did not accept the e-mail"
 msgstr ""
 
 #. translators: 1: reply title, 2: e-mail address
-#: includes/replies.php:324
+#: includes/replies.php:326
 #, php-format
 msgid "E-mail to the client (“%1$s”) to %2$s"
 msgstr ""
 
 #. translators: %s: e-mail address
-#: includes/replies.php:324
+#: includes/replies.php:326
 #, php-format
 msgid "E-mail to the client to %s"
 msgstr ""
@@ -1570,14 +1772,26 @@ msgstr ""
 msgid "Delete?"
 msgstr ""
 
+#: assets/instagram.js:8 assets/replies.js:30
+msgid "Sending…"
+msgstr ""
+
+#: assets/instagram.js:17
+msgid "Sent to Direct"
+msgstr ""
+
+#: assets/instagram.js:20
+msgid "Not sent:"
+msgstr ""
+
+#: assets/instagram.js:24
+msgid "Not sent: no connection to the site"
+msgstr ""
+
 #. translators: %s: e-mail address
 #: assets/replies.js:26
 #, javascript-format
 msgid "Send this e-mail to %s?"
-msgstr ""
-
-#: assets/replies.js:30
-msgid "Sending…"
 msgstr ""
 
 #: assets/replies.js:40

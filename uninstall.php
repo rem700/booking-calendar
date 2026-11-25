@@ -10,7 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-foreach ( array( 'bkb_cleanup', 'bkb_remind', 'bkb_crm_tick' ) as $bkb_hook ) {
+foreach ( array( 'bkb_cleanup', 'bkb_remind', 'bkb_crm_tick', 'bkb_ig_hourly', 'bkb_ig_daily' ) as $bkb_hook ) {
 	wp_clear_scheduled_hook( $bkb_hook );
 }
 

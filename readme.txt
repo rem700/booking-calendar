@@ -43,6 +43,7 @@ Requests → Clients keeps one card per client, made from the requests:
 * requests that came by Instagram, phone or in person can be added by hand
 * a report of requests and confirmations by source, clients by stage and reasons for lost requests
 * a morning e-mail with new requests, requests waiting for a reply, today's and tomorrow's sessions and tasks
+* Instagram Direct: a person who writes to your Instagram becomes a client, every message goes to the history, and you can answer from the card
 
 = Reply templates =
 
@@ -79,6 +80,7 @@ The plugin connects to outside services only in these cases.
 
 * iCal feeds. If you add iCal addresses in Settings → General, the site downloads those feeds to find busy times. Only a plain request for the feed is sent, without any visitor data. The feed belongs to the calendar service you use, for example Google Calendar: https://policies.google.com/terms and https://policies.google.com/privacy
 * Google Calendar links. Request pages and e-mails contain an "Add to Google Calendar" link. Nothing is sent until someone opens it.
+* Instagram API. Only if you connect your Instagram account in Requests → Instagram. Instagram then sends new Direct messages to your site, and the site asks Instagram every hour for recent conversations and for the name of a person who wrote. When you answer from a client card, the text goes to Instagram. The access token and app secret stay on your site. Service by Meta: https://developers.facebook.com/terms/ and https://privacycenter.instagram.com/policy
 * Instagram links. A client card can contain a link to the client's Instagram profile or chat. Nothing is sent until you open it.
 
 == Changelog ==
@@ -92,4 +94,4 @@ The plugin connects to outside services only in these cases.
 * Two requests for the same time sent at the same moment can no longer both be saved.
 * The calendar works on sites without pretty permalinks.
 * Deactivating stops the scheduled tasks, and deleting the plugin removes its cached feeds.
-* Add-ons can add their own buttons under ready-made replies and their own entries to the client history.
+* Messages from Instagram Direct come into the client list, and you can answer them from the client card.

@@ -17,6 +17,8 @@ add_filter( 'pre_wp_mail', function ( $null, $atts ) {
 }, 10, 2 );
 ```
 
+- For the Instagram tests, copy `tests/e2e/mock-instagram.php` to `wp-content/mu-plugins/`. It answers calls to the Instagram API with test data, so nothing goes to Instagram.
+
 ## Running
 
 ```sh

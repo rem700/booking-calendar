@@ -37,6 +37,16 @@ Free times are worked out from your working hours, the time you need to prepare,
 
 The history is kept in its own tables, so it stays after old requests are removed.
 
+## Instagram Direct
+
+Requests → Instagram connects a professional Instagram account (Business or Creator) through the Instagram API with Instagram Login. You make an app on developers.facebook.com, paste its Instagram app secret and an access token, and give Meta the webhook address and verify token shown on the page.
+
+- A person who writes for the first time becomes a client with the source Instagram. If a client with the same @name is already in the list, the message goes to that card.
+- Every message, in both directions, goes to the client's history. Answers written in the Instagram app are saved too.
+- New messages come by webhook (`POST /wp-json/bk-booking/v1/instagram`, signed with the app secret). Every hour the site also reads recent conversations, so nothing is lost while the site was down.
+- You can answer from the client card or send a ready-made reply to Direct within 24 hours after the client's last message, as Instagram allows.
+- The token is renewed automatically. It and the app secret are kept in the `bkb_instagram` option and never go into the settings export.
+
 ## Ready-made replies
 
 Under every request and in each client card there are message templates (time is free, booking confirmed, time taken, ask for details, follow-up, thanks and review) already filled with the date, service, place and price. They are shown in the client's language with the admin's language underneath as a translation; one click copies the text, opens the Instagram chat, or sends it by e-mail from the site (the e-mail is saved in the client's history). The sender address is set in **Settings → General → Sender address**. Edit or add templates in **Settings → Reply templates**. A line whose placeholder has no value is left out.
