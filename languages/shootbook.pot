@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 17:49+0000\n"
+"POT-Creation-Date: 2026-11-25 18:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,7 +135,7 @@ msgid ""
 "yourself."
 msgstr ""
 
-#: includes/config.php:426
+#: includes/config.php:429
 msgid "Reply"
 msgstr ""
 
@@ -155,27 +155,27 @@ msgstr ""
 msgid "No requests yet"
 msgstr ""
 
-#: includes/core.php:402 includes/crm.php:24
+#: includes/core.php:445 includes/crm.php:24
 msgid "New request"
 msgstr ""
 
-#: includes/core.php:404 includes/crm.php:350
+#: includes/core.php:447 includes/crm.php:350
 msgid "Message:"
 msgstr ""
 
-#: includes/core.php:405
+#: includes/core.php:448
 msgid "Confirm or decline:"
 msgstr ""
 
-#: includes/core.php:406
+#: includes/core.php:449
 msgid "Add to Google Calendar:"
 msgstr ""
 
-#: includes/core.php:407
+#: includes/core.php:450
 msgid "The time is shown as busy on the site until the request is declined."
 msgstr ""
 
-#: includes/core.php:411 includes/crm-admin.php:531
+#: includes/core.php:454 includes/crm-admin.php:531
 msgid "New request:"
 msgstr ""
 
@@ -1135,8 +1135,8 @@ msgstr ""
 msgid "New service"
 msgstr ""
 
-#: assets/admin.js:136 assets/admin.js:153 assets/admin.js:173
-#: assets/admin.js:244
+#: assets/admin.js:136 assets/admin.js:154 assets/admin.js:175
+#: assets/admin.js:246
 msgid "Title"
 msgstr ""
 
@@ -1151,264 +1151,283 @@ msgid ""
 "studio."
 msgstr ""
 
-#: assets/admin.js:149
+#: assets/admin.js:143
+msgid "Locations are booked separately"
+msgstr ""
+
+#: assets/admin.js:143
+msgid ""
+"On: a request takes up time only in its own location, so two halls can be "
+"booked for the same hour. Off: a request takes up the time in all locations, "
+"for example when one photographer works everywhere."
+msgstr ""
+
+#: assets/admin.js:150
 msgid "as in the schedule"
 msgstr ""
 
-#: assets/admin.js:149
+#: assets/admin.js:150
 msgid "own hours"
 msgstr ""
 
-#: assets/admin.js:149
+#: assets/admin.js:150
 msgid "closed"
 msgstr ""
 
-#: assets/admin.js:152
+#: assets/admin.js:153
 msgid "New location"
 msgstr ""
 
-#: assets/admin.js:154
+#: assets/admin.js:155
+msgid "Bookings at the same time"
+msgstr ""
+
+#: assets/admin.js:155
+msgid "For example, 2 if two shoots can run in this location at once."
+msgstr ""
+
+#: assets/admin.js:156
 msgid "Address"
 msgstr ""
 
-#: assets/admin.js:154
+#: assets/admin.js:156
 msgid ""
 "Added to the confirmation e-mail and to the calendar event. Empty: no "
 "address."
 msgstr ""
 
-#: assets/admin.js:155
+#: assets/admin.js:157
 msgid "Opening hours of this location"
 msgstr ""
 
-#: assets/admin.js:156
+#: assets/admin.js:158
 msgid "Add location"
 msgstr ""
 
-#: assets/admin.js:162
+#: assets/admin.js:164
 msgid ""
 "An extra choice in the form: “yes or no” (for example, video) or one of "
 "several options (for example, your own photographer or ours)."
 msgstr ""
 
-#: assets/admin.js:170
+#: assets/admin.js:172
 msgid "New option"
 msgstr ""
 
-#: assets/admin.js:172
+#: assets/admin.js:174
 msgid "Type"
 msgstr ""
 
-#: assets/admin.js:172
+#: assets/admin.js:174
 msgid "yes / no"
 msgstr ""
 
-#: assets/admin.js:172
+#: assets/admin.js:174
 msgid "one of several"
 msgstr ""
 
-#: assets/admin.js:174
+#: assets/admin.js:176
 msgid "Note (optional)"
 msgstr ""
 
-#: assets/admin.js:175
+#: assets/admin.js:177
 msgid "Choices"
 msgstr ""
 
-#: assets/admin.js:175
+#: assets/admin.js:177
 msgid "Add choice"
 msgstr ""
 
-#: assets/admin.js:176 assets/admin.js:179
+#: assets/admin.js:178 assets/admin.js:181
 msgid "Default"
 msgstr ""
 
-#: assets/admin.js:179
+#: assets/admin.js:181
 msgid "no"
 msgstr ""
 
-#: assets/admin.js:179
+#: assets/admin.js:181
 msgid "yes"
 msgstr ""
 
-#: assets/admin.js:180
+#: assets/admin.js:182
 msgid "Available at"
 msgstr ""
 
-#: assets/admin.js:182
+#: assets/admin.js:184
 msgid "Nothing checked: everywhere."
 msgstr ""
 
-#: assets/admin.js:184
+#: assets/admin.js:186
 msgid "Add option"
 msgstr ""
 
-#: assets/admin.js:190
+#: assets/admin.js:192
 msgid "Name and e-mail"
 msgstr ""
 
-#: assets/admin.js:190
+#: assets/admin.js:192
 msgid "always, required"
 msgstr ""
 
-#: assets/admin.js:191
+#: assets/admin.js:193
 msgid "Show (optional field)"
 msgstr ""
 
-#: assets/admin.js:192
+#: assets/admin.js:194
 msgid "Details field"
 msgstr ""
 
-#: assets/admin.js:192
+#: assets/admin.js:194
 msgid "Show"
 msgstr ""
 
-#: assets/admin.js:192
+#: assets/admin.js:194
 msgid "Required"
 msgstr ""
 
-#: assets/admin.js:193
+#: assets/admin.js:195
 msgid "Label"
 msgstr ""
 
-#: assets/admin.js:193
+#: assets/admin.js:195
 msgid "Placeholder"
 msgstr ""
 
-#: assets/admin.js:194
+#: assets/admin.js:196
 msgid ""
 "For example “Guests: height and build of each” or “What needs to be done”."
 msgstr ""
 
-#: assets/admin.js:195
+#: assets/admin.js:197
 msgid "Show the “Anything else” field"
 msgstr ""
 
-#: assets/admin.js:196
+#: assets/admin.js:198
 msgid "Session language"
 msgstr ""
 
-#: assets/admin.js:196
+#: assets/admin.js:198
 msgid "Ask which language the session should be in"
 msgstr ""
 
-#: assets/admin.js:200
+#: assets/admin.js:202
 msgid "Hide on pages in"
 msgstr ""
 
-#: assets/admin.js:203
+#: assets/admin.js:205
 msgid "Add language"
 msgstr ""
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "Step 1 heading"
 msgstr ""
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "Step 2 heading"
 msgstr ""
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "Step 3 heading"
 msgstr ""
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "“Service” label"
 msgstr ""
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "“Location” label"
 msgstr ""
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "“Duration” label"
 msgstr ""
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "Preparation note ({prep}, {total})"
 msgstr ""
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "Preparation in the summary ({prep})"
 msgstr ""
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "Time zone note"
 msgstr ""
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 msgid "Below the button"
 msgstr ""
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 msgid "Button"
 msgstr ""
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 #, javascript-format
 msgid "Consent (%s is the link)"
 msgstr ""
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 #, javascript-format
 msgid "After sending (%s is the e-mail)"
 msgstr ""
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 msgid "After sending, second line"
 msgstr ""
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Received” e-mail: subject"
 msgstr ""
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Received” e-mail"
 msgstr ""
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Confirmed” e-mail: subject"
 msgstr ""
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Confirmed” e-mail"
 msgstr ""
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "“Declined” e-mail: subject"
 msgstr ""
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "“Declined” e-mail"
 msgstr ""
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Reminder: subject"
 msgstr ""
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Reminder"
 msgstr ""
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Address line ({address})"
 msgstr ""
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Calendar line ({url})"
 msgstr ""
 
-#: assets/admin.js:219
+#: assets/admin.js:221
 msgid "Language:"
 msgstr ""
 
-#: assets/admin.js:221
+#: assets/admin.js:223
 msgid ""
 "An empty field uses the default text, shown in grey. E-mails can use {name}, "
 "{summary}, {where}, {calendar}, {book_url}, {site}, {signature}."
 msgstr ""
 
-#: assets/admin.js:235
+#: assets/admin.js:237
 msgid ""
 "Message templates for the client. They are shown under each request and in "
 "the client card: in the client’s language, with a translation into your "
@@ -1416,119 +1435,119 @@ msgid ""
 "paste into Instagram or an e-mail."
 msgstr ""
 
-#: assets/admin.js:236
+#: assets/admin.js:238
 msgid "Placeholders:"
 msgstr ""
 
-#: assets/admin.js:236
+#: assets/admin.js:238
 msgid ""
 "If a value is missing (for example, the request has no price), the line with "
 "that placeholder is left out of the message."
 msgstr ""
 
-#: assets/admin.js:238
+#: assets/admin.js:240
 msgid "Review link"
 msgstr ""
 
-#: assets/admin.js:238
+#: assets/admin.js:240
 msgid ""
 "Used for <code>{review_url}</code>, for example a link to a Google review."
 msgstr ""
 
-#: assets/admin.js:239
+#: assets/admin.js:241
 msgid "Booking page"
 msgstr ""
 
-#: assets/admin.js:239
+#: assets/admin.js:241
 msgid ""
 "For <code>{book_url}</code> when the client did not come through the form. "
 "Otherwise the page the request was sent from is used."
 msgstr ""
 
-#: assets/admin.js:243
+#: assets/admin.js:245
 msgid "New reply"
 msgstr ""
 
-#: assets/admin.js:248
+#: assets/admin.js:250
 msgid "Add reply"
 msgstr ""
 
-#: assets/admin.js:249
+#: assets/admin.js:251
 msgid "Restore default replies"
 msgstr ""
 
-#: assets/admin.js:257
+#: assets/admin.js:259
 msgid "Form background"
 msgstr ""
 
-#: assets/admin.js:257
+#: assets/admin.js:259
 msgid "Text and selected buttons"
 msgstr ""
 
-#: assets/admin.js:257
+#: assets/admin.js:259
 msgid "Accent (the “Send” button)"
 msgstr ""
 
-#: assets/admin.js:258
+#: assets/admin.js:260
 msgid "Heading font"
 msgstr ""
 
-#: assets/admin.js:258
+#: assets/admin.js:260
 msgid ""
 "A font already loaded on the site, for example “Unbounded, sans-serif”. "
 "Empty: same as the site."
 msgstr ""
 
-#: assets/admin.js:259
+#: assets/admin.js:261
 msgid "Text font"
 msgstr ""
 
-#: assets/admin.js:259
+#: assets/admin.js:261
 msgid "Empty: same as the site."
 msgstr ""
 
-#: assets/admin.js:264
+#: assets/admin.js:266
 msgid "Export"
 msgstr ""
 
-#: assets/admin.js:264
+#: assets/admin.js:266
 msgid ""
 "A file with all settings except the calendar addresses. It can be loaded on "
 "another site."
 msgstr ""
 
-#: assets/admin.js:264
+#: assets/admin.js:266
 msgid "Download settings (JSON)"
 msgstr ""
 
-#: assets/admin.js:265
+#: assets/admin.js:267
 msgid "Import"
 msgstr ""
 
-#: assets/admin.js:265
+#: assets/admin.js:267
 msgid ""
 "Paste the file contents and press “Load”, then “Save settings”. The calendar "
 "addresses stay unchanged."
 msgstr ""
 
-#: assets/admin.js:266
+#: assets/admin.js:268
 msgid "Load"
 msgstr ""
 
-#: assets/admin.js:298
+#: assets/admin.js:300
 msgid ""
 "Replace the replies with the default ones? Your edits to the replies will be "
 "lost after saving."
 msgstr ""
 
-#: assets/admin.js:308
+#: assets/admin.js:310
 msgid "Loaded. Check the tabs and press “Save settings”."
 msgstr ""
 
-#: assets/admin.js:309
+#: assets/admin.js:311
 msgid "This is not JSON."
 msgstr ""
 
-#: assets/admin.js:318
+#: assets/admin.js:320
 msgid "Delete?"
 msgstr ""

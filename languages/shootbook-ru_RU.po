@@ -122,7 +122,7 @@ msgstr "Письмо клиенту отправлено."
 msgid "Status changed, but the e-mail could not be sent. Please write to the client yourself."
 msgstr "Статус изменён, но письмо отправить не удалось. Напишите клиенту вручную."
 
-#: includes/config.php:426
+#: includes/config.php:429
 msgid "Reply"
 msgstr "Ответ"
 
@@ -142,27 +142,27 @@ msgstr "Найти заявку"
 msgid "No requests yet"
 msgstr "Заявок пока нет"
 
-#: includes/core.php:402 includes/crm.php:24
+#: includes/core.php:445 includes/crm.php:24
 msgid "New request"
 msgstr "Новая заявка"
 
-#: includes/core.php:404 includes/crm.php:350
+#: includes/core.php:447 includes/crm.php:350
 msgid "Message:"
 msgstr "Сообщение:"
 
-#: includes/core.php:405
+#: includes/core.php:448
 msgid "Confirm or decline:"
 msgstr "Подтвердить или отклонить:"
 
-#: includes/core.php:406
+#: includes/core.php:449
 msgid "Add to Google Calendar:"
 msgstr "Добавить в Google Календарь:"
 
-#: includes/core.php:407
+#: includes/core.php:450
 msgid "The time is shown as busy on the site until the request is declined."
 msgstr "Время помечено как занятое на сайте, пока заявка не отклонена."
 
-#: includes/core.php:411 includes/crm-admin.php:531
+#: includes/core.php:454 includes/crm-admin.php:531
 msgid "New request:"
 msgstr "Новая заявка:"
 
@@ -1083,8 +1083,8 @@ msgstr "Что можно забронировать. Если услуга од
 msgid "New service"
 msgstr "Новая услуга"
 
-#: assets/admin.js:136 assets/admin.js:153 assets/admin.js:173
-#: assets/admin.js:244
+#: assets/admin.js:136 assets/admin.js:154 assets/admin.js:175
+#: assets/admin.js:246
 msgid "Title"
 msgstr "Название"
 
@@ -1096,360 +1096,376 @@ msgstr "Добавить услугу"
 msgid "Where the booking takes place. If there is only one location, leave the list empty. A location can have its own hours, for example the hours of a partner studio."
 msgstr "Где проходит запись. Если место одно, список можно оставить пустым. У места можно задать свои часы, например часы студии-партнёра."
 
-#: assets/admin.js:149
+#: assets/admin.js:143
+msgid "Locations are booked separately"
+msgstr "Места бронируются отдельно"
+
+#: assets/admin.js:143
+msgid "On: a request takes up time only in its own location, so two halls can be booked for the same hour. Off: a request takes up the time in all locations, for example when one photographer works everywhere."
+msgstr "Включено: заявка занимает время только в своём месте, и два зала можно забронировать на один час. Выключено: заявка занимает время во всех местах, например когда везде снимает один фотограф."
+
+#: assets/admin.js:150
 msgid "as in the schedule"
 msgstr "как в расписании"
 
-#: assets/admin.js:149
+#: assets/admin.js:150
 msgid "own hours"
 msgstr "свои часы"
 
-#: assets/admin.js:149
+#: assets/admin.js:150
 msgid "closed"
 msgstr "не работаем"
 
-#: assets/admin.js:152
+#: assets/admin.js:153
 msgid "New location"
 msgstr "Новое место"
 
-#: assets/admin.js:154
+#: assets/admin.js:155
+msgid "Bookings at the same time"
+msgstr "Записей одновременно"
+
+#: assets/admin.js:155
+msgid "For example, 2 if two shoots can run in this location at once."
+msgstr "Например, 2, если в этом месте могут идти две съёмки сразу."
+
+#: assets/admin.js:156
 msgid "Address"
 msgstr "Адрес"
 
-#: assets/admin.js:154
+#: assets/admin.js:156
 msgid "Added to the confirmation e-mail and to the calendar event. Empty: no address."
 msgstr "Попадает в письмо о подтверждении и в событие календаря. Пусто — без адреса."
 
-#: assets/admin.js:155
+#: assets/admin.js:157
 msgid "Opening hours of this location"
 msgstr "Часы работы этого места"
 
-#: assets/admin.js:156
+#: assets/admin.js:158
 msgid "Add location"
 msgstr "Добавить место"
 
-#: assets/admin.js:162
+#: assets/admin.js:164
 msgid "An extra choice in the form: “yes or no” (for example, video) or one of several options (for example, your own photographer or ours)."
 msgstr "Дополнительный выбор в форме: «да/нет» (например, видео) или один вариант из нескольких (например, свой или наш фотограф)."
 
-#: assets/admin.js:170
+#: assets/admin.js:172
 msgid "New option"
 msgstr "Новая опция"
 
-#: assets/admin.js:172
+#: assets/admin.js:174
 msgid "Type"
 msgstr "Вид"
 
-#: assets/admin.js:172
+#: assets/admin.js:174
 msgid "yes / no"
 msgstr "да / нет"
 
-#: assets/admin.js:172
+#: assets/admin.js:174
 msgid "one of several"
 msgstr "один из вариантов"
 
-#: assets/admin.js:174
+#: assets/admin.js:176
 msgid "Note (optional)"
 msgstr "Пояснение (необязательно)"
 
-#: assets/admin.js:175
+#: assets/admin.js:177
 msgid "Choices"
 msgstr "Варианты"
 
-#: assets/admin.js:175
+#: assets/admin.js:177
 msgid "Add choice"
 msgstr "Добавить вариант"
 
-#: assets/admin.js:176 assets/admin.js:179
+#: assets/admin.js:178 assets/admin.js:181
 msgid "Default"
 msgstr "По умолчанию"
 
-#: assets/admin.js:179
+#: assets/admin.js:181
 msgid "no"
 msgstr "нет"
 
-#: assets/admin.js:179
+#: assets/admin.js:181
 msgid "yes"
 msgstr "да"
 
-#: assets/admin.js:180
+#: assets/admin.js:182
 msgid "Available at"
 msgstr "Где доступна"
 
-#: assets/admin.js:182
+#: assets/admin.js:184
 msgid "Nothing checked: everywhere."
 msgstr "Ничего не отмечено — везде."
 
-#: assets/admin.js:184
+#: assets/admin.js:186
 msgid "Add option"
 msgstr "Добавить опцию"
 
-#: assets/admin.js:190
+#: assets/admin.js:192
 msgid "Name and e-mail"
 msgstr "Имя и e-mail"
 
-#: assets/admin.js:190
+#: assets/admin.js:192
 msgid "always, required"
 msgstr "всегда, обязательные"
 
-#: assets/admin.js:191
+#: assets/admin.js:193
 msgid "Show (optional field)"
 msgstr "Показывать (необязательное поле)"
 
-#: assets/admin.js:192
+#: assets/admin.js:194
 msgid "Details field"
 msgstr "Поле «Подробности»"
 
-#: assets/admin.js:192
+#: assets/admin.js:194
 msgid "Show"
 msgstr "Показывать"
 
-#: assets/admin.js:192
+#: assets/admin.js:194
 msgid "Required"
 msgstr "Обязательное"
 
-#: assets/admin.js:193
+#: assets/admin.js:195
 msgid "Label"
 msgstr "Подпись"
 
-#: assets/admin.js:193
+#: assets/admin.js:195
 msgid "Placeholder"
 msgstr "Подсказка в поле"
 
-#: assets/admin.js:194
+#: assets/admin.js:196
 msgid "For example “Guests: height and build of each” or “What needs to be done”."
 msgstr "Например «Гости: рост и комплекция каждого» или «Что нужно сделать»."
 
-#: assets/admin.js:195
+#: assets/admin.js:197
 msgid "Show the “Anything else” field"
 msgstr "Показывать поле «Что-то ещё»"
 
-#: assets/admin.js:196
+#: assets/admin.js:198
 msgid "Session language"
 msgstr "Язык записи"
 
-#: assets/admin.js:196
+#: assets/admin.js:198
 msgid "Ask which language the session should be in"
 msgstr "Спрашивать, на каком языке проводить"
 
-#: assets/admin.js:200
+#: assets/admin.js:202
 msgid "Hide on pages in"
 msgstr "Не показывать на страницах на языке"
 
-#: assets/admin.js:203
+#: assets/admin.js:205
 msgid "Add language"
 msgstr "Добавить язык"
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "Step 1 heading"
 msgstr "Заголовок шага 1"
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "Step 2 heading"
 msgstr "Заголовок шага 2"
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "Step 3 heading"
 msgstr "Заголовок шага 3"
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "“Service” label"
 msgstr "Подпись «Услуга»"
 
-#: assets/admin.js:213
+#: assets/admin.js:215
 msgid "“Location” label"
 msgstr "Подпись «Место»"
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "“Duration” label"
 msgstr "Подпись «Длительность»"
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "Preparation note ({prep}, {total})"
 msgstr "Пояснение про подготовку ({prep}, {total})"
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "Preparation in the summary ({prep})"
 msgstr "Подготовка в сводке ({prep})"
 
-#: assets/admin.js:214
+#: assets/admin.js:216
 msgid "Time zone note"
 msgstr "Про часовой пояс"
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 msgid "Below the button"
 msgstr "Под кнопкой"
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 msgid "Button"
 msgstr "Кнопка"
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 #, javascript-format
 msgid "Consent (%s is the link)"
 msgstr "Согласие (%s — ссылка)"
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 #, javascript-format
 msgid "After sending (%s is the e-mail)"
 msgstr "После отправки (%s — e-mail)"
 
-#: assets/admin.js:215
+#: assets/admin.js:217
 msgid "After sending, second line"
 msgstr "После отправки, вторая строка"
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Received” e-mail: subject"
 msgstr "Письмо «получили»: тема"
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Received” e-mail"
 msgstr "Письмо «получили»"
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Confirmed” e-mail: subject"
 msgstr "Письмо «подтверждено»: тема"
 
-#: assets/admin.js:216
+#: assets/admin.js:218
 msgid "“Confirmed” e-mail"
 msgstr "Письмо «подтверждено»"
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "“Declined” e-mail: subject"
 msgstr "Письмо «отклонено»: тема"
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "“Declined” e-mail"
 msgstr "Письмо «отклонено»"
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Reminder: subject"
 msgstr "Напоминание: тема"
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Reminder"
 msgstr "Напоминание"
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Address line ({address})"
 msgstr "Строка с адресом ({address})"
 
-#: assets/admin.js:217
+#: assets/admin.js:219
 msgid "Calendar line ({url})"
 msgstr "Строка с календарём ({url})"
 
-#: assets/admin.js:219
+#: assets/admin.js:221
 msgid "Language:"
 msgstr "Язык:"
 
-#: assets/admin.js:221
+#: assets/admin.js:223
 msgid "An empty field uses the default text, shown in grey. E-mails can use {name}, {summary}, {where}, {calendar}, {book_url}, {site}, {signature}."
 msgstr "Пустое поле — используется стандартный текст (он виден серым). В письмах можно использовать {name}, {summary}, {where}, {calendar}, {book_url}, {site}, {signature}."
 
-#: assets/admin.js:235
+#: assets/admin.js:237
 msgid "Message templates for the client. They are shown under each request and in the client card: in the client’s language, with a translation into your language, with the date, price and so on already filled in. Press “Copy” and paste into Instagram or an e-mail."
 msgstr "Шаблоны сообщений клиенту. Они показываются под каждой заявкой и в карточке клиента: на языке клиента, с переводом на русский, уже с подставленными датой, ценой и т. п. Кнопка «Копировать» — и вставляете в Instagram или письмо."
 
-#: assets/admin.js:236
+#: assets/admin.js:238
 msgid "Placeholders:"
 msgstr "Подстановки:"
 
-#: assets/admin.js:236
+#: assets/admin.js:238
 msgid "If a value is missing (for example, the request has no price), the line with that placeholder is left out of the message."
 msgstr "Если значения нет (например, у заявки не указана цена), строка с этой подстановкой не попадает в сообщение."
 
-#: assets/admin.js:238
+#: assets/admin.js:240
 msgid "Review link"
 msgstr "Ссылка для отзывов"
 
-#: assets/admin.js:238
+#: assets/admin.js:240
 msgid "Used for <code>{review_url}</code>, for example a link to a Google review."
 msgstr "Подставляется вместо <code>{review_url}</code>, например ссылка на отзыв в Google."
 
-#: assets/admin.js:239
+#: assets/admin.js:241
 msgid "Booking page"
 msgstr "Страница записи"
 
-#: assets/admin.js:239
+#: assets/admin.js:241
 msgid "For <code>{book_url}</code> when the client did not come through the form. Otherwise the page the request was sent from is used."
 msgstr "Для <code>{book_url}</code>, если клиент пришёл не через форму. Иначе берётся страница, с которой отправлена заявка."
 
-#: assets/admin.js:243
+#: assets/admin.js:245
 msgid "New reply"
 msgstr "Новый ответ"
 
-#: assets/admin.js:248
+#: assets/admin.js:250
 msgid "Add reply"
 msgstr "Добавить ответ"
 
-#: assets/admin.js:249
+#: assets/admin.js:251
 msgid "Restore default replies"
 msgstr "Вернуть стандартные ответы"
 
-#: assets/admin.js:257
+#: assets/admin.js:259
 msgid "Form background"
 msgstr "Фон формы"
 
-#: assets/admin.js:257
+#: assets/admin.js:259
 msgid "Text and selected buttons"
 msgstr "Текст и выбранные кнопки"
 
-#: assets/admin.js:257
+#: assets/admin.js:259
 msgid "Accent (the “Send” button)"
 msgstr "Акцент (кнопка «Отправить»)"
 
-#: assets/admin.js:258
+#: assets/admin.js:260
 msgid "Heading font"
 msgstr "Шрифт заголовков"
 
-#: assets/admin.js:258
+#: assets/admin.js:260
 msgid "A font already loaded on the site, for example “Unbounded, sans-serif”. Empty: same as the site."
 msgstr "Шрифт, уже подключённый на сайте, например «Unbounded, sans-serif». Пусто — как на сайте."
 
-#: assets/admin.js:259
+#: assets/admin.js:261
 msgid "Text font"
 msgstr "Шрифт текста"
 
-#: assets/admin.js:259
+#: assets/admin.js:261
 msgid "Empty: same as the site."
 msgstr "Пусто — как на сайте."
 
-#: assets/admin.js:264
+#: assets/admin.js:266
 msgid "Export"
 msgstr "Экспорт"
 
-#: assets/admin.js:264
+#: assets/admin.js:266
 msgid "A file with all settings except the calendar addresses. It can be loaded on another site."
 msgstr "Файл со всеми настройками, кроме адресов календарей. Его можно загрузить на другом сайте."
 
-#: assets/admin.js:264
+#: assets/admin.js:266
 msgid "Download settings (JSON)"
 msgstr "Скачать настройки (JSON)"
 
-#: assets/admin.js:265
+#: assets/admin.js:267
 msgid "Import"
 msgstr "Импорт"
 
-#: assets/admin.js:265
+#: assets/admin.js:267
 msgid "Paste the file contents and press “Load”, then “Save settings”. The calendar addresses stay unchanged."
 msgstr "Вставьте содержимое файла и нажмите «Загрузить», затем «Сохранить настройки». Адреса календарей останутся прежними."
 
-#: assets/admin.js:266
+#: assets/admin.js:268
 msgid "Load"
 msgstr "Загрузить"
 
-#: assets/admin.js:298
+#: assets/admin.js:300
 msgid "Replace the replies with the default ones? Your edits to the replies will be lost after saving."
 msgstr "Заменить ответы стандартными? Ваши правки в ответах пропадут после сохранения."
 
-#: assets/admin.js:308
+#: assets/admin.js:310
 msgid "Loaded. Check the tabs and press “Save settings”."
 msgstr "Загружено. Проверьте вкладки и нажмите «Сохранить настройки»."
 
-#: assets/admin.js:309
+#: assets/admin.js:311
 msgid "This is not JSON."
 msgstr "Это не JSON."
 
-#: assets/admin.js:318
+#: assets/admin.js:320
 msgid "Delete?"
 msgstr "Удалить?"
