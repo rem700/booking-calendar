@@ -19,7 +19,7 @@ function bkb_ics_fetch( $url ) {
 	if ( false !== $cached ) {
 		return $cached;
 	}
-	$res = wp_remote_get( $url, array( 'timeout' => 15 ) );
+	$res = wp_safe_remote_get( $url, array( 'timeout' => 15 ) );
 	if ( is_wp_error( $res ) || 200 !== wp_remote_retrieve_response_code( $res ) ) {
 		$stale = get_option( $key . '_stale', '' );
 		return $stale;

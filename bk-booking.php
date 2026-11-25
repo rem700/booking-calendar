@@ -28,3 +28,25 @@ require_once BKB_DIR . 'includes/admin.php';
 require_once BKB_DIR . 'includes/crm.php';
 require_once BKB_DIR . 'includes/crm-admin.php';
 require_once BKB_DIR . 'includes/replies.php';
+
+/** Scheduled tasks of the plugin: removing old requests, reminders, the morning summary. */
+function bkb_cron_hooks() {
+	return array( 'bkb_cleanup', 'bkb_remind', 'bkb_crm_tick' );
+}
+
+register_activation_hook(
+	__FILE__,
+	function () {
+		bkb_crm_install();
+	}
+);
+
+/* Stop the scheduled tasks; they are set up again on the next page load after activation. */
+register_deactivation_hook(
+	__FILE__,
+	function () {
+		foreach ( bkb_cron_hooks() as $hook ) {
+			wp_clear_scheduled_hook( $hook );
+		}
+	}
+);
