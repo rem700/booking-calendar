@@ -164,6 +164,17 @@ add_action(
 	}
 );
 
+/** A database lock shared by all PHP processes of the site; waits up to 10 seconds. */
+function bkb_lock() {
+	global $wpdb;
+	return '1' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 10)', $wpdb->prefix . 'bkb_request' ) );
+}
+
+function bkb_unlock() {
+	global $wpdb;
+	$wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $wpdb->prefix . 'bkb_request' ) );
+}
+
 function bkb_clean( $v, $max = 200 ) {
 	return mb_substr( trim( sanitize_text_field( (string) $v ) ), 0, $max );
 }
@@ -235,9 +246,14 @@ function bkb_handle_request( WP_REST_Request $r ) {
 		return new WP_Error( 'fields', 'fields', array( 'status' => 422 ) );
 	}
 	$s = $start->getTimestamp();
+	// One request at a time from the check to the save, so two visitors cannot take the same time together.
+	if ( ! bkb_lock() ) {
+		return new WP_Error( 'busy', 'busy', array( 'status' => 503 ) );
+	}
 	// The chosen time must still be offered.
 	$month = bkb_month_slots( $start->format( 'Y-m' ), $hours, $loc );
 	if ( empty( $month[ $d['date'] ] ) || ! in_array( $d['time'], $month[ $d['date'] ], true ) ) {
+		bkb_unlock();
 		return new WP_Error( 'taken', 'taken', array( 'status' => 409 ) );
 	}
 	$d = apply_filters( 'bkb_request_data', $d, $p );
@@ -251,6 +267,7 @@ function bkb_handle_request( WP_REST_Request $r ) {
 		true
 	);
 	if ( is_wp_error( $id ) ) {
+		bkb_unlock();
 		return new WP_Error( 'save', 'save', array( 'status' => 500 ) );
 	}
 	foreach ( $d as $k => $v ) {
@@ -259,6 +276,7 @@ function bkb_handle_request( WP_REST_Request $r ) {
 	update_post_meta( $id, '_bkb_start', $s );
 	update_post_meta( $id, '_bkb_end', $s + bkb_block_seconds( $hours ) );
 	update_post_meta( $id, '_bkb_status', 'pending' );
+	bkb_unlock();
 
 	bkb_mail_team( $id );
 	bkb_mail_client( $id, 'ack' );

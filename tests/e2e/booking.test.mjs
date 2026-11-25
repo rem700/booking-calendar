@@ -109,3 +109,10 @@ test('source: a visit with utm_source is remembered in the browser', async () =>
   assert.equal(saved?.s, 'instagram');
   await page.close();
 });
+
+test('request: five requests for the same time at once give one booking', async () => {
+  const s = await firstSlot(bookableMonth(), 1, 'hall-a');
+  const send = (i) => api('request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody({ date: s.date, time: s.time, email: `race${i}@example.test` })) });
+  const res = await Promise.all([0, 1, 2, 3, 4].map(send));
+  assert.deepEqual(res.map((r) => r.status).sort(), [200, 409, 409, 409, 409]);
+});
