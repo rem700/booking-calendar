@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Booking Calendar
- * Description: Booking requests with a live calendar: free start times from your working hours and a Google Calendar (iCal) feed. Services, locations, options, hours, texts and colours are set in Settings, no code needed. Requests are confirmed or declined in WP admin, the client gets emails in their language.
+ * Plugin Name: Shootbook
+ * Description: Booking requests with a live calendar and a simple client list, made for photo studios, photographers and hourly rentals.
  * Version: 2.3.0
  * Plugin URI: https://github.com/rem700/booking-calendar
  * Author: rem700
