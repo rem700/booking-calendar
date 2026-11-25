@@ -508,8 +508,14 @@ function bkb_crm_contacts_html( $c ) {
 	return implode( '<br>', $out );
 }
 
+/** Sources to pick from when a client is added by hand: the standard ones, then the studio's own from the settings. */
 function bkb_crm_manual_sources() {
-	return array( 'Instagram', 'Facebook', 'WhatsApp', 'Telegram', __( 'Phone', 'shootbook' ), 'E-mail', __( 'In person', 'shootbook' ), __( 'Recommendation', 'shootbook' ), 'IPAR', __( 'Other', 'shootbook' ) );
+	$list   = array( 'Instagram', 'Facebook', 'WhatsApp', 'Telegram', __( 'Phone', 'shootbook' ), 'E-mail', __( 'In person', 'shootbook' ), __( 'Recommendation', 'shootbook' ) );
+	$crm    = (array) bkb_cfg( 'crm' );
+	$own    = preg_split( '/\R/', (string) ( $crm['sources'] ?? '' ) );
+	$list   = array_merge( $list, array_filter( array_map( 'trim', $own ), 'strlen' ) );
+	$list[] = __( 'Other', 'shootbook' );
+	return array_values( array_unique( $list ) );
 }
 
 function bkb_crm_new_form( $client_id ) {

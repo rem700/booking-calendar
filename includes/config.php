@@ -61,6 +61,7 @@ function bkb_default_config() {
 			'source'      => true,
 			'digest'      => false,
 			'digest_hour' => 8,
+			'sources'     => '',
 		),
 	);
 }
@@ -433,6 +434,7 @@ function bkb_sanitize_config( $c ) {
 		'source'      => ! empty( $crm['source'] ),
 		'digest'      => ! empty( $crm['digest'] ),
 		'digest_hour' => max( 0, min( 23, (int) ( $crm['digest_hour'] ?? 8 ) ) ),
+		'sources'     => sanitize_textarea_field( (string) ( $crm['sources'] ?? '' ) ),
 	);
 	return $out;
 }
