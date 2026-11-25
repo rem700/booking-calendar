@@ -380,7 +380,7 @@ msgstr "выполнено"
 msgid "open the request"
 msgstr "открыть заявку"
 
-#: includes/crm-admin.php:272 includes/replies.php:312
+#: includes/crm-admin.php:272 includes/replies.php:243
 msgid "Ready-made replies"
 msgstr "Готовые ответы"
 
@@ -735,58 +735,30 @@ msgstr "Скопировано"
 msgid "Translation:"
 msgstr "Перевод:"
 
-#. translators: %s: e-mail address
-#: includes/replies.php:243
-#, php-format
-msgid "Send this e-mail to %s?"
-msgstr "Отправить это письмо на %s?"
-
-#: includes/replies.php:244
-msgid "Sending…"
-msgstr "Отправляю…"
-
-#: includes/replies.php:245
-msgid "E-mail sent and saved in the client history"
-msgstr "Письмо отправлено и сохранено в истории клиента"
-
-#. translators: %s: reason
-#: includes/replies.php:247
-#, php-format
-msgid "Not sent: %s"
-msgstr "Не отправлено: %s"
-
-#: includes/replies.php:248
-msgid "error"
-msgstr "ошибка"
-
-#: includes/replies.php:249
-msgid "no connection to the site"
-msgstr "нет связи с сайтом"
-
-#: includes/replies.php:354
+#: includes/replies.php:288
 msgid "not allowed"
 msgstr "нет прав"
 
-#: includes/replies.php:363
+#: includes/replies.php:297
 msgid "no address or text"
 msgstr "нет адреса или текста"
 
-#: includes/replies.php:375
+#: includes/replies.php:309
 msgid "the address is not the client’s address"
 msgstr "адрес не совпадает с адресом клиента"
 
-#: includes/replies.php:379
+#: includes/replies.php:313
 msgid "the mail server did not accept the e-mail"
 msgstr "почтовый сервер не принял письмо"
 
 #. translators: 1: reply title, 2: e-mail address
-#: includes/replies.php:390
+#: includes/replies.php:324
 #, php-format
 msgid "E-mail to the client (“%1$s”) to %2$s"
 msgstr "Письмо клиенту («%1$s») на %2$s"
 
 #. translators: %s: e-mail address
-#: includes/replies.php:390
+#: includes/replies.php:324
 #, php-format
 msgid "E-mail to the client to %s"
 msgstr "Письмо клиенту на %s"
@@ -1469,3 +1441,31 @@ msgstr "Это не JSON."
 #: assets/admin.js:320
 msgid "Delete?"
 msgstr "Удалить?"
+
+#. translators: %s: e-mail address
+#: assets/replies.js:26
+#, javascript-format
+msgid "Send this e-mail to %s?"
+msgstr "Отправить это письмо на %s?"
+
+#: assets/replies.js:30
+msgid "Sending…"
+msgstr "Отправляю…"
+
+#: assets/replies.js:40
+msgid "E-mail sent and saved in the client history"
+msgstr "Письмо отправлено и сохранено в истории клиента"
+
+#. translators: %s: reason
+#: assets/replies.js:40 assets/replies.js:43
+#, javascript-format
+msgid "Not sent: %s"
+msgstr "Не отправлено: %s"
+
+#: assets/replies.js:40
+msgid "error"
+msgstr "ошибка"
+
+#: assets/replies.js:43
+msgid "no connection to the site"
+msgstr "нет связи с сайтом"

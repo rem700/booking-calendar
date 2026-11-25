@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 18:39+0000\n"
+"POT-Creation-Date: 2026-11-25 18:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -398,7 +398,7 @@ msgstr ""
 msgid "open the request"
 msgstr ""
 
-#: includes/crm-admin.php:272 includes/replies.php:312
+#: includes/crm-admin.php:272 includes/replies.php:243
 msgid "Ready-made replies"
 msgstr ""
 
@@ -763,58 +763,30 @@ msgstr ""
 msgid "Translation:"
 msgstr ""
 
-#. translators: %s: e-mail address
-#: includes/replies.php:243
-#, php-format
-msgid "Send this e-mail to %s?"
-msgstr ""
-
-#: includes/replies.php:244
-msgid "Sending…"
-msgstr ""
-
-#: includes/replies.php:245
-msgid "E-mail sent and saved in the client history"
-msgstr ""
-
-#. translators: %s: reason
-#: includes/replies.php:247
-#, php-format
-msgid "Not sent: %s"
-msgstr ""
-
-#: includes/replies.php:248
-msgid "error"
-msgstr ""
-
-#: includes/replies.php:249
-msgid "no connection to the site"
-msgstr ""
-
-#: includes/replies.php:354
+#: includes/replies.php:288
 msgid "not allowed"
 msgstr ""
 
-#: includes/replies.php:363
+#: includes/replies.php:297
 msgid "no address or text"
 msgstr ""
 
-#: includes/replies.php:375
+#: includes/replies.php:309
 msgid "the address is not the client’s address"
 msgstr ""
 
-#: includes/replies.php:379
+#: includes/replies.php:313
 msgid "the mail server did not accept the e-mail"
 msgstr ""
 
 #. translators: 1: reply title, 2: e-mail address
-#: includes/replies.php:390
+#: includes/replies.php:324
 #, php-format
 msgid "E-mail to the client (“%1$s”) to %2$s"
 msgstr ""
 
 #. translators: %s: e-mail address
-#: includes/replies.php:390
+#: includes/replies.php:324
 #, php-format
 msgid "E-mail to the client to %s"
 msgstr ""
@@ -1550,4 +1522,32 @@ msgstr ""
 
 #: assets/admin.js:320
 msgid "Delete?"
+msgstr ""
+
+#. translators: %s: e-mail address
+#: assets/replies.js:26
+#, javascript-format
+msgid "Send this e-mail to %s?"
+msgstr ""
+
+#: assets/replies.js:30
+msgid "Sending…"
+msgstr ""
+
+#: assets/replies.js:40
+msgid "E-mail sent and saved in the client history"
+msgstr ""
+
+#. translators: %s: reason
+#: assets/replies.js:40 assets/replies.js:43
+#, javascript-format
+msgid "Not sent: %s"
+msgstr ""
+
+#: assets/replies.js:40
+msgid "error"
+msgstr ""
+
+#: assets/replies.js:43
+msgid "no connection to the site"
 msgstr ""
