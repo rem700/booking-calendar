@@ -172,7 +172,8 @@ function bkb_crm_event_label( $type ) {
 		'mail'    => __( 'E-mail', 'shootbook' ),
 		'message' => __( 'Message', 'shootbook' ),
 	);
-	return $m[ $type ] ?? $type;
+	/** Filters the name of a history entry type, for types added by other plugins. */
+	return apply_filters( 'bkb_crm_event_label', $m[ $type ] ?? $type, $type );
 }
 
 function bkb_crm_card( $id ) {
@@ -238,6 +239,10 @@ function bkb_crm_card( $id ) {
 						<button class="button"><?php esc_html_e( 'Add', 'shootbook' ); ?></button>
 					</p>
 				</form>
+				<?php
+				/** Fires under the form for adding to the history in the client card. */
+				do_action( 'bkb_crm_card_history', $c );
+				?>
 				<?php if ( ! $events ) : ?>
 					<p><?php esc_html_e( 'Nothing yet.', 'shootbook' ); ?></p>
 				<?php endif; ?>

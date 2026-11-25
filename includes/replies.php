@@ -217,6 +217,8 @@ function bkb_replies_box( $b, $client ) {
 			if ( $ig ) {
 				echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( 'https://ig.me/m/' . $ig ) . '">' . esc_html__( 'Open the Instagram chat', 'shootbook' ) . '</a> ';
 			}
+			/** Fires among the buttons under a reply text, to add more ways to send it. */
+			do_action( 'bkb_reply_actions', $client, $b, $l );
 			if ( is_email( $email ) ) {
 				echo '<button type="button" class="button" data-send="' . esc_attr( $email ) . '" data-title="' . esc_attr( $r['title'] ) . '">' . esc_html__( 'Send an e-mail from the site', 'shootbook' ) . '</button> ';
 				echo '<a class="button-link" data-mail="' . esc_attr( $email ) . '" data-subj="' . esc_attr( bkb_site_name() ) . '" href="#">' . esc_html__( 'or open in the mail app', 'shootbook' ) . '</a> ';
