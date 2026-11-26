@@ -72,6 +72,8 @@ function bkb_busy( $from, $to ) {
 	foreach ( bkb_ics_urls() as $url ) {
 		$busy = array_merge( $busy, bkb_ics_busy( bkb_ics_fetch( $url ), $from, $to ) );
 	}
+	// The site's own bookings may come back through a calendar that shows them: they are counted as requests below.
+	$busy = array_values( array_filter( $busy, fn( $b ) => ! bkb_is_own_event( $b['uid'] ?? '' ) ) );
 	return apply_filters( 'bkb_busy', array_merge( $busy, bkb_requests_in( $from, $to ) ), $from, $to );
 }
 
@@ -495,9 +497,21 @@ function bkb_gcal_client( $b, $lang ) {
 	return bkb_gcal_url( bkb_site_name() . $svc, $b, bkb_summary( $b, $lang ) . "\n\n" . $c );
 }
 
-function bkb_gcal_link( $b ) {
+/** The title of a booking in the team's calendar. */
+function bkb_gcal_title( $b ) {
 	$svc = $b['service'] ? bkb_service_label( $b['service'], bkb_admin_lang() ) . ' — ' : '';
-	return bkb_gcal_url( bkb_site_name() . ': ' . $svc . $b['name'], $b, bkb_summary( $b, bkb_admin_lang(), true ) );
+	return bkb_site_name() . ': ' . $svc . $b['name'];
+}
+
+/** The text of a booking in the team's calendar: the details, the message and a link to the request. */
+function bkb_gcal_text( $b ) {
+	return bkb_summary( $b, bkb_admin_lang(), true )
+		. ( '' !== (string) $b['msg'] ? "\n\n" . __( 'Message:', 'shootbook' ) . "\n" . $b['msg'] : '' )
+		. "\n\n" . admin_url( 'post.php?post=' . (int) $b['id'] . '&action=edit' );
+}
+
+function bkb_gcal_link( $b ) {
+	return bkb_gcal_url( bkb_gcal_title( $b ), $b, bkb_summary( $b, bkb_admin_lang(), true ) );
 }
 
 /* ---------- emails ---------- */
@@ -543,7 +557,10 @@ function bkb_mail_client( $id, $type ) {
 	$k    = $map[ $type ] ?? 'm_ack';
 	$subj = bkb_fill( $t[ $k . '_subj' ], $vars );
 	$body = bkb_fill( $t[ $k ], $vars );
-	return wp_mail( $b['email'], $subj, $body, array( 'Reply-To: ' . bkb_site_name() . ' <' . bkb_reply_to() . '>' ) );
+	$file = bkb_client_ics_file( $id, $type, $lang );
+	$ok   = wp_mail( $b['email'], $subj, $body, array( 'Reply-To: ' . bkb_site_name() . ' <' . bkb_reply_to() . '>' ), $file ? array( $file ) : array() );
+	bkb_client_ics_cleanup( $file );
+	return $ok;
 }
 
 /* Site e-mails go out from the sender address in the settings instead of wordpress@… */

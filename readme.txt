@@ -29,7 +29,9 @@ Free times are worked out from your opening hours, the time you need to prepare,
 * Colours and fonts to match your theme
 * Works with Polylang and WPML: the form and the e-mails follow the page language
 * E-mails: receipt to the client, confirmation, decline, reminder the day before, notice to you
-* "Add to Google Calendar" link for you and for the client
+* Google Calendar sync: confirmed bookings go to your calendar, move with a new time and disappear when declined; the calendar's events are busy time on the site at once
+* A private calendar address with the confirmed bookings for Apple Calendar, Outlook or a phone
+* A calendar file in the client's confirmation e-mail, and "Add to Google Calendar" link
 * Old requests are removed after the number of days you choose
 * Settings export and import as JSON
 
@@ -79,6 +81,7 @@ Yes. Turn on "Locations are booked separately" on the Locations tab. Then a requ
 The plugin connects to outside services only in these cases.
 
 * iCal feeds. If you add iCal addresses in Settings → General, the site downloads those feeds to find busy times. Only a plain request for the feed is sent, without any visitor data. The feed belongs to the calendar service you use, for example Google Calendar: https://policies.google.com/terms and https://policies.google.com/privacy
+* Google Calendar API. Only if you connect a Google account in Requests → Google Calendar. The site then sends the confirmed bookings (and, if you tick it, the requests waiting for an answer) to the chosen calendar: the time, the service, the location, the client's name, contacts and message, and a link to the request. It also reads the times of the calendar's events to find busy time. The keys stay on your site. Service by Google: https://policies.google.com/terms and https://policies.google.com/privacy
 * Google Calendar links. Request pages and e-mails contain an "Add to Google Calendar" link. Nothing is sent until someone opens it.
 * Instagram API. Only if you connect your Instagram account in Requests → Instagram. Instagram then sends new Direct messages to your site, and the site asks Instagram every hour for recent conversations and for the name of a person who wrote. When you answer from a client card, the text goes to Instagram. The access token and app secret stay on your site. Service by Meta: https://developers.facebook.com/terms/ and https://privacycenter.instagram.com/policy
 * Instagram links. A client card can contain a link to the client's Instagram profile or chat. Nothing is sent until you open it.
@@ -96,3 +99,6 @@ The plugin connects to outside services only in these cases.
 * Deactivating stops the scheduled tasks, and deleting the plugin removes its cached feeds.
 * Messages from Instagram Direct come into the client list, and you can answer them from the client card.
 * Packages: a set number of hours at their own price, chosen in the form next to the durations.
+* Google Calendar sync through the Google Calendar API: bookings go to the calendar, move and are removed by themselves; busy time is read from the calendar at once.
+* A request can be moved to another time from its page.
+* A private calendar address with the confirmed bookings, and a calendar file in the client's confirmation e-mail.

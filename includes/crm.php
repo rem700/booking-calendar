@@ -387,6 +387,18 @@ add_action(
 	2
 );
 
+add_action(
+	'bkb_booking_moved',
+	function ( $id, $old, $note ) {
+		$cid = (int) get_post_meta( $id, '_bkb_client', true );
+		if ( $cid ) {
+			bkb_crm_add_event( $cid, 'status', $note, array( 'booking_id' => (int) $id ) );
+		}
+	},
+	10,
+	3
+);
+
 /* ---------- morning summary ---------- */
 
 /** What needs attention: used by the e-mail and by the REST endpoint. */

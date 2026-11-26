@@ -18,7 +18,9 @@ Free times are worked out from your working hours, the time you need to prepare,
 - Colours and fonts to match your theme
 - Works with Polylang and WPML: the form and the emails follow the page language
 - Emails: receipt to the client, confirmation, decline, reminder the day before, notice to you (to one or several addresses)
-- "Add to Google Calendar" link for you and for the client
+- Google Calendar sync: confirmed bookings go to your calendar by themselves, move with a new time and disappear when declined or deleted; the calendar's events are busy time on the site at once
+- A private calendar address with the confirmed bookings for Apple Calendar, Outlook or a phone, and a calendar file in the client's confirmation e-mail
+- "Add to Google Calendar" link for the client
 - Old requests are removed after the number of days you choose
 - Settings export and import as JSON, so the same setup moves to another site in one step
 - Prices: a price per hour for each service and extra prices for options, shown in the form and saved with the request. A site script can still set its own price (see below)
@@ -77,6 +79,17 @@ The form reads its starting choice from the page address:
 
 `service`, `location`, `hours`, `pack` (a package id) and any option id. Another plugin or theme can set `window.BKB_PREFILL` to the same kind of query string before the form loads.
 
+## Google Calendar
+
+**Requests → Google Calendar** connects a Google account through the Google Calendar API. Each site uses its own OAuth client from Google Cloud: the page lists the steps and the redirect address to give Google (`/wp-admin/admin-post.php`). Publish the app in Google Auth Platform → Audience, otherwise Google ends the access after 7 days.
+
+- A confirmed booking becomes an event in the chosen calendar. A new time (the request page has **Change the time**) moves the event; declining, deleting or moving the request to the bin removes it. With a tick, requests waiting for an answer go there too, with "?" before the title.
+- The other events of that calendar are busy time on the site, read from Google with a two-minute cache, so the calendar's iCal address is no longer needed. The site's own events are left out, so with separate locations a booking in one hall does not block the others. The same is done for the site's events that come back through any iCal address.
+- If Google cannot be reached, the change is kept and sent again every hour; the request page and the Google page show what waits.
+- The keys are kept in the `bkb_gcal` option and never go into the settings export. Events made by the site carry `extendedProperties.private.shootbook` with the request ID.
+
+The same page shows a private calendar address (`GET /wp-json/bk-booking/v1/feed?key=…`) with the confirmed bookings for any calendar app, and a button to make a new one. The client's confirmation e-mail has a `booking.ics` file; if a confirmed booking is declined later, the e-mail has a file that cancels it.
+
 ## Extending
 
 ### PHP
@@ -90,6 +103,9 @@ The form reads its starting choice from the page address:
 | `bkb_summary_lines` | filter | Change the summary lines used in emails and admin. Args: `$lines, $booking, $lang, $with_contact` |
 | `bkb_request_saved` | action | Runs after a request is saved. Args: `$id, $booking` |
 | `bkb_status_changed` | action | Runs when you confirm or decline. Args: `$id, $status` |
+| `bkb_booking_moved` | action | Runs when a request gets another time. Args: `$id, $old_booking, $note` |
+| `bkb_gcal_event` | filter | Change the Google Calendar event before it is sent. Args: `$event, $booking` |
+| `bkb_client_ics` | filter | Return `false` to send the client's e-mail without a calendar file. Args: `$send, $booking, $type` |
 | `bkb_enqueue` | action | Runs when the form assets load. Use it to add your own script. Args: `$lang` |
 
 ### JavaScript
@@ -121,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 - `GET /wp-json/bk-booking/v1/slots?month=2026-12&h=2&loc=studio`: free start times for a month; add `&pack=<id>` for a package
 - `POST /wp-json/bk-booking/v1/request`: send a request (used by the form)
+- `GET /wp-json/bk-booking/v1/feed?key=…`: the confirmed bookings as iCal (the key is on the Google Calendar page)
 
 ## Requirements
 
