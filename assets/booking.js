@@ -2,7 +2,7 @@
  * Booking Calendar form.
  * Public API for site add-ons (window.bkb):
  *   bkb.setPrice(fn)   fn(state) returns the price text, or '' to hide the price block
- *   bkb.state          current choices: service, location, hours, opts{}, slang, date, time
+ *   bkb.state          current choices: service, location, hours, pack (package id or ''), opts{}, slang, date, time
  *   bkb.config         window.BKB as printed by the plugin
  *   bkb.refresh()      redraw after changing something from outside
  * Events on document: bkb:change and bkb:submitted, with detail = { state: … }.
@@ -60,6 +60,7 @@
 		service: pick(C.services, q.service != null ? q.service : q.pkg),
 		location: pick(C.locations, q.location != null ? q.location : q.loc),
 		hours: 0,
+		pack: '',
 		opts: {},
 		slang: C.slang,
 		date: '',
@@ -67,6 +68,10 @@
 	};
 	var hq = parseFloat(q.hours != null ? q.hours : q.h);
 	st.hours = C.durations.indexOf(hq) >= 0 ? hq : C.duration;
+	var P = C.packages || [];
+	function packOn(p) { return !p.locations.length || p.locations.indexOf(st.location) >= 0; }
+	var pq = byId(P, q.pack);
+	if (pq ? packOn(pq) : false) { st.pack = String(pq.id); st.hours = pq.hours; }
 	C.options.forEach(function (o) {
 		var v = q[o.id];
 		if (o.type === 'choice') {
@@ -102,7 +107,10 @@
 	var session = '';
 	if (C.services.length > 1) { session += seg('service', T.service, C.services.map(function (s) { return [s.id, s.label]; })); }
 	if (C.locations.length > 1) { session += seg('location', T.location, C.locations.map(function (s) { return [s.id, s.label]; })); }
-	if (C.durations.length > 1) { session += seg('hours', T.duration, C.durations.map(function (h) { return [h, fmtH(h)]; })); }
+	// Packages sit next to the plain durations: "p:<id>" in the same row.
+	if (C.durations.length > 1 || P.length) {
+		session += seg('hours', T.duration, C.durations.map(function (h) { return [h, fmtH(h)]; }).concat(P.map(function (p) { return ['p:' + p.id, p.label]; })));
+	}
 	C.options.forEach(function (o) {
 		session += seg('o:' + o.id, o.label, o.type === 'choice' ? o.choices.map(function (c) { return [c.id, c.label]; }) : yn, ' bkb-row-opt');
 	});
@@ -152,11 +160,14 @@
 	}
 	function stateValue(k) {
 		if (k.indexOf('o:') === 0) { return st.opts[k.slice(2)]; }
+		if (k === 'hours' ? st.pack : false) { return 'p:' + st.pack; }
 		return st[k];
 	}
 	function syncSeg() {
 		[].forEach.call(root.querySelectorAll('.bkb-seg button'), function (b) {
 			b.setAttribute('aria-pressed', String(stateValue(b.getAttribute('data-k'))) === b.getAttribute('data-v') ? 'true' : 'false');
+			var v = b.getAttribute('data-v');
+			if (b.getAttribute('data-k') === 'hours' ? v.indexOf('p:') === 0 : false) { b.hidden = !packOn(byId(P, v.slice(2))); }
 		});
 		C.options.forEach(function (o) {
 			var row = root.querySelector('[data-row="o:' + o.id + '"]');
@@ -166,8 +177,11 @@
 	// The same sum the server saves with the request (bkb_price_amount), unless a site script sets its own price.
 	function priceAmount() {
 		var svc = byId(C.services, st.service);
-		if (!svc || !(svc.price > 0)) { return null; }
-		var sum = svc.price * st.hours;
+		var pk = st.pack ? byId(P, st.pack) : null;
+		var sum;
+		if (pk ? pk.price > 0 : false) { sum = pk.price; }
+		else if (svc ? svc.price > 0 : false) { sum = svc.price * st.hours; }
+		else { return null; }
 		C.options.forEach(function (o) {
 			if (!optOn(o)) { return; }
 			var add = 0;
@@ -205,7 +219,8 @@
 				if (c) { parts.push(o.label + ': ' + String(c.label).toLowerCase()); }
 			} else if (st.opts[o.id] === '1') { yes.push(o.label); }
 		});
-		parts.push(fmtH(st.hours) + (C.prep ? ' (' + fill(T.prep_short, { prep: fmtMin(C.prep) }) + ')' : ''));
+		var pk = st.pack ? byId(P, st.pack) : null;
+		parts.push((pk ? pk.label + ', ' + fmtH(st.hours) : fmtH(st.hours)) + (C.prep ? ' (' + fill(T.prep_short, { prep: fmtMin(C.prep) }) + ')' : ''));
 		return parts.concat(yes);
 	}
 	function update() {
@@ -230,14 +245,14 @@
 	}
 
 	/* ---------- calendar ---------- */
-	function sk() { return st.hours + '|' + st.location; }
+	function sk() { return st.hours + '|' + st.location + '|' + st.pack; }
 	function key() { return view.y + '-' + pad(view.m + 1) + '|' + sk(); }
 
 	function load() {
 		var k = key();
 		if (loaded[k]) { render(); return; }
 		cal.innerHTML = '<div class="bkb-loading">' + esc(T.loading) + '</div>';
-		fetch(apiUrl('slots', 'month=' + view.y + '-' + pad(view.m + 1) + '\x26h=' + st.hours + '\x26loc=' + encodeURIComponent(st.location)), { credentials: 'omit' })
+		fetch(apiUrl('slots', 'month=' + view.y + '-' + pad(view.m + 1) + '\x26h=' + st.hours + '\x26loc=' + encodeURIComponent(st.location) + (st.pack ? '\x26pack=' + encodeURIComponent(st.pack) : '')), { credentials: 'omit' })
 			.then(function (r) { return r.json(); })
 			.then(function (j) {
 				loaded[k] = true;
@@ -328,7 +343,13 @@
 		if (k) {
 			var v = b.getAttribute('data-v');
 			if (k.indexOf('o:') === 0) { st.opts[k.slice(2)] = v; }
-			else { st[k] = k === 'hours' ? parseFloat(v) : v; }
+			else if (k === 'hours') {
+				var pk = v.indexOf('p:') === 0 ? byId(P, v.slice(2)) : null;
+				st.pack = pk ? String(pk.id) : '';
+				st.hours = pk ? pk.hours : parseFloat(v);
+			} else { st[k] = v; }
+			// A package that is not offered at the new location gives way to the usual length.
+			if (k === 'location' ? (st.pack ? !packOn(byId(P, st.pack)) : false) : false) { st.pack = ''; st.hours = C.duration; }
 			if (k === 'hours' || k === 'location') { st.time = ''; load(); }
 			update();
 		} else if (b.classList.contains('bkb-nav')) { step(parseInt(b.getAttribute('data-d'), 10)); }
@@ -378,7 +399,7 @@
 		var opts = {};
 		C.options.forEach(function (o) { if (optOn(o)) { opts[o.id] = st.opts[o.id]; } });
 		var body = {
-			date: st.date, time: st.time, service: st.service, location: st.location, hours: st.hours, opts: opts,
+			date: st.date, time: st.time, service: st.service, location: st.location, hours: st.hours, pack: st.pack, opts: opts,
 			price: priceText().replace(/ /g, ' '),
 			name: f.name.value, email: f.email.value.trim(),
 			phone: f.phone ? f.phone.value : '', details: f.details ? f.details.value : '', msg: f.msg ? f.msg.value : '',
