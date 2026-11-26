@@ -22,6 +22,7 @@ Free times are worked out from your working hours, the time you need to prepare,
 - Old requests are removed after the number of days you choose
 - Settings export and import as JSON, so the same setup moves to another site in one step
 - Prices: a price per hour for each service and extra prices for options, shown in the form and saved with the request. A site script can still set its own price (see below)
+- Packages: a set number of hours at their own price (for example 5 or 10 hours), offered in the form next to the durations and limited to the locations you choose. The client books all the hours in one go; options are added to the package price
 
 ## Clients (CRM)
 
@@ -55,7 +56,7 @@ Under every request and in each client card there are message templates (time is
 
 1. Download this repository as a ZIP and install it in **Plugins → Add New → Upload Plugin**, or put the folder in `wp-content/plugins/`.
 2. Activate **Shootbook**.
-3. Open **Requests → Settings** and fill in the tabs: General, Schedule, Services, Locations, Options, Form fields, Texts, Reply templates, Appearance.
+3. Open **Requests → Settings** and fill in the tabs: General, Schedule, Services, Packages, Locations, Options, Form fields, Texts, Reply templates, Appearance.
 4. Put the shortcode on a page:
 
 ```
@@ -74,7 +75,7 @@ The form reads its starting choice from the page address:
 /book/?service=Standard&location=studio&hours=2&video=1
 ```
 
-`service`, `location`, `hours` and any option id. Another plugin or theme can set `window.BKB_PREFILL` to the same kind of query string before the form loads.
+`service`, `location`, `hours`, `pack` (a package id) and any option id. Another plugin or theme can set `window.BKB_PREFILL` to the same kind of query string before the form loads.
 
 ## Extending
 
@@ -84,7 +85,7 @@ The form reads its starting choice from the page address:
 |---|---|---|
 | `bkb_front_config` | filter | Change the settings sent to the form. Args: `$config, $lang` |
 | `bkb_busy` | filter | Add or remove busy intervals. Args: `$busy, $from, $to` |
-| `bkb_price` | filter | Change the price worked out from the settings, or return `null` for no price. Args: `$amount, $service, $hours, $opts` |
+| `bkb_price` | filter | Change the price worked out from the settings, or return `null` for no price. Args: `$amount, $service, $hours, $opts, $pack` (`$pack` is the package id or empty) |
 | `bkb_request_data` | filter | Change a request before it is saved. Args: `$data, $params` |
 | `bkb_summary_lines` | filter | Change the summary lines used in emails and admin. Args: `$lines, $booking, $lang, $with_contact` |
 | `bkb_request_saved` | action | Runs after a request is saved. Args: `$id, $booking` |
@@ -96,7 +97,7 @@ The form reads its starting choice from the page address:
 The form exposes `window.bkb`:
 
 ```js
-bkb.state            // current choice: service, location, hours, opts, date, time…
+bkb.state            // current choice: service, location, hours, pack (package id or ''), opts, date, time…
 bkb.config           // settings for this page
 bkb.setPrice(fn)     // fn(state) returns the price text, or '' to hide the price block
 bkb.refresh()        // redraw after you change state
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 ### REST API
 
-- `GET /wp-json/bk-booking/v1/slots?month=2026-12&h=2&loc=studio`: free start times for a month
+- `GET /wp-json/bk-booking/v1/slots?month=2026-12&h=2&loc=studio`: free start times for a month; add `&pack=<id>` for a package
 - `POST /wp-json/bk-booking/v1/request`: send a request (used by the form)
 
 ## Requirements

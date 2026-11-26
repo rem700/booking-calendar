@@ -95,3 +95,4 @@ The plugin connects to outside services only in these cases.
 * The calendar works on sites without pretty permalinks.
 * Deactivating stops the scheduled tasks, and deleting the plugin removes its cached feeds.
 * Messages from Instagram Direct come into the client list, and you can answer them from the client card.
+* Packages: a set number of hours at their own price, chosen in the form next to the durations.
