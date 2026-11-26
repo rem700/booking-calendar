@@ -595,6 +595,9 @@ function bkb_crm_new_form( $client_id ) {
 						<?php foreach ( $hours as $h ) : ?>
 							<option value="<?php echo esc_attr( $h ); ?>" <?php selected( (string) $def, (string) $h ); ?>><?php echo esc_html( sprintf( /* translators: %s: number of hours */ __( '%s h', 'shootbook' ), $h ) ); ?></option>
 						<?php endforeach; ?>
+						<?php foreach ( (array) $cfg['packages'] as $pk ) : ?>
+							<option value="p:<?php echo esc_attr( $pk['id'] ); ?>"><?php echo esc_html( bkb_package_label( $pk['id'], bkb_admin_lang() ) . ', ' . sprintf( /* translators: %s: number of hours */ __( '%s h', 'shootbook' ), $pk['hours'] ) ); ?></option>
+						<?php endforeach; ?>
 					</select>
 				</label>
 				<label><?php esc_html_e( 'Price', 'shootbook' ); ?><input type="text" name="price" placeholder="<?php esc_attr_e( 'for example 630 €', 'shootbook' ); ?>"></label>
@@ -643,6 +646,10 @@ add_action(
 		$svc   = bkb_service( (string) ( $p['service'] ?? '' ) ) ? (string) $p['service'] : '';
 		$loc   = bkb_location( (string) ( $p['location'] ?? '' ) ) ? (string) $p['location'] : '';
 		$hours = bkb_valid_duration( $p['hours'] ?? 0 ) ?? bkb_durations()[0];
+		$pk    = 0 === strpos( (string) ( $p['hours'] ?? '' ), 'p:' ) ? bkb_package( substr( (string) $p['hours'], 2 ) ) : null;
+		if ( $pk ) {
+			$hours = (float) $pk['hours'];
+		}
 		$date  = (string) ( $p['date'] ?? '' );
 		$time  = (string) ( $p['time'] ?? '' );
 		$start = null;
@@ -717,6 +724,7 @@ add_action(
 					'service'  => $svc,
 					'location' => $loc,
 					'hours'    => $hours,
+					'pack'     => $pk ? (string) $pk['id'] : '',
 					'opts'     => array(),
 					'price'    => sanitize_text_field( (string) ( $p['price'] ?? '' ) ),
 					'name'     => $name,
@@ -753,6 +761,9 @@ add_action(
 			}
 			if ( $loc && ( $start || $svc ) ) {
 				$lines[] = __( 'Location:', 'shootbook' ) . ' ' . bkb_location_label( $loc, bkb_admin_lang() );
+			}
+			if ( $pk ) {
+				$lines[] = __( 'Package:', 'shootbook' ) . ' ' . bkb_package_label( $pk['id'], bkb_admin_lang() );
 			}
 			if ( $start || $svc ) {
 				/* translators: %s: number of hours */

@@ -12,7 +12,7 @@
 
 	var DAYS = [__('Mon', 'shootbook'), __('Tue', 'shootbook'), __('Wed', 'shootbook'), __('Thu', 'shootbook'), __('Fri', 'shootbook'), __('Sat', 'shootbook'), __('Sun', 'shootbook')];
 	var TABS = [
-		['general', __('General', 'shootbook')], ['schedule', __('Schedule', 'shootbook')], ['services', __('Services', 'shootbook')], ['locations', __('Locations', 'shootbook')],
+		['general', __('General', 'shootbook')], ['schedule', __('Schedule', 'shootbook')], ['services', __('Services', 'shootbook')], ['packages', __('Packages', 'shootbook')], ['locations', __('Locations', 'shootbook')],
 		['options', __('Options', 'shootbook')], ['fields', __('Form fields', 'shootbook')], ['texts', __('Texts', 'shootbook')], ['replies', __('Reply templates', 'shootbook')], ['style', __('Appearance', 'shootbook')], ['io', __('Import and export', 'shootbook')]
 	];
 
@@ -59,7 +59,7 @@
 		return '<input type="number" class="small-text" data-p="' + path + '" data-t="num" min="' + min + '" max="' + max + '" step="' + (step || 1) + '" value="' + esc(get(path)) + '">';
 	}
 	function money(path) {
-		return '<input type="number" class="small-text" data-p="' + path + '" data-t="num" min="0" step="0.01" value="' + esc(get(path) || '') + '" placeholder="0">' + (S.price && S.price.currency ? ' ' + esc(S.price.currency) : '');
+		return '<input type="number" class="small-text" style="width:8em" data-p="' + path + '" data-t="num" min="0" step="0.01" value="' + esc(get(path) || '') + '" placeholder="0">' + (S.price && S.price.currency ? ' ' + esc(S.price.currency) : '');
 	}
 	function check(path, label) {
 		return '<label><input type="checkbox" data-p="' + path + '" data-t="bool"' + (get(path) ? ' checked' : '') + '> ' + esc(label) + '</label>';
@@ -143,6 +143,25 @@
 					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) +
 					'<div class="bkb-sub">' + __('Price per hour', 'shootbook') + '</div>' + money(p + '.price') + '</div>';
 			}).join('') + addBtn('services', __('Add service', 'shootbook'));
+	};
+
+	R.packages = function () {
+		var list = S.packages || [];
+		var locs = (S.locations || []).map(function (l) { return l.id; });
+		return '<p class="description">' + __('A set number of hours at its own price, for example 5 or 10 hours. In the form, packages are offered next to the durations, and the client books all the hours in one go.', 'shootbook') + '</p>' +
+			list.map(function (x, i) {
+				var p = 'packages.' + i;
+				var only = x.locations || [];
+				return '<div class="bkb-card"><div class="bkb-card-head"><b>' + esc(x.id || __('New package', 'shootbook')) + '</b>' + listTools('packages', i, list.length) + '</div>' +
+					idInput(p + '.id') + '<div class="bkb-sub">' + __('Title', 'shootbook') + '</div>' + labels(p + '.label', x.id) +
+					'<div class="bkb-sub">' + __('Hours', 'shootbook') + '</div>' + num(p + '.hours', 0.5, 24, 0.5) +
+					'<div class="bkb-sub">' + __('Package price', 'shootbook') + '</div>' + money(p + '.price') +
+					'<p class="description">' + __('Replaces the price per hour. Options are added on top. Empty: the hours are counted at the price of the service.', 'shootbook') + '</p>' +
+					(locs.length ? '<div class="bkb-sub">' + __('Package available at', 'shootbook') + '</div>' + locs.map(function (l) {
+						return '<label class="bkb-inline"><input type="checkbox" data-optloc="' + p + '" value="' + esc(l) + '"' + (only.indexOf(l) >= 0 ? ' checked' : '') + '> ' + esc(l) + '</label>';
+					}).join('') + '<p class="description">' + __('Nothing checked: everywhere.', 'shootbook') + '</p>' : '') +
+					'</div>';
+			}).join('') + addBtn('packages', __('Add package', 'shootbook'));
 	};
 
 	R.locations = function () {
@@ -287,6 +306,7 @@
 
 	function blank(path) {
 		if (path === 'services') { return { id: '', label: {} }; }
+		if (path === 'packages') { return { id: '', label: {}, hours: 5, price: '', locations: [] }; }
 		if (path === 'locations') { return { id: '', label: {}, address: '', days: {} }; }
 		if (path === 'options') { return { id: '', type: 'yesno', label: {}, note: {}, default: '0', locations: [], choices: [] }; }
 		if (path === 'fields.slang.choices') { return { id: '', label: {}, hide: [] }; }
