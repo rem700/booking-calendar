@@ -172,14 +172,20 @@ function bkb_month_slots( $ym, $hours, $loc = '' ) {
 /* ---------- price ---------- */
 
 /**
- * The price of a booking from the prices in the settings, or null when the chosen service has none.
+ * The price of a booking from the prices in the settings, or null when neither the package nor the chosen service has one.
+ * A package with a price replaces the price per hour; options are added on top in both cases.
  * Then the price shown in the form, if any, comes from a script on the site (bkb.setPrice).
  */
-function bkb_price_amount( $service, $hours, $opts ) {
+function bkb_price_amount( $service, $hours, $opts, $pack = '' ) {
 	$svc    = bkb_service( (string) $service );
+	$pk     = bkb_package( (string) $pack );
 	$amount = null;
-	if ( $svc && (float) ( $svc['price'] ?? 0 ) > 0 ) {
+	if ( $pk && (float) ( $pk['price'] ?? 0 ) > 0 ) {
+		$amount = (float) $pk['price'];
+	} elseif ( $svc && (float) ( $svc['price'] ?? 0 ) > 0 ) {
 		$amount = (float) $svc['price'] * (float) $hours;
+	}
+	if ( null !== $amount ) {
 		foreach ( (array) bkb_cfg( 'options' ) as $o ) {
 			if ( ! isset( $opts[ $o['id'] ] ) ) {
 				continue;
@@ -195,7 +201,7 @@ function bkb_price_amount( $service, $hours, $opts ) {
 		}
 		$amount = round( $amount, 2 );
 	}
-	return apply_filters( 'bkb_price', $amount, $service, $hours, $opts );
+	return apply_filters( 'bkb_price', $amount, $service, $hours, $opts, (string) $pack );
 }
 
 /** 1 234 €, € 1 234 or 1 234.50 €, with the site's number format. */
@@ -225,10 +231,11 @@ add_action(
 					if ( ! preg_match( '/^\d{4}-\d{2}$/', $ym ) ) {
 						return new WP_Error( 'bad', 'month', array( 'status' => 400 ) );
 					}
-					$h   = bkb_valid_duration( $r->get_param( 'h' ) );
-					$h   = null === $h ? bkb_durations()[0] : $h;
 					$loc = (string) $r->get_param( 'loc' );
 					$loc = bkb_location( $loc ) ? $loc : '';
+					$pk  = bkb_package_at( (string) $r->get_param( 'pack' ), $loc );
+					$h   = $pk ? (float) $pk['hours'] : bkb_valid_duration( $r->get_param( 'h' ) );
+					$h   = null === $h ? bkb_durations()[0] : $h;
 					$res = rest_ensure_response( array( 'slots' => (object) bkb_month_slots( $ym, $h, $loc ) ) );
 					$res->header( 'Cache-Control', 'no-store' );
 					return $res;
@@ -289,6 +296,13 @@ function bkb_handle_request( WP_REST_Request $r ) {
 	if ( ! bkb_cfg( 'locations' ) ) {
 		$loc = '';
 	}
+	// A package sets the length itself.
+	$pack = (string) ( $p['pack'] ?? '' );
+	if ( '' !== $pack ) {
+		$pk    = bkb_package_at( $pack, $loc );
+		$hours = $pk ? (float) $pk['hours'] : null;
+		$pack  = $pk ? (string) $pk['id'] : '';
+	}
 	$opts = array();
 	foreach ( bkb_options_for( $loc ) as $o ) {
 		$v = (string) ( $p['opts'][ $o['id'] ] ?? '' );
@@ -307,6 +321,7 @@ function bkb_handle_request( WP_REST_Request $r ) {
 		'service'  => $svc,
 		'location' => $loc,
 		'hours'    => $hours,
+		'pack'     => $pack,
 		'opts'     => $opts,
 		'price'    => bkb_clean( $p['price'] ?? '', 60 ),
 		'name'     => bkb_clean( $p['name'] ?? '', 100 ),
@@ -340,7 +355,7 @@ function bkb_handle_request( WP_REST_Request $r ) {
 		return new WP_Error( 'taken', 'taken', array( 'status' => 409 ) );
 	}
 	// A price from the settings is worked out here, not taken from the browser.
-	$amount = bkb_price_amount( $d['service'], $d['hours'], $d['opts'] );
+	$amount = bkb_price_amount( $d['service'], $d['hours'], $d['opts'], $d['pack'] );
 	if ( null !== $amount ) {
 		$d['price'] = bkb_format_price( (float) $amount );
 	}
@@ -376,7 +391,7 @@ function bkb_handle_request( WP_REST_Request $r ) {
 /* ---------- a request as an array (also reads requests saved by version 1) ---------- */
 
 function bkb_get( $id ) {
-	$keys = array( 'date', 'time', 'service', 'location', 'hours', 'opts', 'price', 'name', 'email', 'phone', 'details', 'slang', 'msg', 'ui', 'page', 'start', 'end', 'status', 'pkg', 'loc', 'h', 'ph', 'smk', 'vid', 'guests' );
+	$keys = array( 'date', 'time', 'service', 'location', 'hours', 'pack', 'opts', 'price', 'name', 'email', 'phone', 'details', 'slang', 'msg', 'ui', 'page', 'start', 'end', 'status', 'pkg', 'loc', 'h', 'ph', 'smk', 'vid', 'guests' );
 	$o    = array( 'id' => $id );
 	foreach ( $keys as $k ) {
 		$o[ $k ] = get_post_meta( $id, '_bkb_' . $k, true );
@@ -415,6 +430,9 @@ function bkb_summary_lines( $b, $lang, $with_contact = false ) {
 	$dur = bkb_fmt_hours( $b['hours'], $t );
 	if ( $prep ) {
 		$dur .= ' (' . bkb_fill( $t['prep_short'], array( 'prep' => bkb_fmt_minutes( $prep, $t ) ) ) . ')';
+	}
+	if ( '' !== (string) ( $b['pack'] ?? '' ) ) {
+		$lines[] = array( $t['package'], bkb_package_label( $b['pack'], $lang ) );
 	}
 	$lines[] = array( $t['duration'], $dur );
 	$yes     = array();
@@ -619,6 +637,14 @@ function bkb_front_config( $lang ) {
 			'thou'     => $GLOBALS['wp_locale']->number_format['thousands_sep'] ?? ' ',
 		),
 		'locations' => array_map( $lab, (array) $c['locations'] ),
+		'packages'  => array_map(
+			fn( $x ) => $lab( $x ) + array(
+				'hours'     => (float) $x['hours'],
+				'price'     => (float) ( $x['price'] ?? 0 ),
+				'locations' => array_values( (array) ( $x['locations'] ?? array() ) ),
+			),
+			(array) $c['packages']
+		),
 		'options'   => $opts,
 		'durations' => bkb_durations(),
 		'duration'  => bkb_valid_duration( $c['schedule']['default_duration'] ) ?? bkb_durations()[0],

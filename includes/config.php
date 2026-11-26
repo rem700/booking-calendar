@@ -42,6 +42,7 @@ function bkb_default_config() {
 			'before'   => false,
 		),
 		'locations' => array(),
+		'packages'  => array(),
 		'options'   => array(),
 		'fields'    => array(
 			'phone'   => array( 'on' => true ),
@@ -248,6 +249,22 @@ function bkb_hours( $wd, $loc = '' ) {
 	return array( (float) $h[0], (float) $h[1] );
 }
 
+function bkb_package( $id ) {
+	return '' === (string) $id ? null : bkb_find( bkb_cfg( 'packages' ), $id );
+}
+
+/** A package with this id that can be booked at a location, or null. */
+function bkb_package_at( $id, $loc ) {
+	$p    = bkb_package( $id );
+	$only = $p ? array_filter( (array) ( $p['locations'] ?? array() ) ) : array();
+	return ( $p && ( ! $only || in_array( (string) $loc, $only, true ) ) ) ? $p : null;
+}
+
+function bkb_package_label( $id, $lang ) {
+	$p = bkb_package( $id );
+	return $p ? bkb_l( $p['label'] ?? array(), $lang, (string) $p['id'] ) : (string) $id;
+}
+
 /** Options that apply at a location. */
 function bkb_options_for( $loc ) {
 	$out = array();
@@ -367,6 +384,20 @@ function bkb_sanitize_config( $c ) {
 				'address'  => sanitize_text_field( (string) ( $x['address'] ?? '' ) ),
 				'days'     => bkb_clean_days( $x['days'] ?? array() ),
 				'capacity' => max( 1, min( 50, (int) ( $x['capacity'] ?? 1 ) ) ),
+			);
+		}
+	}
+	$out['packages'] = array();
+	foreach ( (array) ( $c['packages'] ?? array() ) as $x ) {
+		$id = bkb_clean_id( $x['id'] ?? '' );
+		$h  = round( (float) str_replace( ',', '.', (string) ( $x['hours'] ?? 0 ) ), 2 );
+		if ( '' !== $id && $h > 0 && $h <= 24 ) {
+			$out['packages'][] = array(
+				'id'        => $id,
+				'label'     => bkb_clean_labels( $x['label'] ?? array() ),
+				'hours'     => $h,
+				'price'     => bkb_clean_amount( $x['price'] ?? 0 ),
+				'locations' => array_values( array_filter( array_map( 'bkb_clean_id', (array) ( $x['locations'] ?? array() ) ) ) ),
 			);
 		}
 	}
