@@ -12,11 +12,16 @@ End-to-end tests run against a throwaway local WordPress with this plugin instal
 ```php
 <?php // wp-content/mu-plugins/test-mail-log.php
 add_filter( 'pre_wp_mail', function ( $null, $atts ) {
+	$atts['attached'] = array(); // Attachments by file name, with their text.
+	foreach ( (array) ( $atts['attachments'] ?? array() ) as $f ) {
+		$atts['attached'][ basename( $f ) ] = is_readable( $f ) ? file_get_contents( $f ) : '';
+	}
 	file_put_contents( getenv( 'MAIL_LOG' ) ?: '/tmp/mail.log', wp_json_encode( $atts ) . "\n", FILE_APPEND );
 	return true;
 }, 10, 2 );
 ```
 
+- For the Google Calendar tests, copy `tests/e2e/mock-google.php` to `wp-content/mu-plugins/`. It answers Google sign-in and Calendar API calls with test data.
 - For the Instagram tests, copy `tests/e2e/mock-instagram.php` to `wp-content/mu-plugins/`. It answers calls to the Instagram API with test data, so nothing goes to Instagram.
 
 ## Running

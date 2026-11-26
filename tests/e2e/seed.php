@@ -64,6 +64,12 @@ update_option(
 	false
 );
 
+// Google Calendar: not connected, no test answers left from an earlier run.
+foreach ( array( 'bkb_gcal', 'bkb_gcal_stale', 'bkb_feed_key', 'bkb_test_gcal_log', 'bkb_test_gcal_events', 'bkb_test_gcal_foreign', 'bkb_test_gcal_down', 'bkb_test_gcal_revoked' ) as $o ) {
+	delete_option( $o );
+}
+delete_transient( 'bkb_gcal_down' );
+
 $page = get_page_by_path( 'book' );
 if ( ! $page ) {
 	$pid = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Book', 'post_name' => 'book', 'post_content' => '[booking_calendar]' ) );
