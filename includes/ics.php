@@ -168,7 +168,7 @@ function bkb_ics_busy( $ics, $from, $to ) {
 			}
 			$end = $s + $len;
 			if ( $end > $from && $s < $to ) {
-				$busy[] = array( $s, $end );
+				$busy[] = array( $s, $end, 'uid' => (string) ( $e['UID'] ?? '' ) );
 			}
 		}
 	}
