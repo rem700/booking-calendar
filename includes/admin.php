@@ -236,8 +236,23 @@ function bkb_details_box( $post ) {
 	if ( 'declined' !== $b['status'] ) {
 		echo $act( 'declined', $b['email'] ? __( 'Decline and e-mail the client', 'shootbook' ) : __( 'Decline', 'shootbook' ), '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-	echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( bkb_gcal_link( $b ) ) . '">' . esc_html__( 'Add to Google Calendar', 'shootbook' ) . '</a></p>';
-	echo '<p class="description">' . esc_html__( 'The client gets the e-mail in their language. Add a confirmed booking to Google Calendar so the time is busy for others too.', 'shootbook' ) . '</p>';
+	if ( bkb_gcal_connected() ) {
+		echo '</p><p class="description">' . esc_html__( 'The client gets the e-mail in their language.', 'shootbook' ) . ' ' . bkb_gcal_request_line( $post->ID ) . '</p>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	} else {
+		echo '<a class="button" target="_blank" rel="noopener" href="' . esc_url( bkb_gcal_link( $b ) ) . '">' . esc_html__( 'Add to Google Calendar', 'shootbook' ) . '</a></p>';
+		echo '<p class="description">' . esc_html__( 'The client gets the e-mail in their language. Add a confirmed booking to Google Calendar so the time is busy for others too.', 'shootbook' ) . ' <a href="' . esc_url( admin_url( 'edit.php?post_type=bk_booking&page=bkb-gcal' ) ) . '">' . esc_html__( 'Or connect Google Calendar, then it happens by itself.', 'shootbook' ) . '</a></p>';
+	}
+	if ( 'declined' !== $b['status'] ) {
+		bkb_move_form( $post->ID, $b );
+	}
+	$moved = sanitize_key( wp_unslash( $_GET['bkb_moved'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( 'ok' === $moved ) {
+		echo '<div class="notice notice-success inline"><p>' . esc_html__( 'The time is changed. The client did not get an e-mail about it, please tell them yourself.', 'shootbook' ) . '</p></div>';
+	} elseif ( 'busy' === $moved ) {
+		echo '<div class="notice notice-error inline"><p>' . esc_html__( 'This time is busy. Choose another one or tick “even if the time is busy”.', 'shootbook' ) . '</p></div>';
+	} elseif ( 'bad' === $moved ) {
+		echo '<div class="notice notice-error inline"><p>' . esc_html__( 'Check the date and the time.', 'shootbook' ) . '</p></div>';
+	}
 	if ( isset( $_GET['bkb_mail'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$m = (string) $_GET['bkb_mail']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
 		if ( '2' === $m ) {
@@ -262,6 +277,92 @@ add_action(
 		$ok  = $has ? bkb_mail_client( $id, $s ) : false;
 		do_action( 'bkb_status_changed', $id, $s );
 		wp_safe_redirect( admin_url( 'post.php?post=' . $id . '&action=edit&bkb_mail=' . ( $has ? ( $ok ? '1' : '0' ) : '2' ) ) );
+		exit;
+	}
+);
+
+/* ---------- another time for a request ---------- */
+
+function bkb_move_form( $id, $b ) {
+	$tz = wp_timezone();
+	// The request screen is one big form, so these fields belong to a form printed after it (form="bkb-move").
+	$f = ' form="bkb-move"';
+	echo '<details style="margin-top:14px"><summary style="cursor:pointer">' . esc_html__( 'Change the time', 'shootbook' ) . '</summary><div style="margin-top:8px">';
+	echo '<label>' . esc_html__( 'Date', 'shootbook' ) . ' <input type="date" name="date" required value="' . esc_attr( wp_date( 'Y-m-d', (int) $b['start'], $tz ) ) . '"' . $f . '></label> '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<label>' . esc_html__( 'Start', 'shootbook' ) . ' <input type="time" name="time" step="900" required value="' . esc_attr( wp_date( 'H:i', (int) $b['start'], $tz ) ) . '"' . $f . '></label> '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<label style="white-space:nowrap"><input type="checkbox" name="force" value="1"' . $f . '> ' . esc_html__( 'even if the time is busy', 'shootbook' ) . '</label> '; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<button type="submit" class="button" id="bkb-move-go"' . $f . '>' . esc_html__( 'Move', 'shootbook' ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo '<p class="description">' . esc_html__( 'The length stays the same.', 'shootbook' ) . '</p>';
+	echo '</div></details>';
+	add_action(
+		'admin_footer',
+		function () use ( $id ) {
+			echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" id="bkb-move">';
+			echo '<input type="hidden" name="action" value="bkb_move"><input type="hidden" name="id" value="' . (int) $id . '">';
+			wp_nonce_field( 'bkb_move_' . $id, '_wpnonce', false );
+			echo '</form>';
+		}
+	);
+}
+
+/**
+ * Move a request to another start; the length stays. Returns 'ok', 'busy' or 'bad'.
+ * Busy time is checked without the request itself, unless $force.
+ */
+function bkb_move_booking( $id, $date, $time, $force = false ) {
+	$tz    = wp_timezone();
+	$start = DateTime::createFromFormat( '!Y-m-d H:i', $date . ' ' . $time, $tz );
+	if ( ! $start || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) || ! preg_match( '/^\d{2}:\d{2}$/', $time ) ) {
+		return 'bad';
+	}
+	$old = bkb_get( $id );
+	$len = max( 0, (int) $old['end'] - (int) $old['start'] );
+	$s   = $start->getTimestamp();
+	$e   = $s + $len;
+	if ( ! $force ) {
+		$busy = bkb_busy( $s - DAY_IN_SECONDS, $e + DAY_IN_SECONDS );
+		foreach ( $busy as $i => $iv ) {
+			// The request's own place in the list.
+			if ( isset( $iv['loc'] ) && (int) $iv[0] === (int) $old['start'] && (int) $iv[1] === (int) $old['end'] && (string) $iv['loc'] === (string) $old['location'] ) {
+				unset( $busy[ $i ] );
+				break;
+			}
+		}
+		if ( ! bkb_is_free( $s, $e, $busy, (string) $old['location'] ) ) {
+			return 'busy';
+		}
+	}
+	update_post_meta( $id, '_bkb_date', $start->format( 'Y-m-d' ) );
+	update_post_meta( $id, '_bkb_time', $start->format( 'H:i' ) );
+	update_post_meta( $id, '_bkb_end', $e );
+	update_post_meta( $id, '_bkb_start', $s );
+	delete_post_meta( $id, '_bkb_reminded' );
+	$title = (string) get_the_title( $id );
+	$was   = (string) $old['date'] . ' ' . (string) $old['time'];
+	if ( '' !== trim( $was ) && 0 === strpos( $title, $was ) ) {
+		wp_update_post(
+			array(
+				'ID'         => $id,
+				'post_title' => $start->format( 'Y-m-d H:i' ) . substr( $title, strlen( $was ) ),
+			)
+		);
+	}
+	/* translators: 1: old date and time, 2: new date and time */
+	$note = sprintf( __( 'Moved from %1$s to %2$s', 'shootbook' ), wp_date( 'j.m.Y H:i', (int) $old['start'], $tz ), wp_date( 'j.m.Y H:i', $s, $tz ) );
+	do_action( 'bkb_booking_moved', $id, $old, $note );
+	return 'ok';
+}
+
+add_action(
+	'admin_post_bkb_move',
+	function () {
+		$id = (int) ( $_POST['id'] ?? 0 ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( ! $id || 'bk_booking' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
+			wp_die( 'Forbidden' );
+		}
+		check_admin_referer( 'bkb_move_' . $id );
+		$r = bkb_move_booking( $id, sanitize_text_field( wp_unslash( $_POST['date'] ?? '' ) ), sanitize_text_field( wp_unslash( $_POST['time'] ?? '' ) ), ! empty( $_POST['force'] ) );
+		wp_safe_redirect( admin_url( 'post.php?post=' . $id . '&action=edit&bkb_moved=' . $r ) );
 		exit;
 	}
 );
