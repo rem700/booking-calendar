@@ -1847,3 +1847,163 @@ msgstr ""
 #: includes/crm-admin.php:766
 msgid "Package:"
 msgstr ""
+
+msgid "A confirmed booking appears in your Google Calendar by itself. When you change its time, the event moves. When you decline or delete the request, the event is removed. The events of the calendar are busy time on the site at once."
+msgstr ""
+
+msgid "A new address is made. The old one no longer works."
+msgstr ""
+
+msgid "Also send requests that wait for an answer, with “?” before the title"
+msgstr ""
+
+msgid "Busy time"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Calendar address for other apps"
+msgstr ""
+
+msgid "Change the time"
+msgstr ""
+
+msgid "Check the date and the time."
+msgstr ""
+
+msgid "Confirmed bookings as a calendar you can subscribe to in Apple Calendar, Outlook or on a phone. Apps check it on their own schedule, from a few minutes to a day. Keep the address private: anyone who has it sees the bookings."
+msgstr ""
+
+#, php-format
+msgid "Connected to %1$s. Bookings go to the calendar “%2$s”."
+msgstr ""
+
+msgid "Connected. Bookings go to Google Calendar."
+msgstr ""
+
+msgid "Copy the Client ID and the Client secret of the new client into the fields below and press the button."
+msgstr ""
+
+msgid "Could not get the list of calendars:"
+msgstr ""
+
+msgid "Disconnected. Events already in Google stay there."
+msgstr ""
+
+msgid "Fill in both fields."
+msgstr ""
+
+msgid "Google Calendar"
+msgstr ""
+
+msgid "Google Calendar is not connected any more, bookings do not go there."
+msgstr ""
+
+msgid "Google answered:"
+msgstr ""
+
+msgid "Google did not give a key for constant access. Remove the access of this app in your Google account and sign in again."
+msgstr ""
+
+msgid "Google no longer gives access. Sign in again."
+msgstr ""
+
+msgid "Google will say the app is not verified. This is normal for your own app: press Advanced and go on."
+msgstr ""
+
+#, php-format
+msgid "In %s fill in the app name and your e-mail, and choose the type External."
+msgstr ""
+
+msgid "In Google Calendar."
+msgstr ""
+
+msgid "It is done once and is free. You make your own access in Google Cloud, so the bookings go only between this site and your Google account."
+msgstr ""
+
+msgid "Last change sent:"
+msgstr ""
+
+msgid "Make a new address"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+#, php-format
+msgid "Moved from %1$s to %2$s"
+msgstr ""
+
+msgid "Not in Google Calendar."
+msgstr ""
+
+msgid "Not sent to Google yet, the site tries again every hour."
+msgstr ""
+
+msgid "On the Audience tab press Publish app. While the app is in Testing, Google ends the access after 7 days."
+msgstr ""
+
+msgid "On the Clients tab create a client of the type Web application. Under Authorized redirect URIs add this address:"
+msgstr ""
+
+#, php-format
+msgid "Open %s and create a project, for example “Shootbook”."
+msgstr ""
+
+msgid "Or connect Google Calendar, then it happens by itself."
+msgstr ""
+
+msgid "Other events of this calendar make the time busy on the site"
+msgstr ""
+
+msgid "Save and sign in with Google"
+msgstr ""
+
+msgid "Send all current bookings again"
+msgstr ""
+
+#, php-format
+msgid "Sent to Google: %d."
+msgstr ""
+
+msgid "Sign in again"
+msgstr ""
+
+msgid "The client gets the e-mail in their language."
+msgstr ""
+
+msgid "The length stays the same."
+msgstr ""
+
+msgid "The sign-in link is old. Try again."
+msgstr ""
+
+msgid "The time is changed. The client did not get an e-mail about it, please tell them yourself."
+msgstr ""
+
+msgid "Then the iCal address of the same calendar in the settings is not needed. Addresses of other calendars keep working."
+msgstr ""
+
+msgid "This time is busy. Choose another one or tick “even if the time is busy”."
+msgstr ""
+
+#, php-format
+msgid "Turn on %s for this project."
+msgstr ""
+
+msgid "Waiting for an answer."
+msgstr ""
+
+#, php-format
+msgid "Waiting to be sent: %d. The site tries again every hour."
+msgstr ""
+
+msgid "When you choose another calendar, the bookings move there."
+msgstr ""
+
+msgid "even if the time is busy"
+msgstr ""
+
+msgid "saved, leave empty to keep"
+msgstr ""

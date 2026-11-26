@@ -1743,3 +1743,163 @@ msgstr "Добавить пакет"
 #: includes/crm-admin.php:766
 msgid "Package:"
 msgstr "Пакет:"
+
+msgid "A confirmed booking appears in your Google Calendar by itself. When you change its time, the event moves. When you decline or delete the request, the event is removed. The events of the calendar are busy time on the site at once."
+msgstr "Подтверждённая бронь сама появляется в вашем Google Календаре. Если изменить время брони, событие переедет. Если отказать или удалить заявку, событие удалится. События календаря сразу становятся занятым временем на сайте."
+
+msgid "A new address is made. The old one no longer works."
+msgstr "Создан новый адрес. Старый больше не работает."
+
+msgid "Also send requests that wait for an answer, with “?” before the title"
+msgstr "Отправлять и заявки, которые ждут ответа, со знаком «?» перед названием"
+
+msgid "Busy time"
+msgstr "Занятость"
+
+msgid "Calendar"
+msgstr "Календарь"
+
+msgid "Calendar address for other apps"
+msgstr "Адрес календаря для других приложений"
+
+msgid "Change the time"
+msgstr "Перенести на другое время"
+
+msgid "Check the date and the time."
+msgstr "Проверьте дату и время."
+
+msgid "Confirmed bookings as a calendar you can subscribe to in Apple Calendar, Outlook or on a phone. Apps check it on their own schedule, from a few minutes to a day. Keep the address private: anyone who has it sees the bookings."
+msgstr "Подтверждённые брони в виде календаря, на который можно подписаться в Apple Календаре, Outlook или на телефоне. Приложения обновляют его сами, от нескольких минут до суток. Не показывайте этот адрес посторонним: по нему видны все брони."
+
+#, php-format
+msgid "Connected to %1$s. Bookings go to the calendar “%2$s”."
+msgstr "Подключено к %1$s. Брони попадают в календарь «%2$s»."
+
+msgid "Connected. Bookings go to Google Calendar."
+msgstr "Подключено. Брони попадают в Google Календарь."
+
+msgid "Copy the Client ID and the Client secret of the new client into the fields below and press the button."
+msgstr "Скопируйте Client ID и Client secret нового клиента в поля ниже и нажмите кнопку."
+
+msgid "Could not get the list of calendars:"
+msgstr "Не удалось получить список календарей:"
+
+msgid "Disconnected. Events already in Google stay there."
+msgstr "Отключено. События, которые уже есть в Google, остаются там."
+
+msgid "Fill in both fields."
+msgstr "Заполните оба поля."
+
+msgid "Google Calendar"
+msgstr "Google Календарь"
+
+msgid "Google Calendar is not connected any more, bookings do not go there."
+msgstr "Google Календарь больше не подключён, брони туда не попадают."
+
+msgid "Google answered:"
+msgstr "Ответ Google:"
+
+msgid "Google did not give a key for constant access. Remove the access of this app in your Google account and sign in again."
+msgstr "Google не выдал ключ для постоянного доступа. Удалите доступ этого приложения в своём аккаунте Google и войдите снова."
+
+msgid "Google no longer gives access. Sign in again."
+msgstr "Google больше не даёт доступ. Войдите снова."
+
+msgid "Google will say the app is not verified. This is normal for your own app: press Advanced and go on."
+msgstr "Google предупредит, что приложение не проверено. Для своего приложения это нормально: нажмите «Дополнительные настройки» (Advanced) и продолжите."
+
+#, php-format
+msgid "In %s fill in the app name and your e-mail, and choose the type External."
+msgstr "В разделе %s укажите название приложения и свою почту, тип выберите «Внешний» (External)."
+
+msgid "In Google Calendar."
+msgstr "Есть в Google Календаре."
+
+msgid "It is done once and is free. You make your own access in Google Cloud, so the bookings go only between this site and your Google account."
+msgstr "Это делается один раз и бесплатно. Вы создаёте свой доступ в Google Cloud, поэтому брони идут только между этим сайтом и вашим аккаунтом Google."
+
+msgid "Last change sent:"
+msgstr "Последнее изменение отправлено:"
+
+msgid "Make a new address"
+msgstr "Создать новый адрес"
+
+msgid "Move"
+msgstr "Перенести"
+
+#, php-format
+msgid "Moved from %1$s to %2$s"
+msgstr "Перенесено с %1$s на %2$s"
+
+msgid "Not in Google Calendar."
+msgstr "В Google Календаре нет."
+
+msgid "Not sent to Google yet, the site tries again every hour."
+msgstr "Ещё не отправлено в Google, сайт пробует снова каждый час."
+
+msgid "On the Audience tab press Publish app. While the app is in Testing, Google ends the access after 7 days."
+msgstr "На вкладке «Аудитория» (Audience) нажмите «Опубликовать приложение» (Publish app). Пока приложение в режиме тестирования, Google закрывает доступ через 7 дней."
+
+msgid "On the Clients tab create a client of the type Web application. Under Authorized redirect URIs add this address:"
+msgstr "На вкладке «Клиенты» (Clients) создайте клиент типа «Веб-приложение» (Web application). В поле «Разрешённые URI перенаправления» (Authorized redirect URIs) добавьте этот адрес:"
+
+#, php-format
+msgid "Open %s and create a project, for example “Shootbook”."
+msgstr "Откройте %s и создайте проект, например «Shootbook»."
+
+msgid "Or connect Google Calendar, then it happens by itself."
+msgstr "Или подключите Google Календарь, тогда это будет происходить само."
+
+msgid "Other events of this calendar make the time busy on the site"
+msgstr "Другие события этого календаря занимают время на сайте"
+
+msgid "Save and sign in with Google"
+msgstr "Сохранить и войти через Google"
+
+msgid "Send all current bookings again"
+msgstr "Отправить все текущие брони заново"
+
+#, php-format
+msgid "Sent to Google: %d."
+msgstr "Отправлено в Google: %d."
+
+msgid "Sign in again"
+msgstr "Войти снова"
+
+msgid "The client gets the e-mail in their language."
+msgstr "Клиент получает письмо на своём языке."
+
+msgid "The length stays the same."
+msgstr "Длительность остаётся прежней."
+
+msgid "The sign-in link is old. Try again."
+msgstr "Ссылка для входа устарела. Попробуйте ещё раз."
+
+msgid "The time is changed. The client did not get an e-mail about it, please tell them yourself."
+msgstr "Время изменено. Письма об этом клиент не получил, сообщите ему сами."
+
+msgid "Then the iCal address of the same calendar in the settings is not needed. Addresses of other calendars keep working."
+msgstr "Тогда iCal-адрес этого же календаря в настройках не нужен. Адреса других календарей продолжают работать."
+
+msgid "This time is busy. Choose another one or tick “even if the time is busy”."
+msgstr "Это время занято. Выберите другое или отметьте «даже если время занято»."
+
+#, php-format
+msgid "Turn on %s for this project."
+msgstr "Включите %s для этого проекта."
+
+msgid "Waiting for an answer."
+msgstr "Ждёт ответа."
+
+#, php-format
+msgid "Waiting to be sent: %d. The site tries again every hour."
+msgstr "Ждут отправки: %d. Сайт пробует снова каждый час."
+
+msgid "When you choose another calendar, the bookings move there."
+msgstr "Если выбрать другой календарь, брони переедут туда."
+
+msgid "even if the time is busy"
+msgstr "даже если время занято"
+
+msgid "saved, leave empty to keep"
+msgstr "сохранён, оставьте пустым, чтобы не менять"
