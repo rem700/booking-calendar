@@ -1707,3 +1707,39 @@ msgstr "ошибка"
 #: assets/replies.js:43
 msgid "no connection to the site"
 msgstr "нет связи с сайтом"
+
+#: assets/admin.js:15
+msgid "Packages"
+msgstr "Пакеты"
+
+#: assets/admin.js:151
+msgid "A set number of hours at its own price, for example 5 or 10 hours. In the form, packages are offered next to the durations, and the client books all the hours in one go."
+msgstr "Набор часов по своей цене, например 5 или 10 часов. В форме пакеты стоят рядом с длительностью, и клиент бронирует все часы одной записью."
+
+#: assets/admin.js:155
+msgid "New package"
+msgstr "Новый пакет"
+
+#: assets/admin.js:157
+msgid "Hours"
+msgstr "Часы"
+
+#: assets/admin.js:158
+msgid "Package price"
+msgstr "Цена пакета"
+
+#: assets/admin.js:159
+msgid "Replaces the price per hour. Options are added on top. Empty: the hours are counted at the price of the service."
+msgstr "Заменяет цену за час, доплаты за опции прибавляются к ней. Если пусто, часы считаются по цене услуги."
+
+#: assets/admin.js:160
+msgid "Package available at"
+msgstr "Где доступен"
+
+#: assets/admin.js:164
+msgid "Add package"
+msgstr "Добавить пакет"
+
+#: includes/crm-admin.php:766
+msgid "Package:"
+msgstr "Пакет:"
