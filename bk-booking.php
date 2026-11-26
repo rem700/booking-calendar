@@ -22,6 +22,7 @@ define( 'BKB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BKB_URL', plugin_dir_url( __FILE__ ) );
 
 require_once BKB_DIR . 'includes/ics.php';
+require_once BKB_DIR . 'includes/ics-out.php';
 require_once BKB_DIR . 'includes/texts.php';
 require_once BKB_DIR . 'includes/config.php';
 require_once BKB_DIR . 'includes/core.php';
@@ -31,6 +32,8 @@ require_once BKB_DIR . 'includes/crm-admin.php';
 require_once BKB_DIR . 'includes/replies.php';
 require_once BKB_DIR . 'includes/instagram.php';
 require_once BKB_DIR . 'includes/instagram-admin.php';
+require_once BKB_DIR . 'includes/gcal.php';
+require_once BKB_DIR . 'includes/gcal-admin.php';
 
 /* Bundled translations; a newer file in wp-content/languages/plugins wins. */
 add_action(
@@ -99,7 +102,7 @@ add_action(
 
 /** Scheduled tasks of the plugin: removing old requests, reminders, the morning summary. */
 function bkb_cron_hooks() {
-	return array( 'bkb_cleanup', 'bkb_remind', 'bkb_crm_tick', 'bkb_ig_hourly', 'bkb_ig_daily' );
+	return array( 'bkb_cleanup', 'bkb_remind', 'bkb_crm_tick', 'bkb_ig_hourly', 'bkb_ig_daily', 'bkb_gcal_hourly' );
 }
 
 register_activation_hook(
