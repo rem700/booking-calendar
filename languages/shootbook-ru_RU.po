@@ -1903,3 +1903,109 @@ msgstr "даже если время занято"
 
 msgid "saved, leave empty to keep"
 msgstr "сохранён, оставьте пустым, чтобы не менять"
+
+#: includes/embed-admin.php
+msgid "Form on other sites"
+msgstr "Форма на других сайтах"
+
+msgid "Show the booking form on a site made in Framer, Webflow, Tilda or Wix. Requests come here as usual: to the list of requests, to the clients and to your e-mail."
+msgstr "Покажите форму записи на сайте, сделанном в Framer, Webflow, Tilda или Wix. Заявки приходят сюда, как обычно: в список заявок, в клиенты и вам на почту."
+
+msgid "Code for the site"
+msgstr "Код для сайта"
+
+msgid "View"
+msgstr "Вид"
+
+msgid "Form on the page"
+msgstr "Форма на странице"
+
+msgid "Button that opens the form"
+msgstr "Кнопка, которая открывает форму"
+
+msgid "Button text"
+msgstr "Текст кнопки"
+
+msgid "Language"
+msgstr "Язык"
+
+msgid "Language of the page"
+msgstr "Как у страницы"
+
+msgid "Colours"
+msgstr "Цвета"
+
+msgid "From the settings"
+msgstr "Из настроек"
+
+msgid "Like the site"
+msgstr "Как на сайте"
+
+msgid "Own"
+msgstr "Свои"
+
+msgid "Text"
+msgstr "Текст"
+
+msgid "Background"
+msgstr "Фон"
+
+msgid "Accent"
+msgstr "Акцент"
+
+msgid "The form takes the text colour, the background and the font of the place where the code is pasted."
+msgstr "Форма возьмёт цвет текста, фон и шрифт того места, куда вставлен код."
+
+msgid "Font"
+msgstr "Шрифт"
+
+msgid "Load the font from Google Fonts"
+msgstr "Загрузить шрифт из Google Fonts"
+
+msgid "Leave empty to keep the font from the settings."
+msgstr "Оставьте пустым, чтобы взять шрифт из настроек."
+
+msgid "Copy the code"
+msgstr "Скопировать код"
+
+msgid "Where to paste it"
+msgstr "Куда вставить"
+
+msgid "Add an Embed block (Insert → Embed), choose HTML and paste the code. Make the block as wide as the page."
+msgstr "Добавьте блок Embed (Insert → Embed), выберите HTML и вставьте код. Растяните блок на всю ширину страницы."
+
+msgid "Add a Code Embed element, paste the code and save. The form shows on the published site."
+msgstr "Добавьте элемент Code Embed, вставьте код и сохраните. Форма появится на опубликованном сайте."
+
+msgid "Add the block T123 (Other → HTML code), paste the code and publish the page."
+msgstr "Добавьте блок T123 (Другое → HTML-код), вставьте код и опубликуйте страницу."
+
+msgid "Add Embed Code → Embed HTML, choose Code and paste it. Wix keeps the block at the height you set, so make it tall enough for the whole form."
+msgstr "Добавьте Embed Code → Embed HTML, выберите Code и вставьте код. Wix оставляет блок той высоты, которую вы задали, поэтому сделайте его достаточно высоким для всей формы."
+
+msgid "If the form is cut at the bottom, the builder keeps the block at a fixed height. Make the block taller or choose the button view."
+msgstr "Если форма обрезана снизу, конструктор держит у блока постоянную высоту. Сделайте блок выше или выберите вид «Кнопка»."
+
+msgid "Link to the form"
+msgstr "Ссылка на форму"
+
+msgid "For a block that takes only an address. The height does not adjust itself here."
+msgstr "Для блока, в который вставляют только адрес. Высота здесь сама не подстраивается."
+
+msgid "Preview"
+msgstr "Как это выглядит"
+
+msgid "Sites that may show the form"
+msgstr "Сайты, на которых можно показывать форму"
+
+msgid "One address per line, for example https://iparstudio.com. Other sites cannot show the form. On these sites the link to book again in the client’s e-mails leads to the page with the form."
+msgstr "По одному адресу в строке, например https://iparstudio.com. Другие сайты не смогут показать форму. Для этих сайтов ссылка «выбрать другое время» в письмах клиенту ведёт на страницу с формой."
+
+msgid "If the list is empty, any site can show the form."
+msgstr "Если список пуст, форму может показать любой сайт."
+
+msgid "Save the list"
+msgstr "Сохранить список"
+
+msgid "Site widget"
+msgstr "Виджет для сайта"
