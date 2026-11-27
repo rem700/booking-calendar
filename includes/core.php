@@ -682,7 +682,7 @@ function bkb_front_config( $lang ) {
 }
 
 function bkb_style_attr() {
-	$s   = (array) bkb_cfg( 'style' );
+	$s   = (array) apply_filters( 'bkb_style', (array) bkb_cfg( 'style' ) );
 	$css = '--ink:' . $s['ink'] . ';--cream:' . $s['paper'] . ';--gold:' . $s['accent'] . ';';
 	if ( ! empty( $s['heading_font'] ) ) {
 		$css .= '--bkb-head:' . $s['heading_font'] . ';';

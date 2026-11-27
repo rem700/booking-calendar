@@ -6,6 +6,7 @@
  *   bkb.config         window.BKB as printed by the plugin
  *   bkb.refresh()      redraw after changing something from outside
  * Events on document: bkb:change and bkb:submitted, with detail = { state: … }.
+ * In the widget for other sites (embed.js), BKB.page and BKB.src come from the page that shows it.
  * window.BKB_PREFILL (object or query string) set before this script preselects choices.
  */
 (function () {
@@ -404,8 +405,8 @@
 			name: f.name.value, email: f.email.value.trim(),
 			phone: f.phone ? f.phone.value : '', details: f.details ? f.details.value : '', msg: f.msg ? f.msg.value : '',
 			slang: st.slang, consent: f.consent.checked ? 1 : 0,
-			website: f.website.value, el: Date.now() - opened, ui: C.lang, page: location.origin + location.pathname,
-			src: (function () { try { return localStorage.getItem('bkb_src') || ''; } catch (e) { return ''; } })()
+			website: f.website.value, el: Date.now() - opened, ui: C.lang, page: C.page || location.origin + location.pathname,
+			src: C.src != null ? C.src : (function () { try { return localStorage.getItem('bkb_src') || ''; } catch (e) { return ''; } })()
 		};
 		var btn = form.querySelector('.bkb-submit');
 		btn.disabled = true;

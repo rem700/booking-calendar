@@ -34,6 +34,7 @@ require_once BKB_DIR . 'includes/instagram.php';
 require_once BKB_DIR . 'includes/instagram-admin.php';
 require_once BKB_DIR . 'includes/gcal.php';
 require_once BKB_DIR . 'includes/gcal-admin.php';
+require_once BKB_DIR . 'includes/embed.php';
 
 /* Bundled translations; a newer file in wp-content/languages/plugins wins. */
 add_action(
