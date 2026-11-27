@@ -25,6 +25,7 @@ Free times are worked out from your working hours, the time you need to prepare,
 - Settings export and import as JSON, so the same setup moves to another site in one step
 - Prices: a price per hour for each service and extra prices for options, shown in the form and saved with the request. A site script can still set its own price (see below)
 - Packages: a set number of hours at their own price (for example 5 or 10 hours), offered in the form next to the durations and limited to the locations you choose. The client books all the hours in one go; options are added to the package price
+- The form on a site made in Framer, Webflow, Tilda or Wix, with a code to paste (see below)
 
 ## Clients (CRM)
 
@@ -78,6 +79,26 @@ The form reads its starting choice from the page address:
 ```
 
 `service`, `location`, `hours`, `pack` (a package id) and any option id. Another plugin or theme can set `window.BKB_PREFILL` to the same kind of query string before the form loads.
+
+## The form on Framer, Webflow, Tilda or Wix
+
+**Requests → Site widget** gives a short code for a site that is not on WordPress:
+
+```html
+<div data-shootbook="https://studio.example/?bkb_embed=1" data-lang="ru"></div>
+<script src="https://studio.example/wp-content/plugins/bk-booking/assets/embed.js" async></script>
+```
+
+`embed.js` puts the form page of this site (`/?bkb_embed=1`, the form without the theme) into an iframe and makes the frame as tall as the form. The form talks only to this site, so requests, e-mails and clients work as on a WordPress page, and no CORS is needed. The spam traps of the form work the same way.
+
+- Language: `data-lang`, otherwise the language of the page.
+- Colours: `data-theme="inherit"` takes the text colour, background and font of the place where the code is pasted; or `data-ink`, `data-paper`, `data-accent`; otherwise the colours from the settings. Fonts: `data-font`, `data-head-font`, and `data-google-font="1"` to load them from Google Fonts.
+- `data-mode="button"` with `data-label` shows a button that opens the form over the page.
+- `data-service`, `data-location`, `data-hours`, `data-pack` preselect choices, as in the page address.
+- The page address and the visit source (UTM tags, the site the visitor came from) go with the request, so the client card shows where the client came from.
+- The block gets the event `shootbook:submitted` when a request is sent.
+
+The same page keeps the list of sites that may show the form: the form page sends `Content-Security-Policy: frame-ancestors` with them. On these sites the link to book again in the client's e-mails leads to the page with the form; for any other address the site's own address is used. An empty list lets any site show the form.
 
 ## Google Calendar
 
