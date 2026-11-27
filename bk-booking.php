@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Shootbook
  * Description: Booking requests with a live calendar and a simple client list, made for photo studios, photographers and hourly rentals.
- * Version: 2.7.0
+ * Version: 2.8.0
  * Plugin URI: https://github.com/rem700/booking-calendar
  * Author: rem700
  * Author URI: https://github.com/rem700
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BKB_VER', '2.7.0' );
+define( 'BKB_VER', '2.8.0' );
 define( 'BKB_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BKB_URL', plugin_dir_url( __FILE__ ) );
 
@@ -34,6 +34,8 @@ require_once BKB_DIR . 'includes/instagram.php';
 require_once BKB_DIR . 'includes/instagram-admin.php';
 require_once BKB_DIR . 'includes/gcal.php';
 require_once BKB_DIR . 'includes/gcal-admin.php';
+require_once BKB_DIR . 'includes/embed.php';
+require_once BKB_DIR . 'includes/embed-admin.php';
 
 /* Bundled translations; a newer file in wp-content/languages/plugins wins. */
 add_action(

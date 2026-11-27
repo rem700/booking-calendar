@@ -65,6 +65,7 @@ update_option(
 );
 
 // Google Calendar: not connected, no test answers left from an earlier run.
+delete_option( 'bkb_embed' ); // Any site may show the form.
 foreach ( array( 'bkb_gcal', 'bkb_gcal_stale', 'bkb_feed_key', 'bkb_test_gcal_log', 'bkb_test_gcal_events', 'bkb_test_gcal_foreign', 'bkb_test_gcal_down', 'bkb_test_gcal_revoked' ) as $o ) {
 	delete_option( $o );
 }

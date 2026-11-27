@@ -2007,3 +2007,109 @@ msgstr ""
 
 msgid "saved, leave empty to keep"
 msgstr ""
+
+#: includes/embed-admin.php
+msgid "Form on other sites"
+msgstr ""
+
+msgid "Show the booking form on a site made in Framer, Webflow, Tilda or Wix. Requests come here as usual: to the list of requests, to the clients and to your e-mail."
+msgstr ""
+
+msgid "Code for the site"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Form on the page"
+msgstr ""
+
+msgid "Button that opens the form"
+msgstr ""
+
+msgid "Button text"
+msgstr ""
+
+msgid "Language of the page"
+msgstr ""
+
+msgid "Colours"
+msgstr ""
+
+msgid "From the settings"
+msgstr ""
+
+msgid "Like the site"
+msgstr ""
+
+msgid "Own"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Background"
+msgstr ""
+
+msgid "Accent"
+msgstr ""
+
+msgid "The form takes the text colour, the background and the font of the place where the code is pasted."
+msgstr ""
+
+msgid "Font"
+msgstr ""
+
+msgid "Load the font from Google Fonts"
+msgstr ""
+
+msgid "Leave empty to keep the font from the settings."
+msgstr ""
+
+msgid "Copy the code"
+msgstr ""
+
+msgid "Where to paste it"
+msgstr ""
+
+msgid "Add an Embed block (Insert → Embed), choose HTML and paste the code. Make the block as wide as the page."
+msgstr ""
+
+msgid "Add a Code Embed element, paste the code and save. The form shows on the published site."
+msgstr ""
+
+msgid "Add the block T123 (Other → HTML code), paste the code and publish the page."
+msgstr ""
+
+msgid "Add Embed Code → Embed HTML, choose Code and paste it. Wix keeps the block at the height you set, so make it tall enough for the whole form."
+msgstr ""
+
+msgid "If the form is cut at the bottom, the builder keeps the block at a fixed height. Make the block taller or choose the button view."
+msgstr ""
+
+msgid "Link to the form"
+msgstr ""
+
+msgid "For a block that takes only an address. The height does not adjust itself here."
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Sites that may show the form"
+msgstr ""
+
+msgid "One address per line, for example https://iparstudio.com. Other sites cannot show the form. On these sites the link to book again in the client’s e-mails leads to the page with the form."
+msgstr ""
+
+msgid "If the list is empty, any site can show the form."
+msgstr ""
+
+msgid "Save the list"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Site widget"
+msgstr ""

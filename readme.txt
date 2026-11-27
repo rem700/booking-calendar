@@ -34,6 +34,7 @@ Free times are worked out from your opening hours, the time you need to prepare,
 * A calendar file in the client's confirmation e-mail, and "Add to Google Calendar" link
 * Old requests are removed after the number of days you choose
 * Settings export and import as JSON
+* The form on a site made in Framer, Webflow, Tilda or Wix: copy the code from Requests → Site widget
 
 = Clients =
 
@@ -102,3 +103,4 @@ The plugin connects to outside services only in these cases.
 * Google Calendar sync through the Google Calendar API: bookings go to the calendar, move and are removed by themselves; busy time is read from the calendar at once.
 * A request can be moved to another time from its page.
 * A private calendar address with the confirmed bookings, and a calendar file in the client's confirmation e-mail.
+* The form on sites made in Framer, Webflow, Tilda or Wix, with a code to copy, a preview and a list of the sites that may show it.
